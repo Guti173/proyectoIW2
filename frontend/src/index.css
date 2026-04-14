@@ -1,0 +1,83 @@
+:root {
+  --sand: #f4ecdf;
+  --paper: #f7f1e8;
+  --ink: #072235;
+  --muted: #516777;
+  --muted-strong: #365164;
+  --border: rgba(7, 34, 53, 0.12);
+  --panel-soft: rgba(255, 248, 240, 0.7);
+  --panel-strong: rgba(7, 34, 53, 0.92);
+  --accent-amber: #ffb74d;
+  --shadow-soft: 0 18px 45px rgba(7, 34, 53, 0.08);
+  --shadow-pop: 0 20px 44px rgba(7, 34, 53, 0.14);
+  --font-display: 'Avenir Next', 'Trebuchet MS', sans-serif;
+  --font-body: 'Avenir Next', 'Gill Sans', sans-serif;
+  --font-mono: 'Consolas', 'SFMono-Regular', monospace;
+
+  font: 18px/1.5 var(--font-body);
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  background:
+    radial-gradient(circle at top left, rgba(255, 183, 77, 0.4), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(69, 123, 157, 0.24), transparent 28%),
+    linear-gradient(180deg, #f6eee2 0%, #eef4f7 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+h3,
+strong,
+dt {
+  font-family: var(--font-display);
+}
+
+p,
+dd {
+  margin: 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.14rem 0.4rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 16px;
+  }
+}
