@@ -1,21 +1,12 @@
 from rest_framework import serializers
+from .models import Serie, Genero
 
-from .models import Serie
-
+class GeneroSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genero
+        fields = '__all__'
 
 class SerieSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Serie
-        fields = (
-            "pk",
-            "titulo",
-            "descripcion",
-            "fechaEstreno",
-            "fechaFin",
-            "imagenPortada",
-            "numeroEpisodios",
-            "estado",
-            "valoracionMedia",
-            "totalValoraciones",
-        )
+        fields = '__all__'
