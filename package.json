@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "auth0-lock": "^14.3.0"
+  }
+}
