@@ -1,16 +1,79 @@
-.catalogo {
-  padding: 20px;
-  background-color: #121212;
-  min-height: 100vh;
-  color: white;
+/* Centrado del catálogo */
+.catalogo-container {
+  max-width: 1400px; /* Evita que se estire demasiado en pantallas gigantes */
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
-.catalogo h1 {
-  margin-bottom: 20px;
+/* Estilo del Encabezado (Hero) */
+.catalogo-hero {
+  padding: 60px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 40px;
 }
 
-.grid-series {
+.hero-text h1 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  margin-bottom: 15px;
+  font-weight: 800;
+}
+
+.hero-text p {
+  font-size: 1.1rem;
+  color: #64748b;
+  max-width: 700px; /* Párrafo estrecho para mejor lectura */
+  line-height: 1.6;
+}
+
+/* El Slider Horizontal mejorado */
+.horizontal-slider {
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
+  overflow-x: auto;
+  padding: 10px 5px 30px 5px;
+  scroll-snap-type: x mandatory; /* Hace que el deslizamiento sea suave */
+  scrollbar-width: thin; /* Scrollbar elegante en Firefox */
+}
+
+/* Personalización del scroll para Chrome/Safari */
+.horizontal-slider::-webkit-scrollbar {
+  height: 6px;
+}
+.horizontal-slider::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* AJUSTE PARA VER 5 CARTAS */
+.horizontal-slider .serie-card {
+  /* Restamos el gap para que quepan exactamente 5 */
+  flex: 0 0 calc((100% - (20px * 4)) / 5); 
+  min-width: 220px; /* Tamaño mínimo para que no se deformen en móviles */
+  scroll-snap-align: start;
+}
+
+.row-section {
+  margin-bottom: 60px;
+}
+
+.row-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* Responsivo para tablets y móviles */
+@media (max-width: 1024px) {
+  .horizontal-slider .serie-card {
+    flex: 0 0 calc((100% - (20px * 2)) / 3); /* Ver 3 cartas */
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogo-container { padding: 0 20px; }
+  .horizontal-slider .serie-card {
+    flex: 0 0 80%; /* Ver 1 carta y media */
+  }
 }

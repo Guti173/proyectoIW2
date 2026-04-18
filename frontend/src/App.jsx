@@ -40,8 +40,14 @@ function App() {
 
       <main className="site-main">
         <Routes>
+
           <Route path="/" element={<HomePage />} />
-          <Route path="/catalogo" element={<PlaceholderPage title="Catalogo" />} />
+
+
+          <Route path="/catalogo" element={<Catalogo />} />
+
+          <Route path="/series/:id" element={<SerieDetalle />} />
+
           <Route
             path="/login"
             element={<AuthPage initialScreen="login" />}

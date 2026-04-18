@@ -1,6 +1,6 @@
-/* Contenedor principal: Tonos claros y limpios */
+
 .detalle-wrapper {
-  background-color: #fcfaf8; /* Un tono crema muy suave acorde a tu dashboard */
+  background-color: #fcfaf8; 
   color: #334155;
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
@@ -20,7 +20,7 @@
   background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(252, 250, 248, 1) 95%);
 }
 
-/* Botón Volver: Minimalista */
+/* Botón Volver: */
 .back-btn {
   position: absolute;
   top: 20px;
@@ -40,7 +40,7 @@
   transform: translateX(-3px);
 }
 
-/* Título: Ahora en tono oscuro profesional */
+/* Título: */
 .hero-title {
   color: #0f172a !important; 
   font-size: 3.5rem;
@@ -55,14 +55,14 @@
   margin-bottom: 25px;
 }
 
-/* --- BOTONES MODERNOS --- */
+/*BOTONES */
 .hero-actions {
   display: flex;
   gap: 12px;
 }
 
 .btn-primary {
-  background: #0f172a; /* Azul noche muy oscuro */
+  background: #0f172a; 
   color: white;
   padding: 12px 24px;
   border-radius: 10px;
@@ -94,8 +94,86 @@
   background: #f8fafc;
   border-color: #cbd5e1;
 }
+/* fondo general de la página para que los recuadros resalten */
+.catalogo-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #f1f5f9; /* Un gris azulado muy suave */
+  min-height: 100vh;
+}
 
-/* --- SECCIÓN DE COMENTARIOS CLARA --- */
+/* Estilo del Hero (ahora más integrado) */
+.catalogo-hero {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  margin-bottom: 40px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.hero-text h1 {
+  font-size: 2.2rem;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+/* --- LOS RECUADROS ENTRE SECCIONES --- */
+.row-section {
+  background: white; /* Cada sección tiene su propio fondo blanco */
+  padding: 30px;
+  border-radius: 20px; /* Bordes redondeados profesionales */
+  margin-bottom: 30px; /* Espacio entre los recuadros */
+  border: 1px solid #e2e8f0; /* Borde sutil */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04); /* Sombra muy ligera */
+  transition: transform 0.2s ease;
+}
+
+/* Efecto opcional: el recuadro se ilumina un poco al pasar el ratón */
+.row-section:hover {
+  border-color: #cbd5e1;
+}
+
+.row-title {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Añadimos un pequeño adorno al título para diferenciarlo */
+.row-title::before {
+  content: "";
+  width: 4px;
+  height: 20px;
+  background-color: #3b82f6; /* Línea azul al lado del título */
+  border-radius: 10px;
+}
+
+/* Ajuste del Slider dentro del recuadro */
+.horizontal-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px 0; /* Quitamos padding extra ya que el padre tiene padding */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; 
+}
+
+.horizontal-slider::-webkit-scrollbar {
+  display: none; 
+}
+
+/* Ajuste de las cartas para que se vean perfectas en el recuadro */
+.horizontal-slider .serie-card {
+  flex: 0 0 calc((100% - (20px * 4)) / 5); 
+  min-width: 200px;
+}
+/* SECCIÓN DE COMENTARIOS */
 .detalle-container {
   padding: 40px;
   max-width: 1100px;
@@ -149,7 +227,7 @@
   border: 1px solid #eef2f6;
   border-radius: 16px;
 }
-/* --- MEJORA DE COMENTARIOS --- */
+
 .comentario-header {
   display: flex;
   align-items: center;
@@ -192,7 +270,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-/* --- MEJORA DE INFO TÉCNICA (SIDEBAR) --- */
+
 .info-card-tecnica {
   background: white;
   padding: 24px;
@@ -212,7 +290,7 @@
 
 .info-item {
   display: flex;
-  justify-content: space-between; /* Empuja el valor a la derecha */
+  justify-content: space-between; 
   align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid #f8fafc;
@@ -237,4 +315,93 @@
   background: #f8fafc;
   padding: 4px 10px;
   border-radius: 6px;
+}
+/* 1. Fondo más suave para que el blanco no "salte" tanto */
+.catalogo-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  background-color: #f8fafc; /* Un tono casi blanco, muy relajante */
+  min-height: 100vh;
+}
+
+/* 2. El Hero: Más aire y mejor tipografía */
+.catalogo-hero {
+  background: white;
+  padding: 60px 80px; /* Aumentamos mucho el padding para que el texto respire */
+  border-radius: 32px; /* Bordes más circulares son más modernos */
+  margin-bottom: 50px;
+  border: 1px solid rgba(226, 232, 240, 0.6); /* Borde casi invisible */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03); /* Sombra muy amplia pero tenue */
+  text-align: left;
+}
+
+.hero-text h1 {
+  font-size: 2.8rem;
+  color: #0f172a;
+  margin-bottom: 20px;
+  letter-spacing: -1.5px; /* Texto más compacto y profesional */
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  color: #475569;
+  max-width: 800px;
+  line-height: 1.8; /* Aumentamos interlineado para evitar efecto bloque */
+  font-weight: 400;
+}
+
+/* 3. Las Secciones: Unificando el diseño */
+.row-section {
+  background: white;
+  padding: 40px; /* Más espacio interno */
+  border-radius: 32px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
+}
+
+.row-title {
+  font-size: 1.5rem;
+  margin-bottom: 30px; /* Más separación de las cartas */
+  color: #1e293b;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* El adorno lateral ahora es más sutil */
+.row-title::before {
+  content: "";
+  width: 5px;
+  height: 24px;
+  background: linear-gradient(to bottom, #3b82f6, #60a5fa); /* Degradado suave */
+  border-radius: 10px;
+}
+
+/* 4. El Slider: Eliminamos cortes visuales en los bordes */
+.horizontal-slider {
+  display: flex;
+  gap: 25px; /* Más espacio entre cartas */
+  overflow-x: auto;
+  padding: 10px 5px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; 
+}
+
+/* 5. Ajuste de las cartas para que no se vean pegadas arriba/abajo */
+.horizontal-slider .serie-card {
+  flex: 0 0 calc((100% - (25px * 4)) / 5); 
+  min-width: 210px;
+  transition: transform 0.3s ease;
+}
+
+/* Responsivo ajustado */
+@media (max-width: 1024px) {
+  .catalogo-hero { padding: 40px; }
+  .hero-text h1 { font-size: 2.2rem; }
+  .horizontal-slider .serie-card {
+    flex: 0 0 calc((100% - (25px * 2)) / 3);
+  }
 }

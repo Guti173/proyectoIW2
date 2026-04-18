@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SerieCard from "../components/SerieCard";
+import "./Catalogo.css";
 
 // Simulamos diferentes listas que te devolvería el backend
 const mockViendo = [
@@ -31,127 +32,79 @@ function Catalogo() {
   });
   const [loading, setLoading] = useState(true);
 
-  // Desestructuramos para que 'viendo', 'populares', etc. existan como variables directas
   const { viendo, populares, accion, comedia, emision } = data;
 
   useEffect(() => {
     async function loadAll() {
       setLoading(true);
-      // Simulamos latencia de red
       await new Promise(r => setTimeout(r, 600));
       setData({
-        viendo: mockViendo,
-        populares: mockPopulares,
-        accion: mockAccion,
-        comedia: mockComedia,
-        emision: mockEnEmision
+        viendo: mockViendo, populares: mockPopulares,
+        accion: mockAccion, comedia: mockComedia, emision: mockEnEmision
       });
       setLoading(false);
     }
     loadAll();
   }, []);
 
-  if (loading) return <div className="loader">Personalizando tu catálogo...</div>;
+  if (loading) return <div className="loader">Personalizando tu biblioteca...</div>;
 
   return (
-    <section className="page-section">
-      <header className="page-header">
-        <p className="eyebrow">Descubrir</p>
-        <h2>Explora tu contenido</h2>
+    <div className="catalogo-container">
+      {/* SECCIÓN HERO: Introducción profesional */}
+      <header className="catalogo-hero">
+        <div className="hero-text">
+          <h1>Tu Biblioteca Personal</h1>
+          <p>
+            Bienvenido a tu centro de entretenimiento. Explora las series más aclamadas por la crítica, 
+            gestiona tus listas de reproducción y descubre nuevas historias seleccionadas 
+            especialmente para ti basándonos en tus gustos.
+          </p>
+        </div>
       </header>
 
-      {/* SECCIÓN 1: CONTINUAR VIENDO (Scroll Horizontal) */}
-      <section className="row-section">
-        <h3 className="row-title">Continuar viendo</h3>
-        <div className="horizontal-scroll">
-          {viendo.map(s => (
-            <SerieCard 
-              key={s.pk} 
-              id={s.pk} 
-              titulo={s.titulo} 
-              fechaEstreno={s.fechaEstreno} 
-              valoracionMedia={s.valoracionMedia} 
-              imagen={s.imagenPortada} 
-              estado={s.estado}
-              variant="compact" 
-            />
-          ))}
-        </div>
-      </section>
+      <main className="catalogo-content">
+        {/* SECCIÓN 1: CONTINUAR VIENDO (Slider) */}
+        <section className="row-section">
+          <h3 className="row-title">Continuar viendo</h3>
+          <div className="horizontal-slider">
+            {viendo.map(s => (
+              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} variant="compact" />
+            ))}
+          </div>
+        </section>
 
-      {/* SECCIÓN 2: POPULARES (Grid Estándar) */}
-      <section className="row-section">
-        <h3 className="row-title">Tendencias ahora</h3>
-        <div className="collection-grid">
-          {populares.map(s => (
-            <SerieCard 
-              key={s.pk} 
-              id={s.pk} 
-              titulo={s.titulo} 
-              fechaEstreno={s.fechaEstreno} 
-              valoracionMedia={s.valoracionMedia} 
-              imagen={s.imagenPortada} 
-              estado={s.estado} 
-            />
-          ))}
-        </div>
-      </section>
+        {/* SECCIÓN 2: TENDENCIAS (Slider con más cartas visibles) */}
+        <section className="row-section">
+          <h3 className="row-title">Tendencias ahora</h3>
+          <div className="horizontal-slider">
+            {populares.map(s => (
+              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
+            ))}
+          </div>
+        </section>
 
-      {/* SECCIÓN 3: ACCIÓN (Scroll Horizontal) */}
-      <section className="row-section">
-        <h3 className="row-title">Adrenalina Pura: Acción</h3>
-        <div className="horizontal-scroll">
-          {accion.map(s => (
-            <SerieCard 
-              key={s.pk} 
-              id={s.pk} 
-              titulo={s.titulo} 
-              fechaEstreno={s.fechaEstreno} 
-              valoracionMedia={s.valoracionMedia} 
-              imagen={s.imagenPortada} 
-              estado={s.estado} 
-            />
-          ))}
-        </div>
-      </section>
+        {/* SECCIÓN 3: ACCIÓN */}
+        <section className="row-section">
+          <h3 className="row-title">Adrenalina Pura: Acción</h3>
+          <div className="horizontal-slider">
+            {accion.map(s => (
+              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
+            ))}
+          </div>
+        </section>
 
-      {/* SECCIÓN 4: COMEDIA (Grid Estándar) */}
-      <section className="row-section">
-        <h3 className="row-title">Para reír un rato</h3>
-        <div className="collection-grid">
-          {comedia.map(s => (
-            <SerieCard 
-              key={s.pk} 
-              id={s.pk} 
-              titulo={s.titulo} 
-              fechaEstreno={s.fechaEstreno} 
-              valoracionMedia={s.valoracionMedia} 
-              imagen={s.imagenPortada} 
-              estado={s.estado} 
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* SECCIÓN 5: EN EMISIÓN (Destacado Grande) */}
-      <section className="row-section">
-        <h3 className="row-title">Capítulos nuevos cada semana</h3>
-        <div className="featured-row">
-          {emision.map(s => (
-            <SerieCard 
-              key={s.pk} 
-              id={s.pk} 
-              titulo={s.titulo} 
-              fechaEstreno={s.fechaEstreno} 
-              valoracionMedia={s.valoracionMedia} 
-              imagen={s.imagenPortada} 
-              estado={s.estado}
-              variant="featured" 
-            />
-          ))}
-        </div>
-      </section>
-    </section>
+        {/* SECCIÓN 4: COMEDIA */}
+        <section className="row-section">
+          <h3 className="row-title">Grandes Comedias</h3>
+          <div className="horizontal-slider">
+            {comedia.map(s => (
+              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
 
