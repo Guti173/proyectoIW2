@@ -1,0 +1,92 @@
+/* 1. Contenedor principal: Sombras suaves y animación de elevación */
+.serie-card {
+  background: #ffffff;
+  border-radius: 16px; /* Bordes un poco más redondos */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); /* Sombra muy difuminada */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  cursor: pointer; /* Cambia el cursor para indicar que es interactivo */
+}
+
+/* El efecto al pasar el ratón: se levanta y la sombra crece */
+.serie-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* 2. Contenedor de la imagen para el Zoom */
+.serie-img-container {
+  width: 100%;
+  height: 320px;
+  overflow: hidden; /* Evita que la imagen se salga al hacer zoom */
+  position: relative; /* Necesario para que la etiqueta flote aquí dentro */
+}
+
+/* La imagen tiene una transición suave */
+.serie-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease; 
+}
+
+/* Al pasar el ratón por la tarjeta, la imagen hace un ligero zoom in */
+.serie-card:hover .serie-img {
+  transform: scale(1.05);
+}
+
+/* 3. Etiqueta flotante (Estilo Cristal / Apple) */
+.serie-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.6); /* Fondo negro semitransparente */
+  backdrop-filter: blur(4px); /* Difumina lo que hay detrás (efecto cristal) */
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+/* 4. Tipografía y espaciado de los textos */
+.serie-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.serie-info h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b; /* En lugar de negro puro, un gris muy oscuro y elegante */
+  line-height: 1.2;
+}
+
+/* Agrupa el año y la valoración en una misma línea */
+.serie-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.serie-year {
+  color: #64748b; /* Gris azulado para quitarle peso visual */
+}
+
+.serie-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f59e0b; /* Un amarillo ámbar más sofisticado */
+  font-weight: 600;
+}

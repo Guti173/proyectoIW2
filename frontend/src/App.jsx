@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { fetchCollection } from './api/client'
 import './App.css'
+import Catalogo from "./pages/Catalogo";
+import SerieDetalle from "./pages/SerieDetalle";
 
 const navigation = [
   { to: '/', label: 'Resumen' },
@@ -71,36 +73,7 @@ function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route
             path="/series"
-            element={
-              <CollectionPage
-                eyebrow="Catalogo"
-                title="Series"
-                description="Busca por titulo usando el endpoint del backend."
-                endpoint="/api/serie/"
-                queryKey="titulo"
-                placeholder="Filtrar por titulo"
-                emptyText="No hay series que coincidan con la busqueda."
-                renderItem={(serie) => (
-                  <>
-                    <div className="card-header">
-                      <h3>{serie.titulo}</h3>
-                      <span className="pill">{serie.estado}</span>
-                    </div>
-                    <p>{serie.descripcion || 'Sin descripcion disponible.'}</p>
-                    <dl className="meta-grid">
-                      <div>
-                        <dt>Episodios</dt>
-                        <dd>{serie.numeroEpisodios}</dd>
-                      </div>
-                      <div>
-                        <dt>Valoracion</dt>
-                        <dd>{serie.valoracionMedia}</dd>
-                      </div>
-                    </dl>
-                  </>
-                )}
-              />
-            }
+            element={<Catalogo />}
           />
           <Route
             path="/usuarios"
@@ -168,7 +141,7 @@ function App() {
               />
             }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/series/:id" element={<SerieDetalle />} />
         </Routes>
       </main>
     </div>

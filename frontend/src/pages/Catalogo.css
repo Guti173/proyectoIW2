@@ -1,0 +1,16 @@
+.catalogo {
+  padding: 20px;
+  background-color: #121212;
+  min-height: 100vh;
+  color: white;
+}
+
+.catalogo h1 {
+  margin-bottom: 20px;
+}
+
+.grid-series {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
