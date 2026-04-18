@@ -45,8 +45,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'user',
+    'module',
     'serie',
-    'listausuario',
+    'interaccion',
+    'social',
+    'listas'
 ]
 
 MIDDLEWARE = [

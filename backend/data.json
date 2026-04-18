@@ -1,0 +1,120 @@
+[
+{
+"model": "module.module",
+"pk": 1,
+"fields": {
+"moduleId": "MOD1",
+"moduleName": "Modulo Principal"
+}
+},
+
+{
+"model": "user.group",
+"pk": 1,
+"fields": {
+"groupName": "Admins",
+"module": 1
+}
+},
+
+{
+"model": "user.user",
+"pk": 1,
+"fields": {
+"username": "juan",
+"password": "1234",
+"email": "[juan@test.com](mailto:juan@test.com)",
+"nombre": "Juan",
+"apellidos": "Perez",
+"fotoPerfil": "",
+"estadoCuenta": "activo",
+"group": 1
+}
+},
+
+{
+"model": "serie.genero",
+"pk": 1,
+"fields": {
+"nombre": "Drama",
+"descripcion": "Genero dramático"
+}
+},
+
+{
+"model": "serie.serie",
+"pk": 1,
+"fields": {
+"titulo": "Breaking Code",
+"descripcion": "Serie sobre programadores",
+"fechaEstreno": "2020-01-01",
+"fechaFin": null,
+"imagenPortada": "",
+"numeroEpisodios": 10,
+"valoracionMedia": 4.5,
+"totalValoraciones": 2,
+"estado": "activa",
+"generos": [1]
+}
+},
+
+{
+"model": "interaccion.comentario",
+"pk": 1,
+"fields": {
+"contenido": "Muy buena serie",
+"fechaPublicacion": "2024-01-01",
+"estado": "visible",
+"user": 1,
+"serie": 1,
+"contadorLikes": 3
+}
+},
+
+{
+"model": "interaccion.valoracion",
+"pk": 1,
+"fields": {
+"puntuacion": 5,
+"user": 1,
+"serie": 1
+}
+},
+
+{
+"model": "social.amistad",
+"pk": 1,
+"fields": {
+"estado": "aceptada",
+"fechaSolicitud": "2024-01-01",
+"fechaRespuesta": "2024-01-02",
+"user": 1,
+"user2": 1
+}
+},
+
+{
+"model": "listas.listausuario",
+"pk": 1,
+"fields": {
+"tipoLista": "favoritos",
+"fechaAgregado": "2024-01-01",
+"user": 1,
+"series": [1]
+}
+},
+
+{
+"model": "listas.progresoserie",
+"pk": 1,
+"fields": {
+"episodiosVistos": 5,
+"fechaInicio": "2024-01-01",
+"fechaFin": null,
+"ultimaActualizacion": "2024-01-10",
+"estado": "viendo",
+"user": 1,
+"serie": 1
+}
+}
+]
