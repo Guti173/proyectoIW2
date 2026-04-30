@@ -1,23 +1,5 @@
 [
 {
-"model": "module.module",
-"pk": 1,
-"fields": {
-"moduleId": "MOD1",
-"moduleName": "Modulo Principal"
-}
-},
-
-{
-"model": "user.group",
-"pk": 1,
-"fields": {
-"groupName": "Admins",
-"module": 1
-}
-},
-
-{
 "model": "user.user",
 "pk": 1,
 "fields": {
@@ -28,7 +10,7 @@
 "apellidos": "Perez",
 "fotoPerfil": "",
 "estadoCuenta": "activo",
-"group": 1
+"role": "user"
 }
 },
 

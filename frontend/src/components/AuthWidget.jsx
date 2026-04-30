@@ -1,5 +1,11 @@
 import { useEffect, useId, useState } from 'react'
-import { auth0Config, isAuth0Configured, persistAuthSession } from '../lib/auth0'
+import {
+  auth0Config,
+  getRedirectPathForRole,
+  isAuth0Configured,
+  persistAuthSession,
+  syncAuthUser,
+} from '../lib/auth0'
 
 function AuthWidget({ initialScreen = 'login' }) {
   const reactId = useId()
@@ -50,6 +56,7 @@ function AuthWidget({ initialScreen = 'login' }) {
           },
           auth: {
             redirect: false,
+            redirectUrl: window.location.origin,
             responseType: 'token id_token',
             sso: false,
             params: {
@@ -66,7 +73,7 @@ function AuthWidget({ initialScreen = 'login' }) {
             return
           }
 
-          lock.getUserInfo(authResult.accessToken, (error, profile) => {
+          lock.getUserInfo(authResult.accessToken, async (error, profile) => {
             if (error) {
               setErrorMessage(
                 error.description ??
@@ -75,14 +82,24 @@ function AuthWidget({ initialScreen = 'login' }) {
               return
             }
 
-            persistAuthSession({
-              accessToken: authResult.accessToken,
-              idToken: authResult.idToken,
-              expiresIn: authResult.expiresIn,
-              profile,
-            })
+            try {
+              const user = await syncAuthUser(profile)
 
-            window.location.assign('/')
+              persistAuthSession({
+                accessToken: authResult.accessToken,
+                idToken: authResult.idToken,
+                expiresIn: authResult.expiresIn,
+                profile,
+                user,
+              })
+
+              window.location.assign(getRedirectPathForRole(user.role))
+            } catch (syncError) {
+              setErrorMessage(
+                syncError?.message ??
+                  'Se inicio sesion, pero no se pudo comprobar el usuario.',
+              )
+            }
           })
         }
 
@@ -112,10 +129,10 @@ function AuthWidget({ initialScreen = 'login' }) {
 
     return () => {
       isCancelled = true
-      if (typeof lock.hide === 'function') {
+      if (typeof lock?.hide === 'function') {
         lock.hide()
       }
-      if (typeof lock.removeAllListeners === 'function') {
+      if (typeof lock?.removeAllListeners === 'function') {
         lock.removeAllListeners()
       }
     }
