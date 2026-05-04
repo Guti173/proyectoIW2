@@ -4,7 +4,7 @@ import isdbLogo from './assets/isdb-logo.svg'
 import './App.css'
 import Catalogo from "./pages/Catalogo";
 import SerieDetalle from "./pages/SerieDetalle";
-
+import AdminSeries from "./pages/AdminSeries";
 const navigation = [
   { to: '/', label: 'Home' },
   { to: '/catalogo', label: 'Catalogo' },
@@ -47,6 +47,8 @@ function App() {
           <Route path="/catalogo" element={<Catalogo />} />
 
           <Route path="/series/:id" element={<SerieDetalle />} />
+          <Route path="/panel-admin" element={<AdminSeries />} />
+
 
           <Route
             path="/login"

@@ -26,3 +26,24 @@ export function persistAuthSession({ accessToken, idToken, expiresIn, profile })
     }),
   )
 }
+
+export function getStoredAuth() {
+  const stored = localStorage.getItem(AUTH_STORAGE_KEY)
+  if (!stored) return null
+  
+  try {
+    const auth = JSON.parse(stored)
+    // Verificar si la sesión ha expirado
+    if (auth.expiresAt && Date.now() > auth.expiresAt) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
+      return null
+    }
+    return auth
+  } catch {
+    return null
+  }
+}
+
+export function clearAuthSession() {
+  localStorage.removeItem(AUTH_STORAGE_KEY)
+}

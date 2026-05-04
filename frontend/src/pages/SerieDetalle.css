@@ -8,16 +8,26 @@
 
 /* Hero Section: Ahora el degradado va hacia el color crema de la página */
 .detalle-hero {
-  height: 60vh;
+  height: 65vh; /* Aumentamos un poco la altura para más impacto */
   background-size: cover;
-  background-position: center;
+  background-position: center 20%; /* Ajusta el encuadre para ver mejor las caras */
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 40px;
+  padding: 60px; /* Más aire para el contenido */
   position: relative;
-  /* El degradado ahora termina en el color de fondo de la página */
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(252, 250, 248, 1) 95%);
+  
+  /* Añadimos un suavizado para mejorar la transición si la imagen es pesada */
+  transition: background 0.3s ease-in-out;
+  
+  /* Mejoramos el degradado para que el texto sea más legible */
+  background-image: linear-gradient(
+    to bottom, 
+    rgba(15, 23, 42, 0) 0%, 
+    rgba(15, 23, 42, 0.2) 50%,
+    rgba(252, 250, 248, 1) 98%
+  );
 }
 
 /* Botón Volver: */

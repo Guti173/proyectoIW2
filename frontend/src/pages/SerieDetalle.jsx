@@ -1,53 +1,47 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getSerieById, getGeneros } from "../api/client";
 import "./SerieDetalle.css";
 
-// Datos de prueba extendidos (Simulando lo que vendría de Django)
-const mockData = [
-  {
-    pk: 1,
-    titulo: "Breaking Bad",
-    descripcion: "Walter White, un profesor de química de secundaria con cáncer de pulmón inoperable, decide asegurar el futuro de su familia fabricando metanfetamina con un exalumno.",
-    fechaEstreno: "2008-01-20",
-    fechaFin: "2013-09-29",
-    imagenPortada: "https://imgs.search.brave.com/V3wM9yww_fcJYos8clmbu9vUf5tXvfSp3VpKV6bM9cw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC8xLzEv/Zi8yMjg5MC0zODQw/eDIxNjAtZGVza3Rv/cC00ay1icmVha2lu/Zy1iYWQtd2FsbHBh/cGVyLXBob3RvLmpw/Zw",
-    numeroEpisodios: 62,
-    estado: "Finalizada",
-    valoracionMedia: 9.5,
-    totalValoraciones: 1540
-  },
-  {
-    pk: 2,
-    titulo: "Stranger Things",
-    descripcion: "Tras la desaparición de un niño, un pueblo desvela un misterio relacionado con experimentos secretos, fuerzas sobrenaturales aterradoras y una niña muy extraña.",
-    fechaEstreno: "2016-07-15",
-    fechaFin: null,
-    imagenPortada: "https://imgs.search.brave.com/vx3CkznpNkhfRQP8oHhFO8c6Jjb18-2GiO5PklSr0bI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzY1LzIvc3RyYW5n/ZXItdGhpbmdzLXNl/YXNvbi01LWxvZ28t/cG5nX3NlZWtsb2dv/LTY1Mzg4OC5wbmc",
-    numeroEpisodios: 34,
-    estado: "En emisión",
-    valoracionMedia: 8.7,
-    totalValoraciones: 890
-  }
-];
 function SerieDetalle() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [serie, setSerie] = useState(null);
+  const [generos, setGeneros] = useState([]);
   const [loading, setLoading] = useState(true);
   
   const [nuevoComentario, setNuevoComentario] = useState("");
   const [comentarios, setComentarios] = useState([
-    { id: 1, autor: "Cinefilo99", texto: "¡Una obra maestra de principio a fin!", fecha: "Hace 2 días" },
-    { id: 2, autor: "DevReact", texto: "El desarrollo de personajes es increíble.", fecha: "Hace 1 semana" }
+    { id: 1, autor: "Cinefilo99", texto: "Una obra maestra de principio a fin!", fecha: "Hace 2 dias" },
+    { id: 2, autor: "DevReact", texto: "El desarrollo de personajes es increible.", fecha: "Hace 1 semana" }
   ]);
 
   useEffect(() => {
-    const encontrada = mockData.find((s) => s.pk === parseInt(id)) || mockData[0];
-    const timer = setTimeout(() => {
-      setSerie(encontrada);
-      setLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const serieData = await getSerieById(id);
+        const generosData = await getGeneros();
+        setSerie(serieData);
+        setGeneros(generosData);
+      } catch (error) {
+        console.error("Error cargando serie:", error);
+        // Si falla, usar datos de ejemplo
+        setSerie({
+          id: id,
+          titulo: "Serie no encontrada",
+          descripcion: "No se pudo cargar la serie desde el backend",
+          fechaEstreno: "2024-01-01",
+          numeroEpisodios: 0,
+          valoracionMedia: 0,
+          estado: "Desconocido",
+          imagenPortada: ""
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
   }, [id]);
 
   const handleEnviarComentario = (e) => {
@@ -65,6 +59,15 @@ function SerieDetalle() {
     setNuevoComentario("");
   };
 
+  // Obtener nombres de generos
+  const getGeneroNames = () => {
+    if (!serie?.generos || generos.length === 0) return [];
+    return serie.generos.map(gId => {
+      const genero = generos.find(g => g.id === gId);
+      return genero ? genero.nombre : "";
+    }).filter(n => n);
+  };
+
   if (loading) return <div className="loader">Cargando detalles...</div>;
   if (!serie) return <div className="error">Serie no encontrada.</div>;
 
@@ -73,8 +76,7 @@ function SerieDetalle() {
       <header 
         className="detalle-hero" 
         style={{ 
-          backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fcfaf8 100%), url(${serie.imagenPortada})` 
-        }}
+            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, #fcfaf8 100%), url(${serie.imagenPortada})`        }}
       >
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← Volver
@@ -104,6 +106,16 @@ function SerieDetalle() {
           <section className="detalle-main">
             <h3>Sinopsis</h3>
             <p className="descripcion">{serie.descripcion}</p>
+            
+            <div className="generos-section">
+              <h3>Géneros</h3>
+              <div className="generos-list">
+                {getGeneroNames().map((nombre, idx) => (
+                  <span key={idx} className="genero-tag">{nombre}</span>
+                ))}
+                {getGeneroNames().length === 0 && <span className="no-generos">Sin géneros asignados</span>}
+              </div>
+            </div>
             
             <div className="comentarios-section">
               <h3>Comentarios ({comentarios.length})</h3>
@@ -149,6 +161,24 @@ function SerieDetalle() {
               <div className="info-item">
                 <span className="info-label">Episodios</span>
                 <span className="info-value">{serie.numeroEpisodios}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Fecha de Estreno</span>
+                <span className="info-value">{serie.fechaEstreno}</span>
+              </div>
+              {serie.fechaFin && (
+                <div className="info-item">
+                  <span className="info-label">Fecha de Fin</span>
+                  <span className="info-value">{serie.fechaFin}</span>
+                </div>
+              )}
+              <div className="info-item">
+                <span className="info-label">Valoración</span>
+                <span className="info-value">{serie.valoracionMedia}/10</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Total Valoraciones</span>
+                <span className="info-value">{serie.totalValoraciones || 0}</span>
               </div>
             </div>
           </aside>
