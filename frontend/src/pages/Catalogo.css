@@ -94,25 +94,39 @@
   50% { transform: translateX(5px); }
 }
 
-/* Rejilla de Alta Densidad (10 por fila en Explorar Todo)[cite: 12] */
+/* Rejilla de Alta Densidad (Explorar Todo el Catálogo) */
+.full-catalog-section {
+  padding-top: 30px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 40px;
+}
+
 .catalog-grid-mini {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 12px;
-  padding: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  padding: 24px 0 12px;
 }
 
-.serie-card-minimal .serie-card-image {
-  height: 160px; /* Reducimos altura para mayor densidad */
+.serie-card-minimal .serie-card {
+  min-height: 1px;
 }
 
-/* En la vista mini solo dejamos el título h4[cite: 12] */
-.serie-card-minimal .serie-card-info :not(h4) {
+.serie-card-minimal .serie-img-container {
+  height: 220px;
+}
+
+.serie-card-minimal .serie-info {
+  padding: 14px 12px;
+}
+
+.serie-card-minimal .serie-info :not(h3) {
   display: none !important;
 }
 
-.serie-card-minimal .serie-card-info h4 {
-  font-size: 0.75rem;
+.serie-card-minimal .serie-info h3 {
+  margin: 0;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
