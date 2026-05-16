@@ -32,7 +32,7 @@ function Catalogo() {
   });
   const [loading, setLoading] = useState(true);
 
-  const { viendo, populares, accion, comedia, emision } = data;
+  const { viendo, populares, accion, comedia } = data;
 
   useEffect(() => {
     async function loadAll() {

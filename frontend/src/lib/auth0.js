@@ -26,3 +26,17 @@ export function persistAuthSession({ accessToken, idToken, expiresIn, profile })
     }),
   )
 }
+
+export function getStoredAuthSession() {
+  try {
+    const rawValue = localStorage.getItem(AUTH_STORAGE_KEY)
+
+    if (!rawValue) {
+      return null
+    }
+
+    return JSON.parse(rawValue)
+  } catch {
+    return null
+  }
+}

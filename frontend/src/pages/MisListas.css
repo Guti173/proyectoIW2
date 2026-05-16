@@ -1,0 +1,311 @@
+.mis-listas-page {
+  display: grid;
+  gap: 24px;
+}
+
+.mis-listas-hero,
+.mis-listas-create-card,
+.mis-lista-card,
+.mis-listas-empty-state,
+.mis-listas-stat-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(14, 34, 51, 0.1);
+  border-radius: 32px;
+  background: rgba(255, 251, 246, 0.82);
+  box-shadow: 0 26px 70px rgba(14, 34, 51, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.mis-listas-kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #325f7f;
+}
+
+.mis-listas-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 24px;
+  padding: 32px;
+}
+
+.mis-listas-hero-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.mis-listas-hero-copy h1,
+.mis-listas-section-heading h2,
+.mis-listas-empty-state h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.mis-listas-hero-copy h1 {
+  font-size: clamp(2.7rem, 5vw, 4.8rem);
+  line-height: 0.92;
+}
+
+.mis-listas-hero-copy p,
+.mis-listas-section-copy,
+.mis-lista-meta,
+.mis-listas-empty-state p,
+.mis-listas-empty-block p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.mis-listas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.mis-listas-btn-primary,
+.mis-listas-btn-secondary,
+.mis-lista-chip-btn {
+  appearance: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.mis-listas-btn-primary,
+.mis-listas-btn-secondary {
+  border-radius: 999px;
+  padding: 0.88rem 1.2rem;
+  font-weight: 600;
+}
+
+.mis-listas-btn-primary {
+  color: #fffdf8;
+  background: linear-gradient(135deg, #11314a, #325f7f);
+  box-shadow: 0 14px 30px rgba(17, 49, 74, 0.18);
+}
+
+.mis-listas-btn-secondary {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(14, 34, 51, 0.12);
+}
+
+.mis-listas-btn-primary:hover,
+.mis-listas-btn-secondary:hover,
+.mis-lista-chip-btn:hover {
+  transform: translateY(-1px);
+}
+
+.mis-listas-hero-stats {
+  display: grid;
+  gap: 14px;
+}
+
+.mis-listas-stat-card {
+  display: grid;
+  gap: 6px;
+  padding: 20px 22px;
+}
+
+.mis-listas-stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 0.95;
+}
+
+.mis-listas-stat-label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.mis-listas-create-card,
+.mis-lista-card,
+.mis-listas-empty-state {
+  padding: 28px;
+}
+
+.mis-listas-section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.mis-listas-section-heading h2,
+.mis-listas-empty-state h2 {
+  font-size: clamp(1.7rem, 2vw, 2.3rem);
+  line-height: 1.05;
+}
+
+.mis-listas-section-copy {
+  max-width: 42ch;
+  text-align: right;
+}
+
+.mis-listas-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.mis-listas-field {
+  display: grid;
+  gap: 8px;
+}
+
+.mis-listas-field span {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.mis-listas-field input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0.88rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(14, 34, 51, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  font: inherit;
+}
+
+.mis-listas-field input:focus {
+  outline: 2px solid rgba(50, 95, 127, 0.24);
+  border-color: rgba(50, 95, 127, 0.32);
+}
+
+.mis-listas-feedback {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  color: #244765;
+  background: rgba(17, 49, 74, 0.06);
+  border: 1px solid rgba(17, 49, 74, 0.08);
+}
+
+.mis-listas-content {
+  display: grid;
+  gap: 22px;
+}
+
+.mis-lista-meta {
+  margin-top: 8px;
+}
+
+.mis-listas-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 8px 2px 10px;
+  scrollbar-width: thin;
+}
+
+.mis-listas-slider .serie-card {
+  flex: 0 0 calc((100% - (20px * 3)) / 4);
+  min-width: 225px;
+}
+
+.mis-listas-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mis-lista-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(17, 49, 74, 0.06);
+  border: 1px solid rgba(17, 49, 74, 0.08);
+  color: var(--ink);
+}
+
+.mis-lista-chip-btn {
+  padding: 0;
+  background: transparent;
+  color: #325f7f;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.mis-listas-empty-block {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px dashed rgba(14, 34, 51, 0.16);
+}
+
+.mis-listas-empty-state {
+  min-height: 280px;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+}
+
+@media (max-width: 1080px) {
+  .mis-listas-hero,
+  .mis-listas-form {
+    grid-template-columns: 1fr;
+  }
+
+  .mis-listas-section-heading {
+    flex-direction: column;
+  }
+
+  .mis-listas-section-copy {
+    max-width: none;
+    text-align: left;
+  }
+
+  .mis-listas-slider .serie-card {
+    flex: 0 0 calc((100% - 20px) / 2);
+  }
+}
+
+@media (max-width: 720px) {
+  .mis-listas-page {
+    gap: 18px;
+  }
+
+  .mis-listas-hero,
+  .mis-listas-create-card,
+  .mis-lista-card,
+  .mis-listas-empty-state,
+  .mis-listas-stat-card {
+    border-radius: 24px;
+  }
+
+  .mis-listas-hero,
+  .mis-listas-create-card,
+  .mis-lista-card,
+  .mis-listas-empty-state {
+    padding: 22px;
+  }
+
+  .mis-listas-slider .serie-card {
+    flex: 0 0 85%;
+  }
+}

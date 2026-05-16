@@ -4,10 +4,14 @@ import isdbLogo from './assets/isdb-logo.svg'
 import './App.css'
 import Catalogo from "./pages/Catalogo";
 import SerieDetalle from "./pages/SerieDetalle";
+import Perfil from './pages/Perfil'
+import MisListas from './pages/MisListas'
 
 const navigation = [
   { to: '/', label: 'Home' },
   { to: '/catalogo', label: 'Catalogo' },
+  { to: '/perfil', label: 'Perfil' },
+  { to: '/listas', label: 'Mis listas' },
   { to: '/login', label: 'Login' },
   { to: '/registro', label: 'Registro' },
 ]
@@ -48,6 +52,10 @@ function App() {
 
           <Route path="/series/:id" element={<SerieDetalle />} />
 
+          <Route path="/perfil" element={<Perfil />} />
+
+          <Route path="/listas" element={<MisListas />} />
+
           <Route
             path="/login"
             element={<AuthPage initialScreen="login" />}
@@ -67,17 +75,6 @@ function HomePage() {
   return (
     <section className="home-panel" aria-label="Pantalla de bienvenida">
       <p className="home-message">Bienvenido a ISDB.</p>
-    </section>
-  )
-}
-
-function PlaceholderPage({ title }) {
-  return (
-    <section className="page-card page-card-muted">
-      <div className="page-card-title">{title}</div>
-      <div className="page-card-body">
-        <p>Pagina en construccion.</p>
-      </div>
     </section>
   )
 }

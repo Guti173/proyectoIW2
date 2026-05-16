@@ -1,299 +1,374 @@
-
 .detalle-wrapper {
-  background-color: #fcfaf8; 
-  color: #334155;
   min-height: 100vh;
-  font-family: 'Inter', system-ui, sans-serif;
+  color: #334155;
 }
 
-/* Hero Section: Ahora el degradado va hacia el color crema de la página */
 .detalle-hero {
-  height: 60vh;
-  background-size: cover;
-  background-position: center;
+  min-height: 62vh;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  align-items: end;
   padding: 40px;
   position: relative;
-  /* El degradado ahora termina en el color de fondo de la página */
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(252, 250, 248, 1) 95%);
+  background-size: cover;
+  background-position: center;
 }
 
-/* Botón Volver: */
 .back-btn {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(14, 34, 51, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
   color: #64748b;
-  padding: 8px 16px;
-  border-radius: 50px;
+  padding: 0.72rem 1rem;
+  font: inherit;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s;
+  box-shadow: 0 12px 28px rgba(14, 34, 51, 0.08);
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
 }
 
 .back-btn:hover {
-  background: #f8fafc;
-  transform: translateX(-3px);
+  transform: translateX(-2px);
+  background: rgba(255, 255, 255, 0.98);
 }
 
-/* Título: */
+.hero-content {
+  width: min(100%, 1080px);
+  display: grid;
+  gap: 14px;
+}
+
+.status-pill {
+  justify-self: start;
+  padding: 0.45rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(17, 49, 74, 0.08);
+  color: #11314a;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
 .hero-title {
-  color: #0f172a !important; 
-  font-size: 3.5rem;
-  margin: 10px 0;
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(2.8rem, 6vw, 5rem);
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
 }
 
 .hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
   color: #64748b;
-  font-weight: 500;
-  margin-bottom: 25px;
+  font-weight: 600;
 }
 
-/*BOTONES */
+.rating-big {
+  color: #c97d0c;
+}
+
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-.btn-primary {
-  background: #0f172a; 
-  color: white;
-  padding: 12px 24px;
-  border-radius: 10px;
+.btn-primary,
+.btn-secondary,
+.lista-panel-link,
+.lista-toggle-btn {
+  appearance: none;
   border: none;
-  font-weight: 600;
+  font: inherit;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
 }
 
-.btn-primary:hover {
-  background: #1e293b;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+.btn-primary,
+.btn-secondary {
+  border-radius: 14px;
+  padding: 0.88rem 1.2rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  color: #fffdf8;
+  background: linear-gradient(135deg, #11314a, #325f7f);
+  box-shadow: 0 14px 30px rgba(17, 49, 74, 0.18);
 }
 
 .btn-secondary {
-  background: white;
   color: #0f172a;
-  padding: 12px 24px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(14, 34, 51, 0.12);
 }
 
-.btn-secondary:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-}
-/* fondo general de la página para que los recuadros resalten */
-.catalogo-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  background-color: #f1f5f9; /* Un gris azulado muy suave */
-  min-height: 100vh;
+.btn-primary:hover,
+.btn-secondary:hover,
+.lista-panel-link:hover,
+.lista-toggle-btn:hover {
+  transform: translateY(-1px);
 }
 
-/* Estilo del Hero (ahora más integrado) */
-.catalogo-hero {
-  background: white;
-  padding: 40px;
-  border-radius: 24px;
-  margin-bottom: 40px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+.btn-small {
+  padding: 0.72rem 1rem;
+  border-radius: 12px;
 }
 
-.hero-text h1 {
-  font-size: 2.2rem;
+.lista-panel {
+  display: grid;
+  gap: 16px;
+  margin-top: 10px;
+  padding: 22px;
+  border-radius: 28px;
+  background: rgba(255, 251, 246, 0.78);
+  border: 1px solid rgba(14, 34, 51, 0.1);
+  box-shadow: 0 26px 70px rgba(14, 34, 51, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.lista-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.lista-panel-heading h3 {
+  margin: 0 0 6px;
   color: #0f172a;
-  margin-bottom: 10px;
+  font-size: 1.35rem;
 }
 
-/* --- LOS RECUADROS ENTRE SECCIONES --- */
-.row-section {
-  background: white; /* Cada sección tiene su propio fondo blanco */
-  padding: 30px;
-  border-radius: 20px; /* Bordes redondeados profesionales */
-  margin-bottom: 30px; /* Espacio entre los recuadros */
-  border: 1px solid #e2e8f0; /* Borde sutil */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04); /* Sombra muy ligera */
-  transition: transform 0.2s ease;
+.lista-panel-heading p,
+.lista-selector-card p,
+.lista-selector-empty p,
+.lista-selector-empty span {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
 }
 
-/* Efecto opcional: el recuadro se ilumina un poco al pasar el ratón */
-.row-section:hover {
-  border-color: #cbd5e1;
-}
-
-.row-title {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  color: #1e293b;
+.lista-panel-link {
+  padding: 0.72rem 1rem;
+  border-radius: 999px;
+  color: #11314a;
+  background: rgba(17, 49, 74, 0.08);
   font-weight: 700;
+}
+
+.lista-creator-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+
+.lista-creator-form input {
+  min-height: 48px;
+  padding: 0.82rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(14, 34, 51, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  font: inherit;
+}
+
+.lista-creator-form input:focus,
+.comentario-form textarea:focus {
+  outline: 2px solid rgba(50, 95, 127, 0.22);
+  border-color: rgba(50, 95, 127, 0.3);
+}
+
+.lista-feedback {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  color: #244765;
+  background: rgba(17, 49, 74, 0.06);
+  border: 1px solid rgba(17, 49, 74, 0.08);
+}
+
+.lista-selector-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.lista-selector-card,
+.lista-selector-empty,
+.detalle-card,
+.comentarios-section,
+.info-card-tecnica {
+  border: 1px solid rgba(14, 34, 51, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 20px 50px rgba(14, 34, 51, 0.05);
+}
+
+.lista-selector-card {
   display: flex;
+  justify-content: space-between;
+  gap: 16px;
   align-items: center;
-  gap: 10px;
+  padding: 16px 18px;
 }
 
-/* Añadimos un pequeño adorno al título para diferenciarlo */
-.row-title::before {
-  content: "";
-  width: 4px;
-  height: 20px;
-  background-color: #3b82f6; /* Línea azul al lado del título */
-  border-radius: 10px;
+.lista-selector-card strong {
+  color: #0f172a;
+  font-size: 1rem;
 }
 
-/* Ajuste del Slider dentro del recuadro */
-.horizontal-slider {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding: 10px 0; /* Quitamos padding extra ya que el padre tiene padding */
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none; 
+.lista-toggle-btn {
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  color: #11314a;
+  background: rgba(17, 49, 74, 0.08);
+  font-weight: 700;
 }
 
-.horizontal-slider::-webkit-scrollbar {
-  display: none; 
+.lista-toggle-btn.is-active {
+  color: #fffdf8;
+  background: linear-gradient(135deg, #11314a, #325f7f);
+  box-shadow: 0 12px 24px rgba(17, 49, 74, 0.16);
 }
 
-/* Ajuste de las cartas para que se vean perfectas en el recuadro */
-.horizontal-slider .serie-card {
-  flex: 0 0 calc((100% - (20px * 4)) / 5); 
-  min-width: 200px;
+.lista-selector-empty {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
 }
-/* SECCIÓN DE COMENTARIOS */
+
 .detalle-container {
-  padding: 40px;
-  max-width: 1100px;
+  width: min(100%, 1120px);
   margin: 0 auto;
+  padding: 34px 20px 48px;
 }
 
-.comentarios-section {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  border: 1px solid #eef2f6;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+.detalle-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.8fr);
+  gap: 22px;
+}
+
+.detalle-main,
+.detalle-sidebar {
+  display: grid;
+  gap: 22px;
+  align-content: start;
+}
+
+.detalle-card,
+.comentarios-section,
+.info-card-tecnica {
+  padding: 26px;
+}
+
+.detalle-card h3,
+.comentarios-section h3,
+.info-card-tecnica h4 {
+  margin: 0 0 16px;
+  color: #0f172a;
+}
+
+.descripcion {
+  margin: 0;
+  color: #475569;
+  font-size: 1.06rem;
+  line-height: 1.8;
+}
+
+.comentario-form {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .comentario-form textarea {
   width: 100%;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  resize: vertical;
+  min-height: 110px;
   padding: 15px;
-  color: #1e293b;
-  margin-bottom: 10px;
-}
-
-/* Tarjeta de comentario individual */
-.comentario-card {
+  border-radius: 16px;
+  border: 1px solid rgba(14, 34, 51, 0.12);
   background: #f8fafc;
-  border: 1px solid #eff4f8;
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 15px;
+  color: #0f172a;
+  font: inherit;
 }
 
-.avatar {
-  background: #e2e8f0;
+.comentarios-lista {
+  display: grid;
+  gap: 14px;
+}
+
+.comentario-card {
+  padding: 22px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+}
+
+.comentario-card p {
+  margin: 0;
   color: #475569;
-}
-
-.comentario-meta strong {
-  color: #1e293b;
-}
-
-.descripcion {
-  color: #475569;
-  font-size: 1.1rem;
   line-height: 1.7;
-}
-
-.info-card-tecnica {
-  background: white;
-  border: 1px solid #eef2f6;
-  border-radius: 16px;
 }
 
 .comentario-header {
   display: flex;
   align-items: center;
-  gap: 15px; /* Espacio real entre avatar y texto */
+  gap: 14px;
   margin-bottom: 12px;
 }
 
 .avatar {
   width: 42px;
   height: 42px;
-  min-width: 42px; /* Evita que se aplaste */
+  min-width: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
   background: #e2e8f0;
   color: #475569;
-  border-radius: 50%; /* Círculo perfecto */
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-weight: 700;
-  font-size: 1.1rem;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .comentario-user-row {
   display: flex;
   align-items: center;
-  gap: 8px; /* Espacio entre nombre y fecha */
+  gap: 8px;
+  color: #64748b;
+}
+
+.comentario-meta strong {
+  color: #0f172a;
 }
 
 .comentario-sep {
   color: #cbd5e1;
-  font-size: 0.8rem;
 }
-
-.comentario-card {
-  background: #ffffff; /* Fondo blanco puro para que resalte */
-  border: 1px solid #f1f5f9;
-  padding: 24px;
-  border-radius: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
 
 .info-card-tecnica {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid #f1f5f9;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-.info-card-tecnica h4 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #0f172a;
-  font-size: 1.1rem;
-  border-bottom: 2px solid #f8fafc;
-  padding-bottom: 10px;
+  display: grid;
+  gap: 4px;
 }
 
 .info-item {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
+  gap: 16px;
   padding: 12px 0;
-  border-bottom: 1px solid #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .info-item:last-child {
@@ -301,107 +376,71 @@
 }
 
 .info-label {
-  font-size: 0.85rem;
   color: #64748b;
-  font-weight: 600;
+  font-size: 0.84rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.06em;
 }
 
 .info-value {
-  font-size: 0.95rem;
   color: #1e293b;
-  font-weight: 500;
+  font-weight: 600;
   background: #f8fafc;
   padding: 4px 10px;
-  border-radius: 6px;
-}
-/* 1. Fondo más suave para que el blanco no "salte" tanto */
-.catalogo-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 60px 20px;
-  background-color: #f8fafc; /* Un tono casi blanco, muy relajante */
-  min-height: 100vh;
+  border-radius: 8px;
 }
 
-/* 2. El Hero: Más aire y mejor tipografía */
-.catalogo-hero {
-  background: white;
-  padding: 60px 80px; /* Aumentamos mucho el padding para que el texto respire */
-  border-radius: 32px; /* Bordes más circulares son más modernos */
-  margin-bottom: 50px;
-  border: 1px solid rgba(226, 232, 240, 0.6); /* Borde casi invisible */
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03); /* Sombra muy amplia pero tenue */
-  text-align: left;
+.detalle-sidebar-btn {
+  margin-top: 8px;
+  width: 100%;
 }
 
-.hero-text h1 {
-  font-size: 2.8rem;
-  color: #0f172a;
-  margin-bottom: 20px;
-  letter-spacing: -1.5px; /* Texto más compacto y profesional */
+@media (max-width: 980px) {
+  .detalle-grid,
+  .lista-panel-heading,
+  .lista-creator-form {
+    grid-template-columns: 1fr;
+  }
+
+  .detalle-grid {
+    display: grid;
+  }
+
+  .lista-selector-card {
+    align-items: start;
+  }
 }
 
-.hero-text p {
-  font-size: 1.2rem;
-  color: #475569;
-  max-width: 800px;
-  line-height: 1.8; /* Aumentamos interlineado para evitar efecto bloque */
-  font-weight: 400;
-}
+@media (max-width: 720px) {
+  .detalle-hero {
+    min-height: auto;
+    padding: 82px 18px 22px;
+  }
 
-/* 3. Las Secciones: Unificando el diseño */
-.row-section {
-  background: white;
-  padding: 40px; /* Más espacio interno */
-  border-radius: 32px;
-  margin-bottom: 40px;
-  border: 1px solid rgba(226, 232, 240, 0.6);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
-}
+  .detalle-container {
+    padding: 22px 12px 32px;
+  }
 
-.row-title {
-  font-size: 1.5rem;
-  margin-bottom: 30px; /* Más separación de las cartas */
-  color: #1e293b;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+  .detalle-card,
+  .comentarios-section,
+  .info-card-tecnica,
+  .lista-panel {
+    padding: 20px;
+    border-radius: 22px;
+  }
 
-/* El adorno lateral ahora es más sutil */
-.row-title::before {
-  content: "";
-  width: 5px;
-  height: 24px;
-  background: linear-gradient(to bottom, #3b82f6, #60a5fa); /* Degradado suave */
-  border-radius: 10px;
-}
+  .hero-actions,
+  .lista-selector-card {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
 
-/* 4. El Slider: Eliminamos cortes visuales en los bordes */
-.horizontal-slider {
-  display: flex;
-  gap: 25px; /* Más espacio entre cartas */
-  overflow-x: auto;
-  padding: 10px 5px;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none; 
-}
-
-/* 5. Ajuste de las cartas para que no se vean pegadas arriba/abajo */
-.horizontal-slider .serie-card {
-  flex: 0 0 calc((100% - (25px * 4)) / 5); 
-  min-width: 210px;
-  transition: transform 0.3s ease;
-}
-
-/* Responsivo ajustado */
-@media (max-width: 1024px) {
-  .catalogo-hero { padding: 40px; }
-  .hero-text h1 { font-size: 2.2rem; }
-  .horizontal-slider .serie-card {
-    flex: 0 0 calc((100% - (25px * 2)) / 3);
+  .btn-primary,
+  .btn-secondary,
+  .lista-panel-link,
+  .lista-toggle-btn {
+    width: 100%;
+    text-align: center;
   }
 }
