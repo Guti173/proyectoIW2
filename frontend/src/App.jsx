@@ -2,10 +2,11 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import AuthWidget from './components/AuthWidget'
 import isdbLogo from './assets/isdb-logo.svg'
 import './App.css'
-import Catalogo from "./pages/Catalogo";
-import SerieDetalle from "./pages/SerieDetalle";
+import Catalogo from './pages/Catalogo'
+import SerieDetalle from './pages/SerieDetalle'
 import Perfil from './pages/Perfil'
 import MisListas from './pages/MisListas'
+import AdminSeries from './pages/AdminSeries'
 
 const navigation = [
   { to: '/', label: 'Home' },
@@ -44,26 +45,18 @@ function App() {
 
       <main className="site-main">
         <Routes>
-
           <Route path="/" element={<HomePage />} />
 
-
           <Route path="/catalogo" element={<Catalogo />} />
-
           <Route path="/series/:id" element={<SerieDetalle />} />
+          <Route path="/panel-admin" element={<AdminSeries />} />
 
           <Route path="/perfil" element={<Perfil />} />
-
           <Route path="/listas" element={<MisListas />} />
 
-          <Route
-            path="/login"
-            element={<AuthPage initialScreen="login" />}
-          />
-          <Route
-            path="/registro"
-            element={<AuthPage initialScreen="signUp" />}
-          />
+          <Route path="/login" element={<AuthPage initialScreen="login" />} />
+          <Route path="/registro" element={<AuthPage initialScreen="signUp" />} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

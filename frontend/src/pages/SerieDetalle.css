@@ -5,12 +5,17 @@
 
 .detalle-hero {
   min-height: 62vh;
+  height: 65vh;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: end;
-  padding: 40px;
+  padding: 60px;
   position: relative;
   background-size: cover;
-  background-position: center;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  transition: background 0.3s ease-in-out;
 }
 
 .back-btn {

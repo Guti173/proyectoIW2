@@ -28,15 +28,26 @@ export function persistAuthSession({ accessToken, idToken, expiresIn, profile })
 }
 
 export function getStoredAuthSession() {
-  try {
-    const rawValue = localStorage.getItem(AUTH_STORAGE_KEY)
+  const stored = localStorage.getItem(AUTH_STORAGE_KEY)
 
-    if (!rawValue) {
+  if (!stored) return null
+
+  try {
+    const auth = JSON.parse(stored)
+
+    if (auth.expiresAt && Date.now() > auth.expiresAt) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
       return null
     }
 
-    return JSON.parse(rawValue)
+    return auth
   } catch {
     return null
   }
+}
+
+export const getStoredAuth = getStoredAuthSession
+
+export function clearAuthSession() {
+  localStorage.removeItem(AUTH_STORAGE_KEY)
 }

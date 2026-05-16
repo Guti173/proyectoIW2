@@ -1,108 +1,192 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import SerieCard from "../components/SerieCard";
+import { getSeries, getGeneros } from "../api/client"; 
 import "./Catalogo.css";
 
-// Simulamos diferentes listas que te devolvería el backend
-const mockViendo = [
-  { pk: 1, titulo: "Breaking Bad", estado: "T5: E14", fechaEstreno: "2008-01-20T00:00:00Z", valoracionMedia: 9.5, imagenPortada: "https://imgs.search.brave.com/V3wM9yww_fcJYos8clmbu9vUf5tXvfSp3VpKV6bM9cw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC8xLzEv/Zi8yMjg5MC0zODQw/eDIxNjAtZGVza3Rv/cC00ay1icmVha2lu/Zy1iYWQtd2FsbHBh/cGVyLXBob3RvLmpw/Zw" }
-];
-
-const mockPopulares = [
-  { pk: 2, titulo: "Stranger Things", estado: "Top 1", fechaEstreno: "2016-07-15T00:00:00Z", valoracionMedia: 8.7, imagenPortada: "https://imgs.search.brave.com/vx3CkznpNkhfRQP8oHhFO8c6Jjb18-2GiO5PklSr0bI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzY1LzIvc3RyYW5n/ZXItdGhpbmdzLXNl/YXNvbi01LWxvZ28t/cG5nX3NlZWtsb2dv/LTY1Mzg4OC5wbmc" },
-  { pk: 3, titulo: "The Office", estado: "Comedia", fechaEstreno: "2005-03-24T00:00:00Z", valoracionMedia: 9.0, imagenPortada: "https://imgs.search.brave.com/nuPghXRBeBuoDIZ-w2tT73o08gn0axT1aueJqpLYDy8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzQzLzIvdGhlLW9m/ZmljZS10di1zaG93/LXNpZ24tbG9nby1w/bmdfc2Vla2xvZ28t/NDM4NTEwLnBuZw" }
-];
-// Añade estos nuevos arrays arriba en Catalogo.jsx
-const mockAccion = [
-  { pk: 4, titulo: "The Boys", estado: "Acción", fechaEstreno: "2019-07-26", valoracionMedia: 8.7, imagenPortada: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=400&q=80" },
-  { pk: 5, titulo: "The Mandalorian", estado: "Acción", fechaEstreno: "2019-11-12", valoracionMedia: 8.7, imagenPortada: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=400&q=80" }
-];
-
-const mockComedia = [
-  { pk: 6, titulo: "Friends", estado: "Comedia", fechaEstreno: "1994-09-22", valoracionMedia: 8.9, imagenPortada: "https://imgs.search.brave.com/hakOPz2F2e7ChBUDvJVUn9ccKB3Kpep1bKLxtCXcMFM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/aWRlYWxvLmNvbS9m/b2xkZXIvUHJvZHVj/dC81MTYzLzAvNTE2/MzA4MS9zMTFfcHJv/ZHVrdGJpbGRfbWF4/L2ZyaWVuZHMtc2Vy/aWUtY29tcGxldGEt/ZHZkLmpwZw" },
-  { pk: 7, titulo: "Ted Lasso", estado: "Comedia", fechaEstreno: "2020-08-14", valoracionMedia: 8.8, imagenPortada: "https://imgs.search.brave.com/LguY8a07paEyrUARSDilhaJq5OpUGT-eUJmeuhSXvEw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mci53/ZWIuaW1nNi5hY3N0/YS5uZXQvY18zMDBf/MzAwL3BpY3R1cmVz/LzIxLzA5LzA2LzEx/LzAzLzI1NDY0NDku/anBn" }
-];
-
-const mockEnEmision = [
-  { pk: 8, titulo: "House of the Dragon", estado: "Nueva Temp", fechaEstreno: "2022-08-21", valoracionMedia: 8.5, imagenPortada: "https://imgs.search.brave.com/XExWm2Ki-_Wmv1MKxqlWMKutETdro4syxA9ynHL0FO0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMucG9zdGVycy5j/ei9pbWFnZS8zNTAv/cGludHVyYXMtc29i/cmUtbGllbnpvL2hv/dXNlLW9mLXRoZS1k/cmFnb24tZGFlbW9u/LXRhcmdhcnllbi1p/MTQzNjkwLmpwZw"}
-];
-
 function Catalogo() {
-  const [data, setData] = useState({
-    viendo: [], populares: [], accion: [], comedia: [], emision: []
-  });
+  // 1. Definición de estados iniciales
+  const [series, setSeries] = useState([]);
+  const [generos, setGeneros] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(20);
 
-  const { viendo, populares, accion, comedia } = data;
+  // Estados para el buscador
+  const [filtroGenero, setFiltroGenero] = useState("");
+  const [busquedaNombre, setBusquedaNombre] = useState("");
+  const [filtroAnio, setFiltroAnio] = useState("");
 
+
+  const CATEGORIAS_TOP = [
+    "Action", "Comedy", "Drama", "Sci-Fi", "Horror", 
+    "Thriller", "Anime", "Crime", "Mystery", "Fantasy", "Adventure"
+  ];
+
+  // 2. Carga de datos inicial
   useEffect(() => {
-    async function loadAll() {
+    async function loadData() {
       setLoading(true);
-      await new Promise(r => setTimeout(r, 600));
-      setData({
-        viendo: mockViendo, populares: mockPopulares,
-        accion: mockAccion, comedia: mockComedia, emision: mockEnEmision
-      });
-      setLoading(false);
+      try {
+        const [seriesData, generosData] = await Promise.all([
+          getSeries(),
+          getGeneros()
+        ]);
+        setSeries(seriesData);
+        setGeneros(generosData);
+      } catch (error) {
+        console.error("Error cargando series:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-    loadAll();
+    loadData();
   }, []);
 
-  if (loading) return <div className="loader">Personalizando tu biblioteca...</div>;
+  // 3. Lógica de filtrado (Debe estar ANTES de los efectos que la usan)[cite: 13]
+  const seriesFiltradas = series.filter(s => {
+    const coincideNombre = s.titulo.toLowerCase().includes(busquedaNombre.toLowerCase());
+    const coincideGenero = filtroGenero ? s.generos?.includes(parseInt(filtroGenero)) : true;
+    const coincideAnio = filtroAnio ? s.fechaEstreno?.startsWith(filtroAnio) : true;
+    
+    return coincideNombre && coincideGenero && coincideAnio;
+  });
+
+  // 4. Efectos dependientes del filtrado
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [busquedaNombre, filtroGenero, filtroAnio]);
+
+  // Funciones de paginación[cite: 13]
+  const cargarMas = () => setVisibleCount(prev => prev + 20);
+  const verTodo = () => setVisibleCount(seriesFiltradas.length);
+
+  const seriesVisibles = seriesFiltradas.slice(0, visibleCount);
+  const tendencias = [...seriesFiltradas]
+    .sort((a, b) => b.valoracionMedia - a.valoracionMedia)
+    .slice(0, 10);
+
+  if (loading) return <div className="loader">Sincronizando biblioteca...</div>;
 
   return (
     <div className="catalogo-container">
-      {/* SECCIÓN HERO: Introducción profesional */}
       <header className="catalogo-hero">
-        <div className="hero-text">
-          <h1>Tu Biblioteca Personal</h1>
-          <p>
-            Bienvenido a tu centro de entretenimiento. Explora las series más aclamadas por la crítica, 
-            gestiona tus listas de reproducción y descubre nuevas historias seleccionadas 
-            especialmente para ti basándonos en tus gustos.
-          </p>
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1>Tu Biblioteca Personal</h1>
+            <p>Explora, busca y filtra tus historias favoritas sincronizadas en tiempo real.</p>
+          </div>
+
+          <div className="search-tool-bar">
+            <div className="search-group main-search">
+              <span className="search-icon">🔍</span>
+              <input 
+                type="text" 
+                placeholder="Buscar por título..." 
+                value={busquedaNombre}
+                onChange={(e) => setBusquedaNombre(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            
+            <div className="filter-group">
+              <select 
+                value={filtroGenero} 
+                onChange={(e) => setFiltroGenero(e.target.value)}
+                className="filter-select"
+              >
+                <option value="">Todos los géneros</option>
+                {generos.map(g => (
+                  <option key={g.id} value={g.id}>{g.nombre}</option>
+                ))}
+              </select>
+
+              <input 
+                type="number" 
+                placeholder="Año" 
+                value={filtroAnio}
+                onChange={(e) => setFiltroAnio(e.target.value)}
+                className="year-input"
+                min="1900"
+                max="2026"
+              />
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="catalogo-content">
-        {/* SECCIÓN 1: CONTINUAR VIENDO (Slider) */}
-        <section className="row-section">
-          <h3 className="row-title">Continuar viendo</h3>
-          <div className="horizontal-slider">
-            {viendo.map(s => (
-              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} variant="compact" />
-            ))}
-          </div>
-        </section>
+        {/* Tendencias */}
+        {tendencias.length > 0 && (
+          <section className="row-section">
+            <h3 className="row-title">Tendencias Globales</h3>
+            <div className="horizontal-slider">
+              {tendencias.map(s => (
+                <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* SECCIÓN 2: TENDENCIAS (Slider con más cartas visibles) */}
-        <section className="row-section">
-          <h3 className="row-title">Tendencias ahora</h3>
-          <div className="horizontal-slider">
-            {populares.map(s => (
-              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
-            ))}
-          </div>
-        </section>
+        {/* Categorías Dinámicas Destacadas */}
+        {generos
+          .filter(g => CATEGORIAS_TOP.includes(g.nombre))
+          .map(genero => {
+            const seriesDeEsteGenero = seriesFiltradas.filter(s => 
+              s.generos?.includes(genero.id)
+            );
 
-        {/* SECCIÓN 3: ACCIÓN */}
-        <section className="row-section">
-          <h3 className="row-title">Adrenalina Pura: Acción</h3>
-          <div className="horizontal-slider">
-            {accion.map(s => (
-              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
-            ))}
-          </div>
-        </section>
+            if (seriesDeEsteGenero.length === 0) return null;
 
-        {/* SECCIÓN 4: COMEDIA */}
-        <section className="row-section">
-          <h3 className="row-title">Grandes Comedias</h3>
-          <div className="horizontal-slider">
-            {comedia.map(s => (
-              <SerieCard key={s.pk} id={s.pk} {...s} imagen={s.imagenPortada} />
-            ))}
+            return (
+              <section key={genero.id} className="row-section">
+                <div className="row-header">
+                  <h3 className="row-title">{genero.nombre}</h3>
+                  <span className="scroll-hint">Desliza para ver más →</span>
+                </div>
+                <div className="horizontal-slider">
+                  {seriesDeEsteGenero.map(s => (
+                    <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+
+        {/* SECCIÓN FINAL: EXPLORAR TODO EL CATÁLOGO[cite: 13] */}
+        {seriesFiltradas.length > 0 && (
+          <section className="row-section full-catalog-section">
+            <div className="row-header">
+              <h3 className="row-title">Explorar Todo el Catálogo</h3>
+              <span className="results-count">
+                Mostrando {seriesVisibles.length} de {seriesFiltradas.length}
+              </span>
+            </div>
+
+            <div className="catalog-grid-mini">
+              {seriesVisibles.map(s => (
+                <div key={s.id} className="serie-card-minimal">
+                  <SerieCard id={s.id} {...s} imagen={s.imagenPortada} />
+                </div>
+              ))}
+            </div>
+
+            {visibleCount < seriesFiltradas.length && (
+              <div className="catalog-actions">
+                <button onClick={cargarMas} className="btn-load-more">
+                  Cargar 20 más
+                </button>
+                <button onClick={verTodo} className="btn-show-all">
+                  Ver todo el catálogo
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+      
+        {seriesFiltradas.length === 0 && (
+          <div className="empty-results">
+            <p>No se encontraron series que coincidan con tu búsqueda.</p>
           </div>
-        </section>
+        )}
       </main>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { getSerieById, getGeneros } from '../api/client'
 import {
   addSerieToList,
   createList,
@@ -9,42 +10,14 @@ import {
 } from '../lib/listas'
 import './SerieDetalle.css'
 
-const mockData = [
-  {
-    pk: 1,
-    titulo: 'Breaking Bad',
-    descripcion:
-      'Walter White, un profesor de quimica de secundaria con cancer de pulmon inoperable, decide asegurar el futuro de su familia fabricando metanfetamina con un exalumno.',
-    fechaEstreno: '2008-01-20',
-    fechaFin: '2013-09-29',
-    imagenPortada:
-      'https://imgs.search.brave.com/V3wM9yww_fcJYos8clmbu9vUf5tXvfSp3VpKV6bM9cw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC8xLzEv/Zi8yMjg5MC0zODQw/eDIxNjAtZGVza3Rv/cC00ay1icmVha2lu/Zy1iYWQtd2FsbHBh/cGVyLXBob3RvLmpw/Zw',
-    numeroEpisodios: 62,
-    estado: 'Finalizada',
-    valoracionMedia: 9.5,
-    totalValoraciones: 1540,
-  },
-  {
-    pk: 2,
-    titulo: 'Stranger Things',
-    descripcion:
-      'Tras la desaparicion de un nino, un pueblo desvela un misterio relacionado con experimentos secretos, fuerzas sobrenaturales aterradoras y una nina muy extrana.',
-    fechaEstreno: '2016-07-15',
-    fechaFin: null,
-    imagenPortada:
-      'https://imgs.search.brave.com/vx3CkznpNkhfRQP8oHhFO8c6Jjb18-2GiO5PklSr0bI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzY1LzIvc3RyYW5n/ZXItdGhpbmdzLXNl/YXNvbi01LWxvZ28t/cG5nX3NlZWtsb2dv/LTY1Mzg4OC5wbmc',
-    numeroEpisodios: 34,
-    estado: 'En emision',
-    valoracionMedia: 8.7,
-    totalValoraciones: 890,
-  },
-]
-
 function SerieDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
+
   const [serie, setSerie] = useState(null)
+  const [generos, setGeneros] = useState([])
   const [loading, setLoading] = useState(true)
+
   const [nuevoComentario, setNuevoComentario] = useState('')
   const [comentarios, setComentarios] = useState([
     {
@@ -60,27 +33,41 @@ function SerieDetalle() {
       fecha: 'Hace 1 semana',
     },
   ])
+
   const [listas, setListas] = useState(() => getStoredLists())
   const [panelListasAbierto, setPanelListasAbierto] = useState(false)
   const [nombreNuevaLista, setNombreNuevaLista] = useState('')
   const [mensajeLista, setMensajeLista] = useState('')
 
   useEffect(() => {
-    const encontrada = mockData.find((item) => item.pk === Number.parseInt(id, 10)) || mockData[0]
-    const timer = setTimeout(() => {
-      setSerie(encontrada)
-      setLoading(false)
-    }, 400)
+    async function loadData() {
+      setLoading(true)
 
-    return () => clearTimeout(timer)
+      try {
+        const [serieData, generosData] = await Promise.all([
+          getSerieById(id),
+          getGeneros(),
+        ])
+
+        setSerie(serieData)
+        setGeneros(generosData)
+      } catch (error) {
+        console.error('Error cargando serie:', error)
+        setSerie(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
   }, [id])
+
+  const serieId = serie?.pk ?? serie?.id
 
   const handleEnviarComentario = (event) => {
     event.preventDefault()
 
-    if (!nuevoComentario.trim()) {
-      return
-    }
+    if (!nuevoComentario.trim()) return
 
     const comentario = {
       id: Date.now(),
@@ -96,9 +83,7 @@ function SerieDetalle() {
   const handleCrearLista = (event) => {
     event.preventDefault()
 
-    if (!serie) {
-      return
-    }
+    if (!serie) return
 
     const result = createList({
       name: nombreNuevaLista,
@@ -116,17 +101,15 @@ function SerieDetalle() {
   }
 
   const handleToggleSerieEnLista = (listId) => {
-    if (!serie) {
-      return
-    }
+    if (!serie) return
 
     const selectedList = listas.find((list) => list.id === listId)
-    if (!selectedList) {
-      return
-    }
+    if (!selectedList) return
 
-    const result = isSerieInList(selectedList, serie.pk)
-      ? removeSerieFromList(listId, serie.pk)
+    const estaGuardada = isSerieInList(selectedList, serieId)
+
+    const result = estaGuardada
+      ? removeSerieFromList(listId, serieId)
       : addSerieToList(listId, serie)
 
     if (!result.ok) {
@@ -136,28 +119,35 @@ function SerieDetalle() {
 
     setListas(result.lists)
     setMensajeLista(
-      isSerieInList(selectedList, serie.pk)
+      estaGuardada
         ? `"${serie.titulo}" ya no esta en "${selectedList.name}".`
         : `"${serie.titulo}" se ha anadido a "${selectedList.name}".`,
     )
   }
 
-  if (loading) {
-    return <div className="loader">Cargando detalles...</div>
+  const getGeneroNames = () => {
+    if (!serie?.generos || generos.length === 0) return []
+
+    return serie.generos
+      .map((gId) => {
+        const genero = generos.find((g) => g.id === gId)
+        return genero ? genero.nombre : ''
+      })
+      .filter(Boolean)
   }
 
-  if (!serie) {
-    return <div className="error">Serie no encontrada.</div>
-  }
+  if (loading) return <div className="loader">Cargando detalles...</div>
+  if (!serie) return <div className="error">Serie no encontrada.</div>
 
-  const listasConSerie = listas.filter((list) => isSerieInList(list, serie.pk)).length
+  const listasConSerie = listas.filter((list) => isSerieInList(list, serieId)).length
+  const generoNames = getGeneroNames()
 
   return (
     <div className="detalle-wrapper">
       <header
         className="detalle-hero"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fcfaf8 100%), url(${serie.imagenPortada})`,
+          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, #fcfaf8 100%), url(${serie.imagenPortada})`,
         }}
       >
         <button className="back-btn" onClick={() => navigate(-1)}>
@@ -167,6 +157,7 @@ function SerieDetalle() {
         <div className="hero-content">
           <span className="status-pill">{serie.estado}</span>
           <h1 className="hero-title">{serie.titulo}</h1>
+
           <div className="hero-meta">
             <span className="rating-big">⭐ {serie.valoracionMedia}</span>
             <span>•</span>
@@ -174,6 +165,7 @@ function SerieDetalle() {
             <span>•</span>
             <span>{serie.numeroEpisodios} episodios</span>
           </div>
+
           <div className="hero-actions">
             <button className="btn-primary">Ver ahora</button>
             <button
@@ -189,7 +181,7 @@ function SerieDetalle() {
             </button>
           </div>
 
-          {panelListasAbierto ? (
+          {panelListasAbierto && (
             <section className="lista-panel" aria-label="Gestion de listas para la serie actual">
               <div className="lista-panel-heading">
                 <div>
@@ -200,10 +192,7 @@ function SerieDetalle() {
                   </p>
                 </div>
 
-                <button
-                  className="lista-panel-link"
-                  onClick={() => navigate('/listas')}
-                >
+                <button className="lista-panel-link" onClick={() => navigate('/listas')}>
                   Gestionar todas
                 </button>
               </div>
@@ -220,12 +209,12 @@ function SerieDetalle() {
                 </button>
               </form>
 
-              {mensajeLista ? <p className="lista-feedback">{mensajeLista}</p> : null}
+              {mensajeLista && <p className="lista-feedback">{mensajeLista}</p>}
 
               <div className="lista-selector-grid">
                 {listas.length ? (
                   listas.map((list) => {
-                    const serieGuardada = isSerieInList(list, serie.pk)
+                    const serieGuardada = isSerieInList(list, serieId)
 
                     return (
                       <article key={list.id} className="lista-selector-card">
@@ -254,7 +243,7 @@ function SerieDetalle() {
                 )}
               </div>
             </section>
-          ) : null}
+          )}
         </div>
       </header>
 
@@ -264,6 +253,21 @@ function SerieDetalle() {
             <div className="detalle-card">
               <h3>Sinopsis</h3>
               <p className="descripcion">{serie.descripcion}</p>
+            </div>
+
+            <div className="detalle-card generos-section">
+              <h3>Géneros</h3>
+              <div className="generos-list">
+                {generoNames.length ? (
+                  generoNames.map((nombre) => (
+                    <span key={nombre} className="genero-tag">
+                      {nombre}
+                    </span>
+                  ))
+                ) : (
+                  <span className="no-generos">Sin géneros asignados</span>
+                )}
+              </div>
             </div>
 
             <div className="comentarios-section">
@@ -304,32 +308,55 @@ function SerieDetalle() {
           <aside className="detalle-sidebar">
             <div className="info-card-tecnica">
               <h4>Informacion tecnica</h4>
+
               <div className="info-item">
                 <span className="info-label">Estado</span>
                 <span className="info-value">{serie.estado}</span>
               </div>
+
               <div className="info-item">
                 <span className="info-label">Episodios</span>
                 <span className="info-value">{serie.numeroEpisodios}</span>
               </div>
+
               <div className="info-item">
-                <span className="info-label">Valoraciones</span>
-                <span className="info-value">{serie.totalValoraciones}</span>
+                <span className="info-label">Fecha de Estreno</span>
+                <span className="info-value">{serie.fechaEstreno}</span>
+              </div>
+
+              {serie.fechaFin && (
+                <div className="info-item">
+                  <span className="info-label">Fecha de Fin</span>
+                  <span className="info-value">{serie.fechaFin}</span>
+                </div>
+              )}
+
+              <div className="info-item">
+                <span className="info-label">Valoración</span>
+                <span className="info-value">{serie.valoracionMedia}/10</span>
+              </div>
+
+              <div className="info-item">
+                <span className="info-label">Total Valoraciones</span>
+                <span className="info-value">{serie.totalValoraciones || 0}</span>
               </div>
             </div>
 
             <div className="info-card-tecnica detalle-listas-card">
               <h4>Tus listas</h4>
+
               <div className="info-item">
                 <span className="info-label">Guardada en</span>
                 <span className="info-value">
                   {listasConSerie} lista{listasConSerie === 1 ? '' : 's'}
                 </span>
               </div>
+
               <div className="info-item">
                 <span className="info-label">Listas creadas</span>
                 <span className="info-value">{listas.length}</span>
               </div>
+
               <button className="btn-secondary detalle-sidebar-btn" onClick={() => navigate('/listas')}>
                 Abrir Mis listas
               </button>
