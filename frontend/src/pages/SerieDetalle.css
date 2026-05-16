@@ -292,6 +292,24 @@
   line-height: 1.8;
 }
 
+.generos-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.genero-tag,
+.no-generos {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(17, 49, 74, 0.08);
+  color: #11314a;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .comentario-form {
   display: grid;
   gap: 12px;

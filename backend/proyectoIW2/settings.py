@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,3 +153,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
 CSRF_TRUSTED_ORIGINS = FRONTEND_ORIGINS
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-auth0-sub',
+    'x-auth0-email',
+    'x-auth0-name',
+    'x-auth0-nickname',
+    'x-auth0-picture',
+]

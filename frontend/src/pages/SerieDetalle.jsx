@@ -1,146 +1,184 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getSerieById, getGeneros } from '../api/client'
 import {
-  addSerieToList,
-  createList,
-  getStoredLists,
-  isSerieInList,
-  removeSerieFromList,
-} from '../lib/listas'
+  addSerieToUserList,
+  createComentario,
+  createUserList,
+  getComentariosBySerie,
+  getGeneros,
+  getMyLists,
+  getSerieById,
+  removeSerieFromUserList,
+} from '../api/client'
+import { getStoredAuthSession } from '../lib/auth0'
 import './SerieDetalle.css'
 
 function SerieDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const authSession = getStoredAuthSession()
+  const isAuthenticated = Boolean(authSession?.profile)
 
   const [serie, setSerie] = useState(null)
   const [generos, setGeneros] = useState([])
+  const [comentarios, setComentarios] = useState([])
+  const [listas, setListas] = useState([])
   const [loading, setLoading] = useState(true)
-
   const [nuevoComentario, setNuevoComentario] = useState('')
-  const [comentarios, setComentarios] = useState([
-    {
-      id: 1,
-      autor: 'Cinefilo99',
-      texto: 'Una obra maestra de principio a fin.',
-      fecha: 'Hace 2 dias',
-    },
-    {
-      id: 2,
-      autor: 'DevReact',
-      texto: 'El desarrollo de personajes es increible.',
-      fecha: 'Hace 1 semana',
-    },
-  ])
-
-  const [listas, setListas] = useState(() => getStoredLists())
   const [panelListasAbierto, setPanelListasAbierto] = useState(false)
   const [nombreNuevaLista, setNombreNuevaLista] = useState('')
   const [mensajeLista, setMensajeLista] = useState('')
+  const [mensajeComentario, setMensajeComentario] = useState('')
 
   useEffect(() => {
+    let isCancelled = false
+
     async function loadData() {
       setLoading(true)
+      setMensajeLista('')
+      setMensajeComentario('')
 
       try {
-        const [serieData, generosData] = await Promise.all([
+        const results = await Promise.allSettled([
           getSerieById(id),
           getGeneros(),
+          getComentariosBySerie(id),
+          isAuthenticated ? getMyLists() : Promise.resolve([]),
         ])
 
-        setSerie(serieData)
-        setGeneros(generosData)
-      } catch (error) {
-        console.error('Error cargando serie:', error)
-        setSerie(null)
+        if (isCancelled) {
+          return
+        }
+
+        const serieResult = results[0]
+        const generosResult = results[1]
+        const comentariosResult = results[2]
+        const listasResult = results[3]
+
+        setSerie(serieResult.status === 'fulfilled' ? serieResult.value : null)
+        setGeneros(generosResult.status === 'fulfilled' ? generosResult.value : [])
+        setComentarios(comentariosResult.status === 'fulfilled' ? comentariosResult.value : [])
+        setListas(listasResult.status === 'fulfilled' ? listasResult.value : [])
+      } catch {
+        if (!isCancelled) {
+          setSerie(null)
+        }
       } finally {
-        setLoading(false)
+        if (!isCancelled) {
+          setLoading(false)
+        }
       }
     }
 
     loadData()
-  }, [id])
 
-  const serieId = serie?.pk ?? serie?.id
-
-  const handleEnviarComentario = (event) => {
-    event.preventDefault()
-
-    if (!nuevoComentario.trim()) return
-
-    const comentario = {
-      id: Date.now(),
-      autor: 'Usuario Actual',
-      texto: nuevoComentario.trim(),
-      fecha: 'Justo ahora',
+    return () => {
+      isCancelled = true
     }
+  }, [id, isAuthenticated])
 
-    setComentarios([comentario, ...comentarios])
-    setNuevoComentario('')
-  }
-
-  const handleCrearLista = (event) => {
-    event.preventDefault()
-
-    if (!serie) return
-
-    const result = createList({
-      name: nombreNuevaLista,
-      initialSerie: serie,
-    })
-
-    if (!result.ok) {
-      setMensajeLista(result.error)
-      return
+  const serieId = Number(serie?.id ?? serie?.pk ?? 0)
+  const generoNames = useMemo(() => {
+    if (!serie?.generos?.length || !generos.length) {
+      return []
     }
-
-    setListas(result.lists)
-    setNombreNuevaLista('')
-    setMensajeLista(`"${serie.titulo}" se ha guardado en "${result.list.name}".`)
-  }
-
-  const handleToggleSerieEnLista = (listId) => {
-    if (!serie) return
-
-    const selectedList = listas.find((list) => list.id === listId)
-    if (!selectedList) return
-
-    const estaGuardada = isSerieInList(selectedList, serieId)
-
-    const result = estaGuardada
-      ? removeSerieFromList(listId, serieId)
-      : addSerieToList(listId, serie)
-
-    if (!result.ok) {
-      setMensajeLista(result.error)
-      return
-    }
-
-    setListas(result.lists)
-    setMensajeLista(
-      estaGuardada
-        ? `"${serie.titulo}" ya no esta en "${selectedList.name}".`
-        : `"${serie.titulo}" se ha anadido a "${selectedList.name}".`,
-    )
-  }
-
-  const getGeneroNames = () => {
-    if (!serie?.generos || generos.length === 0) return []
 
     return serie.generos
-      .map((gId) => {
-        const genero = generos.find((g) => g.id === gId)
-        return genero ? genero.nombre : ''
-      })
+      .map((generoId) => generos.find((item) => item.id === generoId)?.nombre)
       .filter(Boolean)
+  }, [generos, serie])
+
+  const listasConSerie = listas.filter((list) =>
+    (list.series ?? []).some((item) => Number(item.id ?? item.pk ?? 0) === serieId),
+  ).length
+
+  const handleEnviarComentario = async (event) => {
+    event.preventDefault()
+
+    if (!nuevoComentario.trim()) {
+      return
+    }
+
+    if (!isAuthenticated) {
+      setMensajeComentario('Inicia sesion con Auth0 para publicar comentarios.')
+      return
+    }
+
+    try {
+      const comentario = await createComentario({
+        serie: serieId,
+        contenido: nuevoComentario.trim(),
+      })
+
+      setComentarios((prev) => [comentario, ...prev])
+      setNuevoComentario('')
+      setMensajeComentario('Comentario publicado correctamente.')
+    } catch (error) {
+      setMensajeComentario(error.message || 'No se pudo publicar el comentario.')
+    }
   }
 
-  if (loading) return <div className="loader">Cargando detalles...</div>
-  if (!serie) return <div className="error">Serie no encontrada.</div>
+  const handleCrearLista = async (event) => {
+    event.preventDefault()
 
-  const listasConSerie = listas.filter((list) => isSerieInList(list, serieId)).length
-  const generoNames = getGeneroNames()
+    if (!isAuthenticated) {
+      setMensajeLista('Inicia sesion con Auth0 para crear listas.')
+      return
+    }
+
+    try {
+      const nuevaLista = await createUserList({
+        tipoLista: nombreNuevaLista,
+        descripcion: '',
+        seriesIds: serieId ? [serieId] : [],
+      })
+
+      setListas((prev) => [nuevaLista, ...prev])
+      setNombreNuevaLista('')
+      setMensajeLista(`"${serie.titulo}" se ha guardado en "${nuevaLista.tipoLista}".`)
+    } catch (error) {
+      setMensajeLista(error.message || 'No se pudo crear la lista.')
+    }
+  }
+
+  const handleToggleSerieEnLista = async (listId) => {
+    if (!isAuthenticated) {
+      setMensajeLista('Inicia sesion con Auth0 para usar tus listas.')
+      return
+    }
+
+    const selectedList = listas.find((list) => list.id === listId)
+    if (!selectedList) {
+      return
+    }
+
+    const serieGuardada = (selectedList.series ?? []).some(
+      (item) => Number(item.id ?? item.pk ?? 0) === serieId,
+    )
+
+    try {
+      const updatedList = serieGuardada
+        ? await removeSerieFromUserList(listId, serieId)
+        : await addSerieToUserList(listId, serieId)
+
+      setListas((prev) => prev.map((list) => (list.id === listId ? updatedList : list)))
+      setMensajeLista(
+        serieGuardada
+          ? `"${serie.titulo}" ya no esta en "${selectedList.tipoLista}".`
+          : `"${serie.titulo}" se ha anadido a "${selectedList.tipoLista}".`,
+      )
+    } catch (error) {
+      setMensajeLista(error.message || 'No se pudo actualizar la lista.')
+    }
+  }
+
+  if (loading) {
+    return <div className="loader">Cargando detalles...</div>
+  }
+
+  if (!serie) {
+    return <div className="error">Serie no encontrada.</div>
+  }
 
   return (
     <div className="detalle-wrapper">
@@ -171,7 +209,7 @@ function SerieDetalle() {
             <button
               className="btn-secondary"
               onClick={() => {
-                setPanelListasAbierto(!panelListasAbierto)
+                setPanelListasAbierto((prev) => !prev)
                 setMensajeLista('')
               }}
             >
@@ -181,14 +219,14 @@ function SerieDetalle() {
             </button>
           </div>
 
-          {panelListasAbierto && (
+          {panelListasAbierto ? (
             <section className="lista-panel" aria-label="Gestion de listas para la serie actual">
               <div className="lista-panel-heading">
                 <div>
                   <h3>Guardar en tus listas</h3>
                   <p>
-                    Crea una lista al vuelo o marca una existente para que esta serie
-                    quede guardada en este navegador incluso despues de refrescar.
+                    Tus listas ya se guardan en la base de datos. Crea una nueva o usa una existente
+                    para asociar esta serie a tu cuenta.
                   </p>
                 </div>
 
@@ -209,20 +247,22 @@ function SerieDetalle() {
                 </button>
               </form>
 
-              {mensajeLista && <p className="lista-feedback">{mensajeLista}</p>}
+              {mensajeLista ? <p className="lista-feedback">{mensajeLista}</p> : null}
 
               <div className="lista-selector-grid">
                 {listas.length ? (
                   listas.map((list) => {
-                    const serieGuardada = isSerieInList(list, serieId)
+                    const serieGuardada = (list.series ?? []).some(
+                      (item) => Number(item.id ?? item.pk ?? 0) === serieId,
+                    )
 
                     return (
                       <article key={list.id} className="lista-selector-card">
                         <div>
-                          <strong>{list.name}</strong>
+                          <strong>{list.tipoLista}</strong>
                           <p>
-                            {list.series.length} series
-                            {list.description ? ` · ${list.description}` : ''}
+                            {list.series?.length ?? 0} series
+                            {list.descripcion ? ` · ${list.descripcion}` : ''}
                           </p>
                         </div>
 
@@ -243,7 +283,7 @@ function SerieDetalle() {
                 )}
               </div>
             </section>
-          )}
+          ) : null}
         </div>
       </header>
 
@@ -256,7 +296,7 @@ function SerieDetalle() {
             </div>
 
             <div className="detalle-card generos-section">
-              <h3>Géneros</h3>
+              <h3>Generos</h3>
               <div className="generos-list">
                 {generoNames.length ? (
                   generoNames.map((nombre) => (
@@ -265,7 +305,7 @@ function SerieDetalle() {
                     </span>
                   ))
                 ) : (
-                  <span className="no-generos">Sin géneros asignados</span>
+                  <span className="no-generos">Sin generos asignados</span>
                 )}
               </div>
             </div>
@@ -285,20 +325,22 @@ function SerieDetalle() {
                 </button>
               </form>
 
+              {mensajeComentario ? <p className="lista-feedback">{mensajeComentario}</p> : null}
+
               <div className="comentarios-lista">
                 {comentarios.map((comentario) => (
                   <article key={comentario.id} className="comentario-card">
                     <div className="comentario-header">
-                      <div className="avatar">{comentario.autor.charAt(0)}</div>
+                      <div className="avatar">{(comentario.autor || 'U').charAt(0)}</div>
                       <div className="comentario-meta">
                         <div className="comentario-user-row">
-                          <strong>{comentario.autor}</strong>
+                          <strong>{comentario.autor || 'Usuario'}</strong>
                           <span className="comentario-sep">•</span>
-                          <span>{comentario.fecha}</span>
+                          <span>{formatDate(comentario.fechaPublicacion)}</span>
                         </div>
                       </div>
                     </div>
-                    <p>{comentario.texto}</p>
+                    <p>{comentario.contenido}</p>
                   </article>
                 ))}
               </div>
@@ -320,24 +362,24 @@ function SerieDetalle() {
               </div>
 
               <div className="info-item">
-                <span className="info-label">Fecha de Estreno</span>
+                <span className="info-label">Fecha de estreno</span>
                 <span className="info-value">{serie.fechaEstreno}</span>
               </div>
 
-              {serie.fechaFin && (
+              {serie.fechaFin ? (
                 <div className="info-item">
-                  <span className="info-label">Fecha de Fin</span>
+                  <span className="info-label">Fecha de fin</span>
                   <span className="info-value">{serie.fechaFin}</span>
                 </div>
-              )}
+              ) : null}
 
               <div className="info-item">
-                <span className="info-label">Valoración</span>
+                <span className="info-label">Valoracion</span>
                 <span className="info-value">{serie.valoracionMedia}/10</span>
               </div>
 
               <div className="info-item">
-                <span className="info-label">Total Valoraciones</span>
+                <span className="info-label">Total valoraciones</span>
                 <span className="info-value">{serie.totalValoraciones || 0}</span>
               </div>
             </div>
@@ -366,6 +408,18 @@ function SerieDetalle() {
       </main>
     </div>
   )
+}
+
+function formatDate(value) {
+  if (!value) {
+    return 'Sin fecha'
+  }
+
+  try {
+    return new Date(value).toLocaleDateString('es-ES')
+  } catch {
+    return value
+  }
 }
 
 export default SerieDetalle

@@ -7,6 +7,29 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
+    groupName = serializers.CharField(source='group.groupName', read_only=True)
+
     class Meta:
         model = User
         fields = '__all__'
+        read_only_fields = ('auth0Sub',)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    groupName = serializers.CharField(source='group.groupName', read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'auth0Sub',
+            'username',
+            'email',
+            'nombre',
+            'apellidos',
+            'fotoPerfil',
+            'estadoCuenta',
+            'group',
+            'groupName',
+        )
+        read_only_fields = ('id', 'auth0Sub', 'email', 'group', 'groupName')

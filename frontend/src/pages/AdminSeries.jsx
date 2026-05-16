@@ -7,29 +7,15 @@ import "./AdminSeries.css";
 
 function AdminSeries() {
   const navigate = useNavigate();
+  const storedAuth = getStoredAuth();
   const [tab, setTab] = useState("series");
-  const [loadingAuth, setLoadingAuth] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user] = useState(storedAuth?.profile ?? null);
   
-  // Modificado para permitir el acceso a cualquier cuenta autenticada
   useEffect(() => {
-    // === LIMITACIONES DE SESIÓN COMENTADAS PARA DESARROLLO ===
-    /*
-    const auth = getStoredAuth();
-    if (!auth?.profile) { navigate("/"); return; }
-    setUser(auth.profile);
-    */
-    
-    // Simulamos un usuario para evitar errores
-    setUser({ name: "Desarrollador" });
-    setLoadingAuth(false);
-  }, [navigate]);
-/*
-  if (loadingAuth) {
-    return <div className="loader">Verificando sesión...</div>;
-  }
-*/
-  // ... (Resto del estado de Series y Géneros se mantiene igual)[cite: 16]
+    if (!storedAuth?.profile) {
+      navigate("/login");
+    }
+  }, [navigate, storedAuth?.profile]);
   const [series, setSeries] = useState([]);
   const [formSerie, setFormSerie] = useState({
     titulo: "", descripcion: "", fechaEstreno: "",
@@ -44,20 +30,35 @@ function AdminSeries() {
   });
   const [editandoGenero, setEditandoGenero] = useState(null);
 
+  async function loadSeries() {
+    return getSeries();
+  }
+
+  async function loadGeneros() {
+    return getGeneros();
+  }
+
   useEffect(() => {
-    loadSeries();
-    loadGeneros();
+    let isCancelled = false;
+
+    async function loadInitialData() {
+      const [seriesData, generosData] = await Promise.all([
+        loadSeries(),
+        loadGeneros(),
+      ]);
+
+      if (!isCancelled) {
+        setSeries(seriesData);
+        setGeneros(generosData);
+      }
+    }
+
+    loadInitialData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
-
-  const loadSeries = async () => {
-    const data = await getSeries();
-    setSeries(data);
-  };
-
-  const loadGeneros = async () => {
-    const data = await getGeneros();
-    setGeneros(data);
-  };
 
   // ============ SERIES ============
   const handleSubmitSerie = async (e) => {
@@ -69,7 +70,7 @@ function AdminSeries() {
         await createSerie(formSerie);
       }
       resetFormSerie();
-      loadSeries();
+      setSeries(await loadSeries());
     } catch (error) {
       console.error("Error guardando serie:", error);
     }
@@ -83,7 +84,7 @@ function AdminSeries() {
   const handleDeleteSerie = async (id) => {
     if (confirm("¿Eliminar esta serie?")) {
       await deleteSerie(id);
-      loadSeries();
+      setSeries(await loadSeries());
     }
   };
 
@@ -106,7 +107,7 @@ function AdminSeries() {
         await createGenero(formGenero);
       }
       resetFormGenero();
-      loadGeneros();
+      setGeneros(await loadGeneros());
     } catch (error) {
       console.error("Error guardando genero:", error);
     }
@@ -120,7 +121,7 @@ function AdminSeries() {
   const handleDeleteGenero = async (id) => {
     if (confirm("¿Eliminar este genero?")) {
       await deleteGenero(id);
-      loadGeneros();
+      setGeneros(await loadGeneros());
     }
   };
 
@@ -128,6 +129,10 @@ function AdminSeries() {
     setFormGenero({ nombre: "", descripcion: "" });
     setEditandoGenero(null);
   };
+
+  if (!user) {
+    return null;
+  }
 
   // ... (El bloque return se mantiene igual que en el original)[cite: 16]
   return (
@@ -203,6 +208,32 @@ function AdminSeries() {
       {tab === "generos" && (
         <div className="tab-content">
           <h2>{editandoGenero ? "Editar Género" : "Nuevo Género"}</h2>  
+          <form onSubmit={handleSubmitGenero} className="form-admin">
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre *</label>
+                <input
+                  type="text"
+                  value={formGenero.nombre}
+                  onChange={e => setFormGenero({ ...formGenero, nombre: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Descripcion</label>
+                <input
+                  type="text"
+                  value={formGenero.descripcion}
+                  onChange={e => setFormGenero({ ...formGenero, descripcion: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="form-actions">
+              <button type="submit" className="btn-primary">
+                {editandoGenero ? "Actualizar género" : "Crear género"}
+              </button>
+            </div>
+          </form>
           {/* Tabla de Generos */}
           <h3>Generos Existentes</h3>
           <table className="admin-table">

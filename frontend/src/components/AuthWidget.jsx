@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react'
+import { syncCurrentUser } from '../api/client'
 import { auth0Config, isAuth0Configured, persistAuthSession } from '../lib/auth0'
 
 function AuthWidget({ initialScreen = 'login' }) {
@@ -66,7 +67,7 @@ function AuthWidget({ initialScreen = 'login' }) {
             return
           }
 
-          lock.getUserInfo(authResult.accessToken, (error, profile) => {
+          lock.getUserInfo(authResult.accessToken, async (error, profile) => {
             if (error) {
               setErrorMessage(
                 error.description ??
@@ -81,6 +82,12 @@ function AuthWidget({ initialScreen = 'login' }) {
               expiresIn: authResult.expiresIn,
               profile,
             })
+
+            try {
+              await syncCurrentUser()
+            } catch {
+              // If the backend is not available yet, keep the Auth0 session usable in frontend.
+            }
 
             window.location.assign('/')
           })

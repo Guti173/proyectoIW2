@@ -286,6 +286,57 @@
   line-height: 1.75;
 }
 
+.perfil-form {
+  display: grid;
+  gap: 14px;
+}
+
+.perfil-form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.perfil-form-field span {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.perfil-form-field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.82rem 0.95rem;
+  border-radius: 16px;
+  border: 1px solid rgba(14, 34, 51, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font: inherit;
+}
+
+.perfil-form-field input:focus {
+  outline: 2px solid rgba(50, 95, 127, 0.24);
+  border-color: rgba(50, 95, 127, 0.3);
+}
+
+.perfil-form-message,
+.perfil-form-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.perfil-form-message {
+  color: #244765;
+  background: rgba(17, 49, 74, 0.06);
+  border: 1px solid rgba(17, 49, 74, 0.08);
+}
+
+.perfil-form-error {
+  color: #8e2d2d;
+  background: rgba(255, 98, 98, 0.12);
+  border: 1px solid rgba(255, 98, 98, 0.24);
+}
+
 .perfil-bullet-list {
   display: grid;
   gap: 12px;
@@ -379,6 +430,14 @@
 .perfil-slider .serie-card {
   flex: 0 0 calc((100% - (20px * 3)) / 4);
   min-width: 230px;
+}
+
+.perfil-empty-block {
+  padding: 20px;
+  border-radius: 20px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px dashed rgba(14, 34, 51, 0.14);
 }
 
 @media (max-width: 1100px) {
