@@ -8,14 +8,15 @@ import "./AdminSeries.css";
 function AdminSeries() {
   const navigate = useNavigate();
   const storedAuth = getStoredAuth();
+  const authUserKey = storedAuth?.profile?.sub ?? storedAuth?.profile?.email ?? "";
   const [tab, setTab] = useState("series");
   const [user] = useState(storedAuth?.profile ?? null);
   
   useEffect(() => {
-    if (!storedAuth?.profile) {
+    if (!authUserKey) {
       navigate("/login");
     }
-  }, [navigate, storedAuth?.profile]);
+  }, [authUserKey, navigate]);
   const [series, setSeries] = useState([]);
   const [formSerie, setFormSerie] = useState({
     titulo: "", descripcion: "", fechaEstreno: "",

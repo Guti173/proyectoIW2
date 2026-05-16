@@ -1,13 +1,14 @@
 .mis-listas-page {
   display: grid;
-  gap: 24px;
+  gap: 26px;
 }
 
+.mis-listas-state-card,
 .mis-listas-hero,
-.mis-listas-create-card,
+.mis-listas-highlight-card,
+.mis-listas-panel,
 .mis-lista-card,
-.mis-listas-empty-state,
-.mis-listas-stat-card {
+.mis-listas-content-intro {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(14, 34, 51, 0.1);
@@ -17,7 +18,17 @@
   backdrop-filter: blur(12px);
 }
 
-.mis-listas-kicker {
+.mis-listas-state-card {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 8px;
+  padding: 44px;
+}
+
+.mis-listas-kicker,
+.mis-listas-panel-kicker {
   margin: 0;
   font-size: 0.78rem;
   font-weight: 700;
@@ -26,54 +37,119 @@
   color: #325f7f;
 }
 
-.mis-listas-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
-  gap: 24px;
-  padding: 32px;
-}
-
-.mis-listas-hero-copy {
-  display: grid;
-  gap: 12px;
-}
-
+.mis-listas-state-card h2,
 .mis-listas-hero-copy h1,
-.mis-listas-section-heading h2,
-.mis-listas-empty-state h2 {
+.mis-listas-panel-header h2,
+.mis-lista-card-top h2,
+.mis-listas-content-intro h2 {
   margin: 0;
   font-family: var(--font-display);
   letter-spacing: -0.04em;
   color: var(--ink);
 }
 
-.mis-listas-hero-copy h1 {
-  font-size: clamp(2.7rem, 5vw, 4.8rem);
-  line-height: 0.92;
+.mis-listas-state-card h2 {
+  font-size: clamp(2.5rem, 5vw, 4.4rem);
+  line-height: 0.95;
 }
 
+.mis-listas-state-card p,
 .mis-listas-hero-copy p,
+.mis-listas-panel-text,
 .mis-listas-section-copy,
 .mis-lista-meta,
-.mis-listas-empty-state p,
 .mis-listas-empty-block p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-.mis-listas-actions {
+.mis-listas-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 26px;
+  align-items: end;
+  padding: 38px;
+}
+
+.mis-listas-hero::before,
+.mis-listas-hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mis-listas-hero::before {
+  top: -90px;
+  right: -70px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 149, 112, 0.24), transparent 68%);
+}
+
+.mis-listas-hero::after {
+  bottom: -120px;
+  left: -80px;
+  width: 330px;
+  height: 330px;
+  background: radial-gradient(circle, rgba(67, 124, 168, 0.18), transparent 70%);
+}
+
+.mis-listas-hero-copy,
+.mis-listas-highlight-card,
+.mis-listas-panel,
+.mis-lista-card,
+.mis-listas-content-intro {
+  position: relative;
+  z-index: 1;
+}
+
+.mis-listas-hero-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.mis-listas-hero-copy h1 {
+  font-size: clamp(2.9rem, 5vw, 5.1rem);
+  line-height: 0.9;
+}
+
+.mis-listas-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mis-listas-meta-pill,
+.mis-listas-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(17, 49, 74, 0.08);
+  color: #11314a;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.mis-listas-meta-pill.is-soft {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(14, 34, 51, 0.08);
+}
+
+.mis-listas-actions,
+.mis-listas-action-stack {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 8px;
 }
 
 .mis-listas-btn-primary,
 .mis-listas-btn-secondary,
 .mis-lista-chip-btn {
   appearance: none;
-  border: none;
   font: inherit;
   cursor: pointer;
   transition:
@@ -91,70 +167,115 @@
 }
 
 .mis-listas-btn-primary {
+  border: 1px solid transparent;
   color: #fffdf8;
   background: linear-gradient(135deg, #11314a, #325f7f);
   box-shadow: 0 14px 30px rgba(17, 49, 74, 0.18);
 }
 
 .mis-listas-btn-secondary {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.64);
   border: 1px solid rgba(14, 34, 51, 0.12);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .mis-listas-btn-primary:hover,
+.mis-listas-btn-primary:focus-visible,
 .mis-listas-btn-secondary:hover,
-.mis-lista-chip-btn:hover {
+.mis-listas-btn-secondary:focus-visible,
+.mis-lista-chip-btn:hover,
+.mis-lista-chip-btn:focus-visible {
   transform: translateY(-1px);
+  outline: none;
 }
 
-.mis-listas-hero-stats {
+.mis-listas-detail-grid {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.mis-listas-stat-card {
+.mis-listas-detail-card,
+.mis-listas-highlight-card,
+.mis-listas-badge-card {
   display: grid;
   gap: 6px;
-  padding: 20px 22px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(14, 34, 51, 0.08);
+}
+
+.mis-listas-detail-card strong,
+.mis-listas-badge-card strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.mis-listas-detail-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mis-listas-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.mis-listas-highlight-card {
+  padding: 24px;
 }
 
 .mis-listas-stat-value {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
-  color: var(--ink);
   line-height: 0.95;
+  color: var(--ink);
 }
 
-.mis-listas-stat-label {
+.mis-listas-stat-label,
+.mis-listas-badge-card span {
   color: var(--muted);
   font-weight: 600;
 }
 
-.mis-listas-create-card,
-.mis-lista-card,
-.mis-listas-empty-state {
-  padding: 28px;
+.mis-listas-overview-stack {
+  display: grid;
+  gap: 22px;
 }
 
-.mis-listas-section-heading {
-  display: flex;
-  justify-content: space-between;
+.mis-listas-panel {
+  padding: 30px;
+}
+
+.mis-listas-panel-featured,
+.mis-listas-panel-compact,
+.mis-listas-sidebar-stack {
+  display: grid;
   gap: 18px;
-  align-items: start;
-  margin-bottom: 20px;
 }
 
-.mis-listas-section-heading h2,
-.mis-listas-empty-state h2 {
-  font-size: clamp(1.7rem, 2vw, 2.3rem);
+.mis-listas-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.mis-listas-panel-header {
+  display: grid;
+  gap: 8px;
+}
+
+.mis-listas-panel-header h2,
+.mis-lista-card-top h2,
+.mis-listas-content-intro h2 {
+  font-size: clamp(1.75rem, 2vw, 2.35rem);
   line-height: 1.05;
-}
-
-.mis-listas-section-copy {
-  max-width: 42ch;
-  text-align: right;
 }
 
 .mis-listas-form {
@@ -181,7 +302,7 @@
   padding: 0.88rem 1rem;
   border-radius: 16px;
   border: 1px solid rgba(14, 34, 51, 0.12);
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
   font: inherit;
 }
@@ -191,8 +312,13 @@
   border-color: rgba(50, 95, 127, 0.32);
 }
 
+.mis-listas-form button {
+  justify-self: start;
+  align-self: end;
+}
+
 .mis-listas-feedback {
-  margin: 16px 0 0;
+  margin: 0;
   padding: 12px 14px;
   border-radius: 16px;
   color: #244765;
@@ -200,13 +326,55 @@
   border: 1px solid rgba(17, 49, 74, 0.08);
 }
 
+.mis-listas-badge-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mis-listas-action-stack {
+  align-items: stretch;
+}
+
+.mis-listas-action-stack .mis-listas-btn-secondary {
+  width: 100%;
+}
+
+.mis-listas-content-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+  padding: 28px 30px;
+}
+
 .mis-listas-content {
   display: grid;
   gap: 22px;
 }
 
+.mis-lista-card {
+  padding: 30px;
+}
+
+.mis-lista-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.mis-lista-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: end;
+  align-items: center;
+}
+
 .mis-lista-meta {
   margin-top: 8px;
+  max-width: 60ch;
 }
 
 .mis-listas-slider {
@@ -242,6 +410,7 @@
 
 .mis-lista-chip-btn {
   padding: 0;
+  border: none;
   background: transparent;
   color: #325f7f;
   font-size: 0.88rem;
@@ -258,26 +427,32 @@
   border: 1px dashed rgba(14, 34, 51, 0.16);
 }
 
-.mis-listas-empty-state {
-  min-height: 280px;
-  display: grid;
-  align-content: center;
-  gap: 10px;
-}
-
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .mis-listas-hero,
-  .mis-listas-form {
+  .mis-listas-content-intro,
+  .mis-listas-highlights-grid {
     grid-template-columns: 1fr;
   }
 
-  .mis-listas-section-heading {
-    flex-direction: column;
+  .mis-listas-content-intro {
+    display: grid;
   }
 
   .mis-listas-section-copy {
     max-width: none;
     text-align: left;
+  }
+}
+
+@media (max-width: 900px) {
+  .mis-listas-form,
+  .mis-listas-detail-grid,
+  .mis-listas-support-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mis-listas-highlights-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .mis-listas-slider .serie-card {
@@ -290,19 +465,35 @@
     gap: 18px;
   }
 
+  .mis-listas-state-card,
   .mis-listas-hero,
-  .mis-listas-create-card,
+  .mis-listas-highlight-card,
+  .mis-listas-panel,
   .mis-lista-card,
-  .mis-listas-empty-state,
-  .mis-listas-stat-card {
+  .mis-listas-content-intro {
     border-radius: 24px;
   }
 
+  .mis-listas-state-card,
   .mis-listas-hero,
-  .mis-listas-create-card,
+  .mis-listas-panel,
   .mis-lista-card,
-  .mis-listas-empty-state {
+  .mis-listas-content-intro {
     padding: 22px;
+  }
+
+  .mis-lista-card-top,
+  .mis-listas-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mis-lista-card-actions {
+    justify-content: start;
+  }
+
+  .mis-listas-highlights-grid {
+    grid-template-columns: 1fr;
   }
 
   .mis-listas-slider .serie-card {

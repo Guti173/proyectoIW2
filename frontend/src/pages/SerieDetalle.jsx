@@ -100,7 +100,7 @@ function SerieDetalle() {
     }
 
     if (!isAuthenticated) {
-      setMensajeComentario('Inicia sesion con Auth0 para publicar comentarios.')
+      setMensajeComentario('Inicia sesion para publicar comentarios.')
       return
     }
 
@@ -122,7 +122,7 @@ function SerieDetalle() {
     event.preventDefault()
 
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesion con Auth0 para crear listas.')
+      setMensajeLista('Inicia sesion para crear listas.')
       return
     }
 
@@ -143,7 +143,7 @@ function SerieDetalle() {
 
   const handleToggleSerieEnLista = async (listId) => {
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesion con Auth0 para usar tus listas.')
+      setMensajeLista('Inicia sesion para usar tus listas.')
       return
     }
 
@@ -225,8 +225,7 @@ function SerieDetalle() {
                 <div>
                   <h3>Guardar en tus listas</h3>
                   <p>
-                    Tus listas ya se guardan en la base de datos. Crea una nueva o usa una existente
-                    para asociar esta serie a tu cuenta.
+                    Crea una nueva o elige una de las tuyas para guardar esta serie donde quieras.
                   </p>
                 </div>
 

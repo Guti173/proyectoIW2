@@ -24,6 +24,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id',
             'auth0Sub',
             'username',
+            'password',
             'email',
             'nombre',
             'apellidos',
@@ -32,4 +33,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'group',
             'groupName',
         )
-        read_only_fields = ('id', 'auth0Sub', 'email', 'group', 'groupName')
+        read_only_fields = ('id', 'auth0Sub', 'group', 'groupName', 'estadoCuenta')

@@ -25,17 +25,31 @@ def get_current_user(request, ensure_exists=True):
     if user is None and email:
         user = User.objects.filter(email=email).first()
 
+    is_new_user = user is None
+
     if user is None:
         user = User(auth0Sub=auth0_sub or None)
 
     nombre, apellidos = split_name(name)
 
     user.auth0Sub = auth0_sub or user.auth0Sub
-    user.email = email or user.email
-    user.username = nickname or user.username or infer_username(email, name)
-    user.nombre = nombre or user.nombre
-    user.apellidos = apellidos or user.apellidos
-    user.fotoPerfil = picture or user.fotoPerfil
+    if email and (is_new_user or not user.email):
+        user.email = email
+
+    if nickname and (is_new_user or not user.username):
+        user.username = nickname
+    elif not user.username:
+        user.username = infer_username(email, name)
+
+    if nombre and (is_new_user or not user.nombre):
+        user.nombre = nombre
+
+    if apellidos and (is_new_user or not user.apellidos):
+        user.apellidos = apellidos
+
+    if picture and (is_new_user or not user.fotoPerfil):
+        user.fotoPerfil = picture
+
     user.estadoCuenta = user.estadoCuenta or 'Activa'
     user.password = user.password or ''
 

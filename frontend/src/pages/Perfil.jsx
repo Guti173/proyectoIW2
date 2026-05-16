@@ -15,6 +15,11 @@ function Perfil() {
   const navigate = useNavigate()
   const authSession = getStoredAuthSession()
   const authProfile = authSession?.profile ?? null
+  const authUserKey = authProfile?.sub ?? authProfile?.email ?? ''
+  const authPicture = authProfile?.picture ?? ''
+  const authName = authProfile?.name ?? ''
+  const authEmail = authProfile?.email ?? ''
+  const hasAuthProfile = Boolean(authUserKey)
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [saveMessage, setSaveMessage] = useState('')
@@ -24,6 +29,8 @@ function Perfil() {
   const [series, setSeries] = useState([])
   const [formData, setFormData] = useState({
     username: '',
+    password: '',
+    email: '',
     nombre: '',
     apellidos: '',
     fotoPerfil: '',
@@ -34,7 +41,7 @@ function Perfil() {
     let isCancelled = false
 
     async function loadProfileData() {
-      if (!authProfile) {
+      if (!hasAuthProfile) {
         setLoading(false)
         return
       }
@@ -57,9 +64,11 @@ function Perfil() {
         setSeries(Array.isArray(seriesData) ? seriesData : [])
         setFormData({
           username: profileData.username || '',
+          password: profileData.password || '',
+          email: profileData.email || authEmail,
           nombre: profileData.nombre || '',
           apellidos: profileData.apellidos || '',
-          fotoPerfil: profileData.fotoPerfil || authProfile.picture || '',
+          fotoPerfil: profileData.fotoPerfil || authPicture,
           estadoCuenta: profileData.estadoCuenta || 'Activa',
         })
       } catch (error) {
@@ -78,7 +87,7 @@ function Perfil() {
     return () => {
       isCancelled = true
     }
-  }, [authProfile])
+  }, [authEmail, authPicture, authUserKey, hasAuthProfile])
 
   const listSeries = useMemo(
     () => dedupeSeries(listas.flatMap((lista) => (lista.series ?? []).map((serie) => ({
@@ -125,6 +134,8 @@ function Perfil() {
       setProfile(updatedProfile)
       setFormData({
         username: updatedProfile.username || '',
+        password: updatedProfile.password || '',
+        email: updatedProfile.email || authEmail,
         nombre: updatedProfile.nombre || '',
         apellidos: updatedProfile.apellidos || '',
         fotoPerfil: updatedProfile.fotoPerfil || '',
@@ -136,12 +147,12 @@ function Perfil() {
     }
   }
 
-  if (!authProfile) {
+  if (!hasAuthProfile) {
     return (
       <section className="perfil-state-card" aria-label="Sesion requerida">
         <p className="perfil-state-eyebrow">ISDB</p>
         <h1>Inicia sesion para ver tu perfil</h1>
-        <p>El perfil y las listas ahora se cargan desde la base de datos del backend.</p>
+        <p>Guarda tus listas, retoma tus series y personaliza tu espacio en un solo lugar.</p>
       </section>
     )
   }
@@ -161,53 +172,43 @@ function Perfil() {
       <section className="perfil-state-card" aria-label="Error de perfil">
         <p className="perfil-state-eyebrow">ISDB</p>
         <h1>No pudimos cargar tu perfil</h1>
-        <p>{errorMessage || 'Revisa la conexion con el backend y la configuracion de Auth0.'}</p>
+        <p>{errorMessage || 'Vuelve a intentarlo en unos instantes.'}</p>
       </section>
     )
   }
 
   const displayName =
     `${profile.nombre || ''} ${profile.apellidos || ''}`.trim() ||
-    authProfile.name ||
-    profile.username
-  const avatarUrl = profile.fotoPerfil || authProfile.picture || ''
-  const infoCards = [
-    {
-      kicker: 'Cuenta',
-      title: 'Datos principales',
-      items: [
-        { label: 'Usuario', value: `@${profile.username || 'sin-usuario'}` },
-        { label: 'Email', value: profile.email || authProfile.email || 'No disponible' },
-        { label: 'Estado', value: profile.estadoCuenta || 'Activa' },
-      ],
-    },
-    {
-      kicker: 'Listas',
-      title: 'Resumen',
-      items: [
-        { label: 'Listas creadas', value: `${listas.length}` },
-        { label: 'Series guardadas', value: `${listSeries.length}` },
-        { label: 'Series en progreso', value: `${continueWatchingSeries.length}` },
-      ],
-    },
+    profile.username ||
+    authName ||
+    profile.email ||
+    authEmail
+  const avatarUrl = profile.fotoPerfil || authPicture || ''
+  const highlightedLists = listas.slice(0, 4)
+  const spotlightProgress = continueWatchingSeries.slice(0, 3)
+  const accountDetails = [
+    { label: 'Email', value: profile.email || authEmail || 'No disponible' },
+    { label: 'Usuario', value: `@${profile.username || 'sin-usuario'}` },
+    { label: 'Estado', value: profile.estadoCuenta || 'Activa' },
+    { label: 'Grupo', value: profile.groupName || 'Sin grupo' },
   ]
   const sections = [
     {
       kicker: 'Seguimiento',
       title: 'Continuar viendo',
-      description: 'Progreso real del backend para tu cuenta actual.',
+      description: 'Las series que has dejado a medias para retomarlas cuando te apetezca.',
       series: continueWatchingSeries,
     },
     {
       kicker: 'Colecciones',
       title: 'Tus listas',
-      description: 'Series guardadas en tus listas persistidas en la base de datos.',
+      description: 'Tus favoritas, pendientes y descubrimientos reunidos en un mismo lugar.',
       series: listSeries,
     },
     {
       kicker: 'Descubrimiento',
       title: 'Recomendadas para ti',
-      description: 'Las mejor valoradas que todavia no has guardado en tus listas.',
+      description: 'Una seleccion para seguir ampliando tu biblioteca personal.',
       series: recommendedSeries,
     },
   ]
@@ -229,12 +230,25 @@ function Perfil() {
           </div>
 
           <div className="perfil-hero-copy">
-            <p className="perfil-kicker">{profile.groupName || 'Perfil ISDB'}</p>
+            <p className="perfil-kicker">Tu espacio en ISDB</p>
             <h1>{displayName}</h1>
-            <p className="perfil-handle">@{profile.username || 'sin-usuario'}</p>
-            <p className="perfil-bio">
-              Perfil sincronizado con Auth0 para identificacion y con Django para datos persistentes.
+            <div className="perfil-hero-meta">
+              <span className="perfil-meta-pill">@{profile.username || 'sin-usuario'}</span>
+            <span className="perfil-meta-pill">{profile.email || authEmail || 'Sin email'}</span>
+            <span className="perfil-meta-pill is-soft">{profile.estadoCuenta || 'Activa'}</span>
+          </div>
+          <p className="perfil-bio">
+              Tu espacio para seguir lo que ves, ordenar tus listas y descubrir la siguiente serie.
             </p>
+
+            <div className="perfil-detail-grid">
+              {accountDetails.map((item) => (
+                <div key={item.label} className="perfil-detail-card">
+                  <span className="perfil-detail-label">{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
 
             <div className="perfil-actions">
               <button className="perfil-btn-primary" onClick={() => navigate('/catalogo')}>
@@ -246,27 +260,22 @@ function Perfil() {
             </div>
           </div>
         </div>
-
-        <div className="perfil-hero-aside">
-          <span className="perfil-status-chip">{profile.estadoCuenta || 'Activa'}</span>
-          <p>Tu cuenta ya esta enlazada al backend mediante la sesion de Auth0.</p>
-        </div>
       </header>
 
-      <section className="perfil-stats-grid" aria-label="Resumen de actividad">
-        <article className="perfil-stat-card">
+      <section className="perfil-highlights-grid" aria-label="Resumen de actividad">
+        <article className="perfil-highlight-card">
           <span className="perfil-stat-value">{continueWatchingSeries.length}</span>
           <span className="perfil-stat-label">Series en curso</span>
         </article>
-        <article className="perfil-stat-card">
+        <article className="perfil-highlight-card">
           <span className="perfil-stat-value">{listas.length}</span>
           <span className="perfil-stat-label">Listas creadas</span>
         </article>
-        <article className="perfil-stat-card">
+        <article className="perfil-highlight-card">
           <span className="perfil-stat-value">{listSeries.length}</span>
           <span className="perfil-stat-label">Series guardadas</span>
         </article>
-        <article className="perfil-stat-card">
+        <article className="perfil-highlight-card">
           <span className="perfil-stat-value">{series.length}</span>
           <span className="perfil-stat-label">Series disponibles</span>
         </article>
@@ -275,8 +284,11 @@ function Perfil() {
       <section className="perfil-overview-grid">
         <article className="perfil-panel perfil-panel-featured">
           <div className="perfil-panel-header">
-            <p className="perfil-panel-kicker">Perfil editable</p>
-            <h2>Actualiza tu informacion sincronizada</h2>
+            <p className="perfil-panel-kicker">Informacion personal</p>
+            <h2>Editar tu perfil</h2>
+            <p className="perfil-panel-text">
+              Personaliza tu perfil y haz que tu espacio se sienta realmente tuyo.
+            </p>
           </div>
 
           <form className="perfil-form" onSubmit={handleSaveProfile}>
@@ -286,6 +298,14 @@ function Perfil() {
                 type="text"
                 value={formData.username}
                 onChange={(event) => setFormData({ ...formData, username: event.target.value })}
+              />
+            </label>
+            <label className="perfil-form-field">
+              <span>Email</span>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(event) => setFormData({ ...formData, email: event.target.value })}
               />
             </label>
             <label className="perfil-form-field">
@@ -305,6 +325,14 @@ function Perfil() {
               />
             </label>
             <label className="perfil-form-field">
+              <span>Contrasena</span>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(event) => setFormData({ ...formData, password: event.target.value })}
+              />
+            </label>
+            <label className="perfil-form-field">
               <span>Foto de perfil</span>
               <input
                 type="url"
@@ -312,6 +340,21 @@ function Perfil() {
                 onChange={(event) => setFormData({ ...formData, fotoPerfil: event.target.value })}
               />
             </label>
+
+            <div className="perfil-system-grid" aria-label="Campos del sistema">
+              <div className="perfil-system-card">
+                <span className="perfil-system-label">Estado de la cuenta</span>
+                <strong>{profile.estadoCuenta || 'Activa'}</strong>
+              </div>
+              <div className="perfil-system-card">
+                <span className="perfil-system-label">Grupo</span>
+                <strong>{profile.groupName || 'Sin grupo'}</strong>
+              </div>
+              <div className="perfil-system-card perfil-system-card-wide">
+                <span className="perfil-system-label">Acceso vinculado</span>
+                <strong>{profile.auth0Sub || 'No enlazado'}</strong>
+              </div>
+            </div>
             <button type="submit" className="perfil-btn-primary">
               Guardar cambios
             </button>
@@ -321,25 +364,91 @@ function Perfil() {
           {errorMessage ? <p className="perfil-form-error">{errorMessage}</p> : null}
         </article>
 
-        <div className="perfil-info-stack">
-          {infoCards.map((card) => (
-            <article key={card.title} className="perfil-panel perfil-panel-compact">
-              <div className="perfil-panel-header">
-                <p className="perfil-panel-kicker">{card.kicker}</p>
-                <h2>{card.title}</h2>
-              </div>
+        <div className="perfil-sidebar-stack">
+          <article className="perfil-panel perfil-panel-compact">
+            <div className="perfil-panel-header">
+              <p className="perfil-panel-kicker">Listas y seguimiento</p>
+              <h2>Tu actividad</h2>
+              <p className="perfil-panel-text">
+                Un vistazo rapido a tus colecciones y al contenido que tienes a medias.
+              </p>
+            </div>
 
-              <div className="perfil-info-list">
-                {card.items.map((item) => (
-                  <div key={item.label} className="perfil-info-row">
-                    <span className="perfil-info-label">{item.label}</span>
-                    <span className="perfil-info-value">{item.value}</span>
+            <div className="perfil-activity-grid">
+              <div className="perfil-activity-tile">
+                <span className="perfil-activity-number">{listas.length}</span>
+                <span className="perfil-activity-label">Colecciones activas</span>
+              </div>
+              <div className="perfil-activity-tile">
+                <span className="perfil-activity-number">{continueWatchingSeries.length}</span>
+                <span className="perfil-activity-label">Series por retomar</span>
+              </div>
+            </div>
+
+            {highlightedLists.length ? (
+              <div className="perfil-badge-grid">
+                {highlightedLists.map((lista) => (
+                  <div key={lista.id} className="perfil-badge-card">
+                    <strong>{lista.tipoLista}</strong>
+                    <span>{lista.series?.length ?? 0} series</span>
                   </div>
                 ))}
               </div>
-            </article>
-          ))}
+            ) : (
+              <div className="perfil-empty-block">
+                <p>Todavia no tienes listas creadas. Puedes empezar desde cualquier serie.</p>
+              </div>
+            )}
+
+            {spotlightProgress.length ? (
+              <div className="perfil-mini-list">
+                {spotlightProgress.map((serie) => (
+                  <div key={`progress-${serie.id ?? serie.pk}`} className="perfil-mini-list-item">
+                    <strong>{serie.titulo}</strong>
+                    <span>{serie.estado}</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </article>
+
+          <article className="perfil-panel perfil-panel-compact">
+            <div className="perfil-panel-header">
+              <p className="perfil-panel-kicker">Acciones de cuenta</p>
+              <h2>Gestion rapida</h2>
+              <p className="perfil-panel-text">
+                Atajos utiles para moverte entre tus listas, tu perfil y nuevas series.
+              </p>
+            </div>
+
+            <div className="perfil-action-stack">
+              <button className="perfil-btn-secondary" onClick={() => navigate('/listas')}>
+                Abrir Mis listas
+              </button>
+              <button className="perfil-btn-secondary" onClick={() => navigate('/catalogo')}>
+                Buscar nuevas series
+              </button>
+              <button className="perfil-btn-secondary" onClick={() => navigate(-1)}>
+                Volver a la pagina anterior
+              </button>
+            </div>
+
+            <div className="perfil-connection-note">
+              <span className="perfil-status-chip">{profile.estadoCuenta || 'Activa'}</span>
+              <p>Todo listo para seguir viendo, guardar y descubrir nuevas historias.</p>
+            </div>
+          </article>
         </div>
+      </section>
+
+      <section className="perfil-content-intro">
+        <div>
+          <p className="perfil-section-kicker">Tu biblioteca personal</p>
+          <h2>Series, progreso y recomendaciones</h2>
+        </div>
+        <p className="perfil-section-description">
+          Sigue tu ritmo con series guardadas, episodios a medias y nuevas recomendaciones.
+        </p>
       </section>
 
       <main className="perfil-content">
