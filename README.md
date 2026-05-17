@@ -9,8 +9,6 @@ Ahora mismo el proyecto esta dividido en:
 
 ## Estado actual
 
-Despues de integrar el trabajo de Mario, el proyecto ya tiene una base mas completa:
-
 - Catalogo de series conectado al backend.
 - Detalle de serie con comentarios y opcion de guardar series en listas.
 - Perfil de usuario.
@@ -80,7 +78,6 @@ Todavia quedan cosas por terminar o revisar:
 - Terminar funcionalidades sociales como amistades, solicitudes, likes y reportes.
 - Mejorar la gestion del progreso de series.
 - Revisar permisos del backend, porque ahora muchos endpoints son bastante abiertos.
-- Anadir tests.
 - Revisar textos y estilos finales antes de entregar.
 
 ## Comprobaciones utiles
