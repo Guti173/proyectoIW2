@@ -1,11 +1,10 @@
-/* Centrado del catálogo */
+/* Contenedor y Hero[cite: 12] */
 .catalogo-container {
-  max-width: 1400px; /* Evita que se estire demasiado en pantallas gigantes */
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
-/* Estilo del Encabezado (Hero) */
 .catalogo-hero {
   padding: 60px 0;
   border-bottom: 1px solid #e2e8f0;
@@ -19,61 +18,148 @@
   font-weight: 800;
 }
 
-.hero-text p {
-  font-size: 1.1rem;
-  color: #64748b;
-  max-width: 700px; /* Párrafo estrecho para mejor lectura */
-  line-height: 1.6;
+/* Buscador y Herramientas[cite: 12] */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
-/* El Slider Horizontal mejorado */
+.search-tool-bar {
+  display: flex;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-group {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 12px 0;
+}
+
+.filter-group {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  border-left: 1px solid #f1f5f9;
+  padding-left: 12px;
+}
+
+/* Sliders Horizontales[cite: 12] */
 .horizontal-slider {
   display: flex;
   gap: 20px;
   overflow-x: auto;
   padding: 10px 5px 30px 5px;
-  scroll-snap-type: x mandatory; /* Hace que el deslizamiento sea suave */
-  scrollbar-width: thin; /* Scrollbar elegante en Firefox */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
 }
 
-/* Personalización del scroll para Chrome/Safari */
-.horizontal-slider::-webkit-scrollbar {
-  height: 6px;
-}
-.horizontal-slider::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-/* AJUSTE PARA VER 5 CARTAS */
 .horizontal-slider .serie-card {
-  /* Restamos el gap para que quepan exactamente 5 */
-  flex: 0 0 calc((100% - (20px * 4)) / 5); 
-  min-width: 220px; /* Tamaño mínimo para que no se deformen en móviles */
+  flex: 0 0 calc((100% - (20px * 6)) / 7); /* Mostramos 7 para incitar al scroll */
+  min-width: 180px;
   scroll-snap-align: start;
 }
 
-.row-section {
-  margin-bottom: 60px;
-}
-
-.row-title {
-  font-size: 1.5rem;
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  color: #1e293b;
+}
+
+.scroll-hint {
+  font-size: 0.85rem;
+  color: #3b82f6;
+  font-weight: 600;
+  animation: pulse-arrow 2s infinite;
+}
+
+@keyframes pulse-arrow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+/* Rejilla de Alta Densidad (Explorar Todo el Catálogo) */
+.full-catalog-section {
+  padding-top: 30px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 40px;
+}
+
+.catalog-grid-mini {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  padding: 24px 0 12px;
+}
+
+.serie-card-minimal .serie-card {
+  min-height: 1px;
+}
+
+.serie-card-minimal .serie-img-container {
+  height: 220px;
+}
+
+.serie-card-minimal .serie-info {
+  padding: 14px 12px;
+}
+
+.serie-card-minimal .serie-info :not(h3) {
+  display: none !important;
+}
+
+.serie-card-minimal .serie-info h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Botones de Acción[cite: 12] */
+.catalog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.btn-load-more, .btn-show-all {
+  padding: 12px 24px;
+  border-radius: 10px;
   font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* Responsivo para tablets y móviles */
-@media (max-width: 1024px) {
-  .horizontal-slider .serie-card {
-    flex: 0 0 calc((100% - (20px * 2)) / 3); /* Ver 3 cartas */
-  }
+.btn-load-more { background: #3b82f6; color: white; border: none; }
+.btn-show-all { background: white; color: #3b82f6; border: 2px solid #3b82f6; }
+
+/* Responsivo[cite: 12] */
+@media (max-width: 1400px) {
+  .catalog-grid-mini { grid-template-columns: repeat(6, 1fr); }
+  .horizontal-slider .serie-card { flex: 0 0 calc((100% - (20px * 3)) / 4); }
 }
 
-@media (max-width: 640px) {
-  .catalogo-container { padding: 0 20px; }
-  .horizontal-slider .serie-card {
-    flex: 0 0 80%; /* Ver 1 carta y media */
-  }
+@media (max-width: 768px) {
+  .catalog-grid-mini { grid-template-columns: repeat(3, 1fr); }
+  .search-tool-bar { flex-direction: column; }
 }

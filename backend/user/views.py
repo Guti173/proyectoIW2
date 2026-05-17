@@ -1,10 +1,10 @@
-from rest_framework import viewsets
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
 from .models import User
-from .serializers import UserSerializer
+from .auth import get_current_user
+from .serializers import UserProfileSerializer, UserSerializer
 
 
 def _profile_value(profile, *keys):
@@ -54,13 +54,14 @@ def auth_me(request):
     if user is None:
         username = _profile_value(profile, "nickname", "name") or email.split("@")[0]
         user = User.objects.create(
+            auth0Sub=_profile_value(profile, "sub") or None,
             username=username,
             password="",
             email=email,
             nombre=_profile_value(profile, "given_name", "name") or username,
             apellidos=_profile_value(profile, "family_name"),
             fotoPerfil=_profile_value(profile, "picture"),
-            estadoCuenta="activo",
+            estadoCuenta="Activa",
             role=User.ROLE_USER,
         )
         created = True
@@ -76,3 +77,21 @@ class UserView(viewsets.ModelViewSet):
         result = User.objects.all()
         return Response(self.serializer_class(result, many=True).data)
 
+    @action(detail=False, methods=['get', 'patch'], url_path='me')
+    def me(self, request):
+        user = get_current_user(request)
+
+        if request.method.lower() == 'patch':
+            serializer = UserProfileSerializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], url_path='sync')
+    def sync(self, request):
+        user = get_current_user(request)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,9 +1,26 @@
 # proyectoIW2
 
-Proyecto organizado en dos partes:
+Proyecto de Ingenieria Web 2 para ISDB, una aplicacion de gestion y seguimiento de series.
 
-- `backend/`: API REST en Django + DRF
-- `frontend/`: interfaz base en React + Vite
+Ahora mismo el proyecto esta dividido en:
+
+- `backend/`: API REST con Django y Django REST Framework.
+- `frontend/`: interfaz en React + Vite.
+
+## Estado actual
+
+Despues de integrar el trabajo de Mario, el proyecto ya tiene una base mas completa:
+
+- Catalogo de series conectado al backend.
+- Detalle de serie con comentarios y opcion de guardar series en listas.
+- Perfil de usuario.
+- Pagina de mis listas.
+- Panel de administrador para gestionar series y generos.
+- Login/registro con Auth0.
+- Sincronizacion del usuario con el backend usando Auth0.
+- Usuarios con campo `role`, que puede ser `user` o `admin`.
+
+La API principal esta bajo `/api/`.
 
 ## Arranque en local
 
@@ -11,6 +28,7 @@ Backend:
 
 ```bash
 pip install -r backend/requirements.txt
+python backend/manage.py migrate
 python backend/manage.py runserver
 ```
 
@@ -25,24 +43,59 @@ npm run dev
 ## Endpoints principales
 
 - `http://127.0.0.1:8000/api/serie/`
+- `http://127.0.0.1:8000/api/genero/`
 - `http://127.0.0.1:8000/api/user/`
+- `http://127.0.0.1:8000/api/user/sync/`
+- `http://127.0.0.1:8000/api/user/me/`
 - `http://127.0.0.1:8000/api/listausuario/`
-- `http://127.0.0.1:8000/auth/me/`
-- `http://127.0.0.1:8000/api/docs/`
+- `http://127.0.0.1:8000/api/listausuario/mine/`
+- `http://127.0.0.1:8000/api/comentario/`
+- `http://127.0.0.1:8000/api/progresoserie/`
+
+## Paginas del frontend
+
+- `/`: pagina inicial.
+- `/catalogo`: catalogo de series.
+- `/series/:id`: detalle de una serie.
+- `/perfil`: perfil del usuario.
+- `/listas`: listas personales del usuario.
+- `/panel-admin`: panel de administracion de series y generos.
+- `/login`: inicio de sesion.
+- `/registro`: registro.
 
 ## Usuarios y administradores
 
-Cada usuario tiene un campo `role`: `user` o `admin`.
+El modelo actual usa `role` directamente en `user_user`.
 
-Tras login o registro con Auth0, el frontend envia el perfil a `auth/me/`.
-El backend busca el email en la base de datos. Si no existe, crea un usuario normal con `role = user`.
-Si existe, devuelve su `role`.
+- `role = user`: usuario normal.
+- `role = admin`: administrador.
 
-Luego el frontend redirige asi:
+Los administradores se marcan manualmente en la base de datos cambiando el campo `role` a `admin`.
 
-- `role = user` -> `/usuario`
-- `role = admin` -> `/panel-admin`
+## Cosas pendientes
 
-Los administradores se marcan manualmente en la base de datos poniendo `role = admin`.
+Todavia quedan cosas por terminar o revisar:
 
-El modelo actual usa `role` directamente en `user_user`; ya no se usan grupos ni modulos propios para distinguir usuarios y administradores.
+- Proteger de verdad las rutas de admin para que solo entren usuarios admin.
+- Terminar funcionalidades sociales como amistades, solicitudes, likes y reportes.
+- Mejorar la gestion del progreso de series.
+- Revisar permisos del backend, porque ahora muchos endpoints son bastante abiertos.
+- Anadir tests.
+- Revisar textos y estilos finales antes de entregar.
+
+## Comprobaciones utiles
+
+Backend:
+
+```bash
+python backend/manage.py check
+python backend/manage.py test
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run lint
+npm run build
+```

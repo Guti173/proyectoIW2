@@ -4,10 +4,14 @@ from serie.models import Serie
 
 class ListaUsuario(models.Model):
     tipoLista = models.CharField(max_length=255)
-    fechaAgregado = models.DateField()
+    descripcion = models.CharField(max_length=255, blank=True, default='')
+    fechaAgregado = models.DateField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     series = models.ManyToManyField(Serie)
+
+    def __str__(self):
+        return f'{self.tipoLista} ({self.user})'
 
 class ProgresoSerie(models.Model):
     episodiosVistos = models.IntegerField()

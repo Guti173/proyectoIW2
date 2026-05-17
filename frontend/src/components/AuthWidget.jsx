@@ -1,10 +1,10 @@
 import { useEffect, useId, useState } from 'react'
+import { syncCurrentUser } from '../api/client'
 import {
   auth0Config,
   getRedirectPathForRole,
   isAuth0Configured,
   persistAuthSession,
-  syncAuthUser,
 } from '../lib/auth0'
 
 function AuthWidget({ initialScreen = 'login' }) {
@@ -82,24 +82,21 @@ function AuthWidget({ initialScreen = 'login' }) {
               return
             }
 
+            persistAuthSession({
+              accessToken: authResult.accessToken,
+              idToken: authResult.idToken,
+              expiresIn: authResult.expiresIn,
+              profile,
+            })
+
+            let user = null
             try {
-              const user = await syncAuthUser(profile)
-
-              persistAuthSession({
-                accessToken: authResult.accessToken,
-                idToken: authResult.idToken,
-                expiresIn: authResult.expiresIn,
-                profile,
-                user,
-              })
-
-              window.location.assign(getRedirectPathForRole(user.role))
-            } catch (syncError) {
-              setErrorMessage(
-                syncError?.message ??
-                  'Se inicio sesion, pero no se pudo comprobar el usuario.',
-              )
+              user = await syncCurrentUser()
+            } catch {
+              // If the backend is not available yet, keep the Auth0 session usable in frontend.
             }
+
+            window.location.assign(getRedirectPathForRole(user?.role))
           })
         }
 

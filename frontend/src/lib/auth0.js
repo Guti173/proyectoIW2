@@ -1,7 +1,5 @@
 export const AUTH_STORAGE_KEY = 'isdb.auth'
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
-
 export const auth0Config = {
   domain: import.meta.env.VITE_AUTH0_DOMAIN ?? '',
   clientId: import.meta.env.VITE_AUTH0_CLIENT_ID ?? '',
@@ -25,28 +23,36 @@ export function persistAuthSession({ accessToken, idToken, expiresIn, profile, u
       idToken,
       expiresAt,
       profile,
-      user,
+      ...(user ? { user } : {}),
     }),
   )
 }
 
-export async function syncAuthUser(profile) {
-  const response = await fetch(`${API_BASE_URL}/auth/me/`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ profile }),
-  })
+export function getStoredAuthSession() {
+  const stored = localStorage.getItem(AUTH_STORAGE_KEY)
 
-  if (!response.ok) {
-    throw new Error(`No se pudo sincronizar el usuario (${response.status}).`)
+  if (!stored) return null
+
+  try {
+    const auth = JSON.parse(stored)
+
+    if (auth.expiresAt && Date.now() > auth.expiresAt) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
+      return null
+    }
+
+    return auth
+  } catch {
+    return null
   }
+}
 
-  return response.json()
+export const getStoredAuth = getStoredAuthSession
+
+export function clearAuthSession() {
+  localStorage.removeItem(AUTH_STORAGE_KEY)
 }
 
 export function getRedirectPathForRole(role) {
-  return role === 'admin' ? '/panel-admin' : '/usuario'
+  return role === 'admin' ? '/panel-admin' : '/perfil'
 }

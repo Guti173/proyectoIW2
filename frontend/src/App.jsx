@@ -4,12 +4,15 @@ import isdbLogo from './assets/isdb-logo.svg'
 import './App.css'
 import Catalogo from "./pages/Catalogo";
 import SerieDetalle from "./pages/SerieDetalle";
-import Usuario from "./pages/Usuario";
-import PanelAdmin from "./pages/PanelAdmin";
+import Perfil from './pages/Perfil'
+import MisListas from './pages/MisListas'
+import AdminSeries from "./pages/AdminSeries";
 
 const navigation = [
   { to: '/', label: 'Home' },
   { to: '/catalogo', label: 'Catalogo' },
+  { to: '/perfil', label: 'Perfil' },
+  { to: '/listas', label: 'Mis listas' },
   { to: '/login', label: 'Login' },
   { to: '/registro', label: 'Registro' },
 ]
@@ -49,10 +52,14 @@ function App() {
           <Route path="/catalogo" element={<Catalogo />} />
 
           <Route path="/series/:id" element={<SerieDetalle />} />
+          <Route path="/panel-admin" element={<AdminSeries />} />
 
-          <Route path="/usuario" element={<Usuario />} />
 
-          <Route path="/panel-admin" element={<PanelAdmin />} />
+          <Route path="/perfil" element={<Perfil />} />
+
+          <Route path="/listas" element={<MisListas />} />
+
+          <Route path="/usuario" element={<Navigate to="/perfil" replace />} />
 
           <Route
             path="/login"
