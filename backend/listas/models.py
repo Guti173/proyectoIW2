@@ -22,3 +22,11 @@ class ProgresoSerie(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'serie'],
+                name='unique_user_serie_progress',
+            )
+        ]

@@ -75,7 +75,25 @@ function MisListas() {
     [listas],
   )
 
-  const listasVacias = Math.max(listas.length - listasConContenido, 0)
+  const seriesCompletadas = useMemo(() => {
+    const completedIds = new Set()
+
+    listas
+      .filter((lista) => lista.tipoLista?.trim().toLowerCase() === 'completadas')
+      .forEach((lista) => {
+        const series = lista.series ?? []
+
+        series.forEach((serie) => {
+          const serieId = Number(serie.id ?? serie.pk ?? 0)
+
+          if (serieId) {
+            completedIds.add(serieId)
+          }
+        })
+      })
+
+    return completedIds.size
+  }, [listas])
 
   const listasDestacadas = useMemo(
     () =>
@@ -181,8 +199,8 @@ function MisListas() {
             <strong>{listasConContenido}</strong>
           </div>
           <div className="mis-listas-detail-card">
-            <span className="mis-listas-detail-label">Por completar</span>
-            <strong>{listasVacias}</strong>
+            <span className="mis-listas-detail-label">Completadas</span>
+            <strong>{seriesCompletadas}</strong>
           </div>
           <div className="mis-listas-detail-card">
             <span className="mis-listas-detail-label">Mas extensa</span>
@@ -205,8 +223,8 @@ function MisListas() {
           <span className="mis-listas-stat-label">Titulos unicos</span>
         </article>
         <article className="mis-listas-highlight-card">
-          <span className="mis-listas-stat-value">{listasVacias}</span>
-          <span className="mis-listas-stat-label">Listas por llenar</span>
+          <span className="mis-listas-stat-value">{seriesCompletadas}</span>
+          <span className="mis-listas-stat-label">Series completadas</span>
         </article>
       </section>
 

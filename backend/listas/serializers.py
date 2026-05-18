@@ -24,3 +24,10 @@ class ProgresoSerieSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgresoSerie
         fields = '__all__'
+        read_only_fields = (
+            'user',
+            'fechaInicio',
+            'fechaFin',
+            'ultimaActualizacion',
+            'estado',
+        )

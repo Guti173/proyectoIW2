@@ -7,8 +7,11 @@ import {
   getComentariosBySerie,
   getGeneros,
   getMyLists,
+  getProgressBySerie,
   getSerieById,
   removeSerieFromUserList,
+  setSerieProgress,
+  startSerieProgress,
 } from '../api/client'
 import { getStoredAuthSession } from '../lib/auth0'
 import './SerieDetalle.css'
@@ -23,12 +26,15 @@ function SerieDetalle() {
   const [generos, setGeneros] = useState([])
   const [comentarios, setComentarios] = useState([])
   const [listas, setListas] = useState([])
+  const [progreso, setProgreso] = useState(null)
   const [loading, setLoading] = useState(true)
   const [nuevoComentario, setNuevoComentario] = useState('')
   const [panelListasAbierto, setPanelListasAbierto] = useState(false)
   const [nombreNuevaLista, setNombreNuevaLista] = useState('')
   const [mensajeLista, setMensajeLista] = useState('')
   const [mensajeComentario, setMensajeComentario] = useState('')
+  const [mensajeProgreso, setMensajeProgreso] = useState('')
+  const [actualizandoProgreso, setActualizandoProgreso] = useState(false)
 
   useEffect(() => {
     let isCancelled = false
@@ -37,6 +43,7 @@ function SerieDetalle() {
       setLoading(true)
       setMensajeLista('')
       setMensajeComentario('')
+      setMensajeProgreso('')
 
       try {
         const results = await Promise.allSettled([
@@ -44,6 +51,7 @@ function SerieDetalle() {
           getGeneros(),
           getComentariosBySerie(id),
           isAuthenticated ? getMyLists() : Promise.resolve([]),
+          isAuthenticated ? getProgressBySerie(id) : Promise.resolve(null),
         ])
 
         if (isCancelled) {
@@ -54,14 +62,17 @@ function SerieDetalle() {
         const generosResult = results[1]
         const comentariosResult = results[2]
         const listasResult = results[3]
+        const progresoResult = results[4]
 
         setSerie(serieResult.status === 'fulfilled' ? serieResult.value : null)
         setGeneros(generosResult.status === 'fulfilled' ? generosResult.value : [])
         setComentarios(comentariosResult.status === 'fulfilled' ? comentariosResult.value : [])
         setListas(listasResult.status === 'fulfilled' ? listasResult.value : [])
+        setProgreso(progresoResult.status === 'fulfilled' ? progresoResult.value : null)
       } catch {
         if (!isCancelled) {
           setSerie(null)
+          setProgreso(null)
         }
       } finally {
         if (!isCancelled) {
@@ -91,6 +102,14 @@ function SerieDetalle() {
   const listasConSerie = listas.filter((list) =>
     (list.series ?? []).some((item) => Number(item.id ?? item.pk ?? 0) === serieId),
   ).length
+  const totalEpisodios = Math.max(Number(serie?.numeroEpisodios ?? 0), 0)
+  const episodiosVistos = Math.max(Number(progreso?.episodiosVistos ?? 0), 0)
+  const progresoCompletado = Boolean(
+    progreso && totalEpisodios > 0 && episodiosVistos >= totalEpisodios,
+  )
+  const progresoPorcentaje = totalEpisodios
+    ? Math.min(100, Math.round((episodiosVistos / totalEpisodios) * 100))
+    : 0
 
   const handleEnviarComentario = async (event) => {
     event.preventDefault()
@@ -172,6 +191,70 @@ function SerieDetalle() {
     }
   }
 
+  const refreshUserLists = async () => {
+    try {
+      const nextLists = await getMyLists()
+      setListas(Array.isArray(nextLists) ? nextLists : [])
+    } catch {
+      setListas((prev) => prev)
+    }
+  }
+
+  const handleComenzarSerie = async () => {
+    if (!isAuthenticated) {
+      setMensajeProgreso('Inicia sesion para comenzar la serie.')
+      return
+    }
+
+    if (!serieId) {
+      return
+    }
+
+    setActualizandoProgreso(true)
+    setMensajeProgreso('')
+
+    try {
+      const nextProgress = await startSerieProgress(serieId)
+      setProgreso(nextProgress)
+      await refreshUserLists()
+      setMensajeProgreso('Serie comenzada. Se ha anadido a tu lista Viendo.')
+    } catch (error) {
+      setMensajeProgreso(error.message || 'No se pudo comenzar la serie.')
+    } finally {
+      setActualizandoProgreso(false)
+    }
+  }
+
+  const handleActualizarEpisodios = async (nextValue) => {
+    if (!isAuthenticated) {
+      setMensajeProgreso('Inicia sesion para actualizar el progreso.')
+      return
+    }
+
+    if (!serieId || totalEpisodios <= 0) {
+      return
+    }
+
+    const nextEpisodes = Math.max(0, Math.min(Number(nextValue) || 0, totalEpisodios))
+    setActualizandoProgreso(true)
+    setMensajeProgreso('')
+
+    try {
+      const nextProgress = await setSerieProgress(serieId, nextEpisodes)
+      setProgreso(nextProgress)
+      await refreshUserLists()
+      setMensajeProgreso(
+        nextProgress.estado === 'Completada'
+          ? 'Serie completada. Se ha movido a Completadas.'
+          : 'Progreso actualizado.',
+      )
+    } catch (error) {
+      setMensajeProgreso(error.message || 'No se pudo actualizar el progreso.')
+    } finally {
+      setActualizandoProgreso(false)
+    }
+  }
+
   if (loading) {
     return <div className="loader">Cargando detalles...</div>
   }
@@ -205,7 +288,13 @@ function SerieDetalle() {
           </div>
 
           <div className="hero-actions">
-            <button className="btn-primary">Ver ahora</button>
+            <button
+              className="btn-primary"
+              onClick={handleComenzarSerie}
+              disabled={actualizandoProgreso || progresoCompletado}
+            >
+              {progresoCompletado ? 'Serie completada' : 'Comenzar serie'}
+            </button>
             <button
               className="btn-secondary"
               onClick={() => {
@@ -218,6 +307,66 @@ function SerieDetalle() {
                 : '+ Anadir a mi lista'}
             </button>
           </div>
+
+          {progreso ? (
+            <section className="progress-panel" aria-label="Progreso de la serie">
+              <div className="progress-panel-header">
+                <div>
+                  <h3>Mi progreso</h3>
+                  <p>{progreso.estado} desde {formatDate(progreso.fechaInicio)}</p>
+                </div>
+
+                <span
+                  className={progresoCompletado ? 'progress-status is-completed' : 'progress-status'}
+                >
+                  {progreso.estado}
+                </span>
+              </div>
+
+              <div className="progress-bar-shell" aria-hidden="true">
+                <span style={{ width: `${progresoPorcentaje}%` }} />
+              </div>
+
+              <div className="progress-controls">
+                <button
+                  className="progress-stepper-btn"
+                  onClick={() => handleActualizarEpisodios(episodiosVistos - 1)}
+                  disabled={actualizandoProgreso || episodiosVistos <= 0}
+                >
+                  -
+                </button>
+
+                <div className="progress-counter">
+                  <strong>{episodiosVistos}</strong>
+                  <span>de {totalEpisodios} episodios</span>
+                </div>
+
+                <button
+                  className="progress-stepper-btn"
+                  onClick={() => handleActualizarEpisodios(episodiosVistos + 1)}
+                  disabled={
+                    actualizandoProgreso ||
+                    totalEpisodios <= 0 ||
+                    episodiosVistos >= totalEpisodios
+                  }
+                >
+                  +
+                </button>
+
+                <button
+                  className="progress-complete-btn"
+                  onClick={() => handleActualizarEpisodios(totalEpisodios)}
+                  disabled={actualizandoProgreso || totalEpisodios <= 0 || progresoCompletado}
+                >
+                  Completar
+                </button>
+              </div>
+
+              {mensajeProgreso ? <p className="lista-feedback">{mensajeProgreso}</p> : null}
+            </section>
+          ) : mensajeProgreso ? (
+            <p className="lista-feedback">{mensajeProgreso}</p>
+          ) : null}
 
           {panelListasAbierto ? (
             <section className="lista-panel" aria-label="Gestion de listas para la serie actual">

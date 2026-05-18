@@ -129,6 +129,18 @@ export const removeSerieFromUserList = (listId, serieId) =>
   })
 
 export const getMyProgress = () => request('/progresoserie/')
+export const getProgressBySerie = (serieId) =>
+  request('/progresoserie/by-serie/', { params: { serieId } })
+export const startSerieProgress = (serieId) =>
+  request('/progresoserie/start/', {
+    method: 'POST',
+    data: { serieId },
+  })
+export const setSerieProgress = (serieId, episodiosVistos) =>
+  request('/progresoserie/set-progress/', {
+    method: 'POST',
+    data: { serieId, episodiosVistos },
+  })
 
 export const getComentariosBySerie = (serieId) =>
   request('/comentario/', { params: { serie: serieId } })

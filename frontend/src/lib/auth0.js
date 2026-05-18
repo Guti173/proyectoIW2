@@ -54,5 +54,5 @@ export function clearAuthSession() {
 }
 
 export function getRedirectPathForRole(role) {
-  return role === 'admin' ? '/panel-admin' : '/perfil'
+  return role === 'admin' ? '/panel-admin' : '/catalogo'
 }
