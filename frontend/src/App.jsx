@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import AuthWidget from './components/AuthWidget'
 import isdbLogo from './assets/isdb-logo.svg'
+import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 import Catalogo from "./pages/Catalogo";
 import SerieDetalle from "./pages/SerieDetalle";
+import ReportarComentario from "./pages/ReportarComentario";
+import AdministrarComentarios from "./pages/AdministrarComentarios";
 import Perfil from './pages/Perfil'
 import MisListas from './pages/MisListas'
 import AdminSeries from "./pages/AdminSeries";
@@ -14,6 +17,12 @@ const appNavigation = [
   { to: '/catalogo', label: 'Catalogo' },
   { to: '/perfil', label: 'Perfil' },
   { to: '/listas', label: 'Mis listas' },
+]
+
+const adminNavigation = [
+  ...appNavigation,
+  { to: '/panel-admin', label: 'Administrar Series' },
+  { to: '/admin-comentarios', label: 'Administrar Comentarios' },
 ]
 
 const guestNavigation = [
@@ -27,7 +36,9 @@ function App() {
   const navigate = useNavigate()
   const [authSession, setAuthSession] = useState(() => getStoredAuthSession())
   const isAuthenticated = Boolean(authSession?.profile)
-  const visibleNavigation = isAuthenticated ? appNavigation : guestNavigation
+  const profile = authSession?.profile
+  const isAdmin = profile?.role?.toLowerCase() === 'admin' || profile?.is_superuser || profile?.is_staff
+  const visibleNavigation = isAuthenticated ? (isAdmin ? adminNavigation : appNavigation) : guestNavigation
   const brandTarget = isAuthenticated ? '/catalogo' : '/'
 
   const handleLogout = () => {
@@ -79,11 +90,19 @@ function App() {
           <Route path="/catalogo" element={<Catalogo />} />
 
           <Route path="/series/:id" element={<SerieDetalle />} />
-          <Route path="/panel-admin" element={<AdminSeries />} />
 
+          {/* Rutas solo para usuarios autenticados */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/reportar-comentario/:comentarioId" element={<ReportarComentario />} />
+          </Route>
+
+          {/* Rutas solo para administradores */}
+          <Route element={<ProtectedRoute adminOnly />}>
+            <Route path="/admin-comentarios" element={<AdministrarComentarios />} />
+            <Route path="/panel-admin" element={<AdminSeries />} />
+          </Route>
 
           <Route path="/perfil" element={<Perfil />} />
-
           <Route path="/listas" element={<MisListas />} />
 
           <Route path="/usuario" element={<Navigate to="/perfil" replace />} />

@@ -190,7 +190,7 @@ function Perfil() {
     { label: 'Email', value: profile.email || authEmail || 'No disponible' },
     { label: 'Usuario', value: `@${profile.username || 'sin-usuario'}` },
     { label: 'Estado', value: profile.estadoCuenta || 'Activa' },
-    { label: 'Rol', value: profile.role || 'user' },
+    { label: 'Rol', value: profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user') },
   ]
   const sections = [
     {
@@ -348,7 +348,7 @@ function Perfil() {
               </div>
               <div className="perfil-system-card">
                 <span className="perfil-system-label">Rol</span>
-                <strong>{profile.role || 'user'}</strong>
+                <strong>{profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user')}</strong>
               </div>
               <div className="perfil-system-card perfil-system-card-wide">
                 <span className="perfil-system-label">Acceso vinculado</span>

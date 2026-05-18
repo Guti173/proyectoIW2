@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SerieCard from "../components/SerieCard";
 import { getSeries, getGeneros } from "../api/client";
 import "./Catalogo.css";
@@ -64,6 +64,15 @@ function Catalogo() {
     .sort((a, b) => b.valoracionMedia - a.valoracionMedia)
     .slice(0, 10);
 
+  const sliderRefs = useRef({});
+
+  const scrollSlider = (key, direction) => {
+    const slider = sliderRefs.current[key];
+    if (!slider) return;
+    const step = slider.clientWidth * 0.8;
+    slider.scrollBy({ left: direction * step, behavior: 'smooth' });
+  };
+
   if (loading) return <div className="loader">Sincronizando biblioteca...</div>;
 
   return (
@@ -117,8 +126,29 @@ function Catalogo() {
         {/* Tendencias */}
         {tendencias.length > 0 && (
           <section className="row-section">
-            <h3 className="row-title">Tendencias Globales</h3>
-            <div className="horizontal-slider">
+            <div className="row-header">
+              <h3 className="row-title">Tendencias Globales</h3>
+              <div className="row-actions">
+                <button
+                  type="button"
+                  className="slider-arrow"
+                  onClick={() => scrollSlider('tendencias', -1)}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  className="slider-arrow"
+                  onClick={() => scrollSlider('tendencias', 1)}
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+            <div
+              className="horizontal-slider"
+              ref={(el) => { sliderRefs.current['tendencias'] = el }}
+            >
               {tendencias.map(s => (
                 <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
               ))}
@@ -140,9 +170,27 @@ function Catalogo() {
               <section key={genero.id} className="row-section">
                 <div className="row-header">
                   <h3 className="row-title">{genero.nombre}</h3>
-                  <span className="scroll-hint">Desliza para ver más ?</span>
+                  <div className="row-actions">
+                    <button
+                      type="button"
+                      className="slider-arrow"
+                      onClick={() => scrollSlider(`genero-${genero.id}`, -1)}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      className="slider-arrow"
+                      onClick={() => scrollSlider(`genero-${genero.id}`, 1)}
+                    >
+                      ›
+                    </button>
+                  </div>
                 </div>
-                <div className="horizontal-slider">
+                <div
+                  className="horizontal-slider"
+                  ref={(el) => { sliderRefs.current[`genero-${genero.id}`] = el }}
+                >
                   {seriesDeEsteGenero.map(s => (
                     <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
                   ))}

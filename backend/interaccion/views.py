@@ -2,8 +2,8 @@ from datetime import date
 
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Comentario, Valoracion
-from .serializers import ComentarioSerializer, ValoracionSerializer
+from .models import Comentario, Valoracion, ReporteComentario
+from .serializers import ComentarioSerializer, ValoracionSerializer, ReporteComentarioSerializer
 from user.auth import get_current_user
 
 class ComentarioView(viewsets.ModelViewSet):
@@ -31,3 +31,11 @@ class ComentarioView(viewsets.ModelViewSet):
 class ValoracionView(viewsets.ModelViewSet):
     queryset = Valoracion.objects.all()
     serializer_class = ValoracionSerializer
+
+class ReporteComentarioViewSet(viewsets.ModelViewSet):
+    queryset = ReporteComentario.objects.all().order_by('-fechaReporte')
+    serializer_class = ReporteComentarioSerializer
+
+    def perform_create(self, serializer):
+        user = get_current_user(self.request)
+        serializer.save(usuario=user)

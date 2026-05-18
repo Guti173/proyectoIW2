@@ -1,23 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getSeries, createSerie, updateSerie, deleteSerie } from "../api/client";
 import { getGeneros, createGenero, updateGenero, deleteGenero } from "../api/client";
-import { getStoredAuth } from "../lib/auth0";
 import "./AdminSeries.css";
 
 function AdminSeries() {
-  const navigate = useNavigate();
-  const storedAuth = getStoredAuth();
-  const authUserKey = storedAuth?.profile?.sub ?? storedAuth?.profile?.email ?? "";
   const [tab, setTab] = useState("series");
-  const [user] = useState(storedAuth?.profile ?? null);
 
-  useEffect(() => {
-    if (!authUserKey) {
-      navigate("/login");
-    }
-  }, [authUserKey, navigate]);
   const [series, setSeries] = useState([]);
+  const [serieBusqueda, setSerieBusqueda] = useState('');
   const [formSerie, setFormSerie] = useState({
     titulo: "", descripcion: "", fechaEstreno: "",
     fechaFin: "", imagenPortada: "", numeroEpisodios: 0,
@@ -98,6 +88,11 @@ function AdminSeries() {
     setEditandoSerie(null);
   };
 
+  const seriesFiltradas = series.filter((serieItem) => {
+    const titulo = serieItem?.titulo ?? ''
+    return titulo.toLowerCase().includes(serieBusqueda.toLowerCase())
+  })
+
   // ============ GENEROS ============
   const handleSubmitGenero = async (e) => {
     e.preventDefault();
@@ -130,10 +125,6 @@ function AdminSeries() {
     setFormGenero({ nombre: "", descripcion: "" });
     setEditandoGenero(null);
   };
-
-  if (!user) {
-    return null;
-  }
 
   // ... (El bloque return se mantiene igual que en el original)[cite: 16]
   return (
@@ -190,10 +181,24 @@ function AdminSeries() {
             </div>
           </form>
 
+          <div className="admin-search-bar">
+            <label htmlFor="search-serie">Buscar serie</label>
+            <input
+              id="search-serie"
+              type="search"
+              placeholder="Buscar por título..."
+              value={serieBusqueda}
+              onChange={(e) => setSerieBusqueda(e.target.value)}
+            />
+            <p className="search-meta">
+              Mostrando {seriesFiltradas.length} de {series.length} serie{series.length === 1 ? '' : 's'}
+            </p>
+          </div>
+
           <table className="admin-table">
             {/* ... estructura de tabla igual al original ...[cite: 16] */}
             <tbody>
-              {series.map(s => (
+              {seriesFiltradas.map(s => (
                 <tr key={s.id}>
                   <td>{s.titulo}</td>
                   <td>

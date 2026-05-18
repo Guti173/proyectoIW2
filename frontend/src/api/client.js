@@ -146,3 +146,24 @@ export const getComentariosBySerie = (serieId) =>
   request('/comentario/', { params: { serie: serieId } })
 export const createComentario = (data) =>
   request('/comentario/', { method: 'POST', data })
+
+export const createReporte = (comentarioId, motivo) =>
+  request('/reportecomentario/', {
+    method: 'POST',
+    data: {
+      comentario: comentarioId,
+      motivo,
+      estado: 'PENDIENTE',
+    },
+  })
+
+export const getReportes = () => request('/reportecomentario/')
+
+export const updateReporteEstado = (reporteId, nuevoEstado) =>
+  request(`/reportecomentario/${reporteId}/`, {
+    method: 'PATCH',
+    data: { estado: nuevoEstado },
+  })
+
+export const deleteComentario = (comentarioId) =>
+  request(`/comentario/${comentarioId}/`, { method: 'DELETE' })

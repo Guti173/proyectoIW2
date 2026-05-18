@@ -484,6 +484,29 @@
   margin-bottom: 12px;
 }
 
+.comentario-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.comentario-reportar {
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.comentario-reportar:hover,
+.comentario-reportar:focus-visible {
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
 .avatar {
   width: 42px;
   height: 42px;

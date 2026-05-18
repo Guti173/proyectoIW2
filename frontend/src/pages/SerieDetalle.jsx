@@ -486,6 +486,13 @@ function SerieDetalle() {
                           <span className="comentario-sep">•</span>
                           <span>{formatDate(comentario.fechaPublicacion)}</span>
                         </div>
+                        <button
+                          type="button"
+                          className="comentario-reportar"
+                          onClick={() => navigate(`/reportar-comentario/${comentario.id}`)}
+                        >
+                          🚩 Reportar
+                        </button>
                       </div>
                     </div>
                     <p>{comentario.contenido}</p>

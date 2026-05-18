@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Comentario, Valoracion
+from .models import Comentario, Valoracion, ReporteComentario
 
 class ComentarioSerializer(serializers.ModelSerializer):
     autor = serializers.SerializerMethodField(read_only=True)
@@ -19,3 +19,9 @@ class ValoracionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Valoracion
         fields = '__all__'
+
+class ReporteComentarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReporteComentario
+        fields = '__all__'
+        read_only_fields = ('usuario', 'fechaReporte', 'estado')

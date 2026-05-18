@@ -78,7 +78,7 @@
   font-size: 1rem;
 }
 
-/* Checkbox group para gÃ©neros */
+/* Checkbox group para géneros */
 .checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -94,6 +94,42 @@
   gap: 8px;
   font-size: 0.9rem;
   cursor: pointer;
+}
+
+.admin-search-bar {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.admin-search-bar label {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.admin-search-bar input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  font-size: 1rem;
+}
+
+.admin-search-bar input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.search-meta {
+  margin: 0;
+  color: #475569;
+  font-size: 0.95rem;
 }
 
 /* Tabla de datos */
