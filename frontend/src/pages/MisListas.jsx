@@ -150,7 +150,7 @@ function MisListas() {
     return (
       <section className="mis-listas-state-card">
         <p className="mis-listas-kicker">Mis listas</p>
-        <h2>Inicia sesion para abrir tus colecciones</h2>
+        <h2>Inicia sesión para abrir tus colecciones</h2>
         <p>Guarda favoritas, pendientes y maratones en un espacio siempre a mano.</p>
       </section>
     )
@@ -173,19 +173,19 @@ function MisListas() {
           <p className="mis-listas-kicker">Tus colecciones</p>
           <h1>Listas con personalidad propia</h1>
           <p>
-            Reune favoritas, pendientes y descubrimientos en un espacio comodo para volver cuando
+            Reúne favoritas, pendientes y descubrimientos en un espacio cómodo para volver cuando
             quieras.
           </p>
 
           <div className="mis-listas-hero-meta">
             <span className="mis-listas-meta-pill">{listas.length} listas</span>
             <span className="mis-listas-meta-pill">{totalSeriesGuardadas} series guardadas</span>
-            <span className="mis-listas-meta-pill is-soft">{seriesUnicas} titulos unicos</span>
+            <span className="mis-listas-meta-pill is-soft">{seriesUnicas} títulos únicos</span>
           </div>
 
           <div className="mis-listas-actions">
             <button className="mis-listas-btn-primary" onClick={() => navigate('/catalogo')}>
-              Explorar catalogo
+              Explorar catálogo
             </button>
             <button className="mis-listas-btn-secondary" onClick={() => navigate('/perfil')}>
               Volver al perfil
@@ -203,8 +203,8 @@ function MisListas() {
             <strong>{seriesCompletadas}</strong>
           </div>
           <div className="mis-listas-detail-card">
-            <span className="mis-listas-detail-label">Mas extensa</span>
-            <strong>{listasDestacadas[0]?.tipoLista || 'Aun por crear'}</strong>
+            <span className="mis-listas-detail-label">Más extensa</span>
+            <strong>{listasDestacadas[0]?.tipoLista || 'Aún por crear'}</strong>
           </div>
         </div>
       </header>
@@ -220,7 +220,7 @@ function MisListas() {
         </article>
         <article className="mis-listas-highlight-card">
           <span className="mis-listas-stat-value">{seriesUnicas}</span>
-          <span className="mis-listas-stat-label">Titulos unicos</span>
+          <span className="mis-listas-stat-label">Títulos únicos</span>
         </article>
         <article className="mis-listas-highlight-card">
           <span className="mis-listas-stat-value">{seriesCompletadas}</span>
@@ -232,9 +232,9 @@ function MisListas() {
         <article className="mis-listas-panel mis-listas-panel-featured">
           <div className="mis-listas-panel-header">
             <p className="mis-listas-panel-kicker">Nueva lista</p>
-            <h2>Crea una nueva coleccion</h2>
+            <h2>Crea una nueva colección</h2>
             <p className="mis-listas-panel-text">
-              Ponle nombre a tu proxima lista y empieza a llenarla desde aqui o desde cualquier
+              Ponle nombre a tu próxima lista y empieza a llenarla desde aquí o desde cualquier
               ficha de serie.
             </p>
           </div>
@@ -251,12 +251,12 @@ function MisListas() {
             </label>
 
             <label className="mis-listas-field">
-              <span>Descripcion</span>
+              <span>Descripción</span>
               <input
                 type="text"
                 value={descripcionLista}
                 onChange={(event) => setDescripcionLista(event.target.value)}
-                placeholder="Que historias quieres reunir aqui"
+                placeholder="Qué historias quieres reunir aquí"
               />
             </label>
 
@@ -272,9 +272,9 @@ function MisListas() {
           <article className="mis-listas-panel mis-listas-panel-compact">
             <div className="mis-listas-panel-header">
               <p className="mis-listas-panel-kicker">Destacadas</p>
-              <h2>Tus colecciones mas activas</h2>
+              <h2>Tus colecciones más activas</h2>
               <p className="mis-listas-panel-text">
-                Un vistazo rapido a las listas con mas movimiento.
+                Un vistazo rápido a las listas con más movimiento.
               </p>
             </div>
 
@@ -289,7 +289,7 @@ function MisListas() {
               </div>
             ) : (
               <div className="mis-listas-empty-block">
-                <p>Todavia no has creado listas. Empieza con una para tus favoritas.</p>
+                <p>Todavía no has creado listas. Empieza con una para tus favoritas.</p>
               </div>
             )}
           </article>
@@ -297,9 +297,9 @@ function MisListas() {
           <article className="mis-listas-panel mis-listas-panel-compact">
             <div className="mis-listas-panel-header">
               <p className="mis-listas-panel-kicker">Moverme por la plataforma</p>
-              <h2>Acciones rapidas</h2>
+              <h2>Acciones rápidas</h2>
               <p className="mis-listas-panel-text">
-                Salta entre tus listas, el perfil y el catalogo sin perder el hilo.
+                Salta entre tus listas, el perfil y el catálogo sin perder el hilo.
               </p>
             </div>
 
@@ -329,7 +329,7 @@ function MisListas() {
           <h2>Todas tus listas en un vistazo</h2>
         </div>
         <p className="mis-listas-section-copy">
-          Cada coleccion conserva su propio estilo para que encuentres rapido lo que buscas.
+          Cada colección conserva su propio estilo para que encuentres rápido lo que buscas.
         </p>
       </section>
 
@@ -342,7 +342,7 @@ function MisListas() {
                   <p className="mis-listas-kicker">Mi lista</p>
                   <h2>{lista.tipoLista}</h2>
                   <p className="mis-lista-meta">
-                    {lista.descripcion || 'Una coleccion lista para seguir creciendo.'}
+                    {lista.descripcion || 'Una colección lista para seguir creciendo.'}
                   </p>
                 </div>
 
@@ -395,13 +395,13 @@ function MisListas() {
                 </>
               ) : (
                 <div className="mis-listas-empty-block">
-                  <p>Esta lista todavia esta vacia.</p>
+                  <p>Esta lista todavía está vacía.</p>
                   <button
                     type="button"
                     className="mis-listas-btn-secondary"
                     onClick={() => navigate('/catalogo')}
                   >
-                    Buscar series para anadir
+                    Buscar series para añadir
                   </button>
                 </div>
               )}
@@ -409,10 +409,10 @@ function MisListas() {
           ))
         ) : (
           <section className="mis-listas-state-card">
-            <p className="mis-listas-kicker">Sin contenido todavia</p>
-            <h2>Aun no has creado listas</h2>
+            <p className="mis-listas-kicker">Sin contenido todavía</p>
+            <h2>Aún no has creado listas</h2>
             <p>
-              Empieza con una coleccion para tus favoritas, pendientes o maratones y completa tu
+              Empieza con una colección para tus favoritas, pendientes o maratones y completa tu
               biblioteca poco a poco.
             </p>
           </section>

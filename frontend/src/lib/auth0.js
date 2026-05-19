@@ -53,6 +53,10 @@ export function clearAuthSession() {
   localStorage.removeItem(AUTH_STORAGE_KEY)
 }
 
-export function getRedirectPathForRole(role) {
+export function getRedirectPathForRole(role, estadoCuenta) {
+  if (estadoCuenta === 'Suspendida') {
+    return '/cuenta-suspendida'
+  }
+
   return role === 'admin' ? '/panel-admin' : '/catalogo'
 }

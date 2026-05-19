@@ -43,7 +43,10 @@ function AdministrarComentarios() {
       await updateReporteEstado(reporte.id, nuevoEstado)
 
       if (nuevoEstado === 'ACEPTADO') {
-        const comentarioId = reporte.comentarioId ?? reporte.comentario?.id
+        const comentarioId =
+          reporte.comentarioId ??
+          reporte.comentarioDetalle?.id ??
+          (typeof reporte.comentario === 'number' ? reporte.comentario : reporte.comentario?.id)
         if (comentarioId) {
           await deleteComentario(comentarioId)
         }
@@ -99,7 +102,12 @@ function AdministrarComentarios() {
             <tbody>
               {reportes.map((reporte) => {
                 const comentarioTexto =
-                  reporte.comentario?.contenido || reporte.comentario?.texto || reporte.comentarioId || 'No disponible'
+                  reporte.comentarioDetalle?.contenido ||
+                  reporte.comentario?.contenido ||
+                  reporte.comentario?.texto ||
+                  reporte.comentarioId ||
+                  reporte.comentario ||
+                  'No disponible'
                 return (
                   <tr key={reporte.id}>
                     <td>{reporte.id}</td>

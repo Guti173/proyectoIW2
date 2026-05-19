@@ -110,6 +110,9 @@ export const getSeriesByGenero = (generoId) =>
   request('/serie/', { params: { genero: generoId } })
 
 export const syncCurrentUser = () => request('/user/sync/', { method: 'POST' })
+export const getUsers = () => request('/user/')
+export const updateUser = (userId, data) =>
+  request(`/user/${userId}/`, { method: 'PATCH', data })
 export const getCurrentUserProfile = () => request('/user/me/')
 export const updateCurrentUserProfile = (data) =>
   request('/user/me/', { method: 'PATCH', data })

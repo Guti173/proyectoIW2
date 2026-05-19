@@ -171,7 +171,7 @@ function normalizeStoredList(list, index) {
 function normalizeSerieSnapshot(serie) {
   return {
     pk: getSerieId(serie),
-    titulo: serie.titulo || 'Serie sin titulo',
+    titulo: serie.titulo || 'Serie sin título',
     fechaEstreno: serie.fechaEstreno || null,
     valoracionMedia: Number(serie.valoracionMedia ?? 0),
     imagenPortada: serie.imagenPortada || '',

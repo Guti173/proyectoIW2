@@ -8,27 +8,29 @@ import Catalogo from "./pages/Catalogo";
 import SerieDetalle from "./pages/SerieDetalle";
 import ReportarComentario from "./pages/ReportarComentario";
 import AdministrarComentarios from "./pages/AdministrarComentarios";
+import AdminUsuarios from './pages/AdminUsuarios'
 import Perfil from './pages/Perfil'
 import MisListas from './pages/MisListas'
 import AdminSeries from "./pages/AdminSeries";
 import { clearAuthSession, getStoredAuthSession } from './lib/auth0'
 
 const appNavigation = [
-  { to: '/catalogo', label: 'Catalogo' },
+  { to: '/catalogo', label: 'Catálogo' },
   { to: '/perfil', label: 'Perfil' },
   { to: '/listas', label: 'Mis listas' },
 ]
 
 const adminNavigation = [
   ...appNavigation,
-  { to: '/panel-admin', label: 'Administrar Series' },
-  { to: '/admin-comentarios', label: 'Administrar Comentarios' },
+  { to: '/panel-admin', label: 'Administrar series' },
+  { to: '/admin-comentarios', label: 'Administrar comentarios' },
+  { to: '/admin-usuarios', label: 'Administrar usuarios' },
 ]
 
 const guestNavigation = [
-  { to: '/', label: 'Home' },
+  { to: '/', label: 'Inicio' },
   ...appNavigation,
-  { to: '/login', label: 'Login' },
+  { to: '/login', label: 'Iniciar sesión' },
   { to: '/registro', label: 'Registro' },
 ]
 
@@ -38,8 +40,15 @@ function App() {
   const isAuthenticated = Boolean(authSession?.profile)
   const profile = authSession?.profile
   const isAdmin = profile?.role?.toLowerCase() === 'admin' || profile?.is_superuser || profile?.is_staff
-  const visibleNavigation = isAuthenticated ? (isAdmin ? adminNavigation : appNavigation) : guestNavigation
-  const brandTarget = isAuthenticated ? '/catalogo' : '/'
+  const isSuspended = profile?.estadoCuenta === 'Suspendida'
+  const visibleNavigation = isAuthenticated
+    ? isSuspended
+      ? []
+      : isAdmin
+        ? adminNavigation
+        : appNavigation
+    : guestNavigation
+  const brandTarget = isAuthenticated ? (isSuspended ? '/cuenta-suspendida' : '/catalogo') : '/'
 
   const handleLogout = () => {
     clearAuthSession()
@@ -55,7 +64,7 @@ function App() {
             <img src={isdbLogo} alt="ISDB" className="site-brand-image" />
           </NavLink>
 
-          <nav className="main-nav" aria-label="Navegacion principal">
+          <nav className="main-nav" aria-label="Navegación principal">
             {visibleNavigation.map((item) => (
               <NavLink
                 key={item.to}
@@ -71,7 +80,7 @@ function App() {
 
             {isAuthenticated ? (
               <button className="nav-link nav-logout-button" onClick={handleLogout}>
-                Cerrar sesion
+                Cerrar sesión
               </button>
             ) : null}
           </nav>
@@ -83,8 +92,16 @@ function App() {
 
           <Route
             path="/"
-            element={isAuthenticated ? <Navigate to="/catalogo" replace /> : <HomePage />}
+            element={
+              isAuthenticated ? (
+                <Navigate to={isSuspended ? '/cuenta-suspendida' : '/catalogo'} replace />
+              ) : (
+                <HomePage />
+              )
+            }
           />
+
+          <Route path="/cuenta-suspendida" element={<SuspendedPage />} />
 
 
           <Route path="/catalogo" element={<Catalogo />} />
@@ -100,6 +117,7 @@ function App() {
           <Route element={<ProtectedRoute adminOnly />}>
             <Route path="/admin-comentarios" element={<AdministrarComentarios />} />
             <Route path="/panel-admin" element={<AdminSeries />} />
+            <Route path="/admin-usuarios" element={<AdminUsuarios />} />
           </Route>
 
           <Route path="/perfil" element={<Perfil />} />
@@ -111,7 +129,7 @@ function App() {
             path="/login"
             element={
               isAuthenticated ? (
-                <Navigate to="/catalogo" replace />
+                <Navigate to={isSuspended ? '/cuenta-suspendida' : '/catalogo'} replace />
               ) : (
                 <AuthPage initialScreen="login" />
               )
@@ -121,7 +139,7 @@ function App() {
             path="/registro"
             element={
               isAuthenticated ? (
-                <Navigate to="/catalogo" replace />
+                <Navigate to={isSuspended ? '/cuenta-suspendida' : '/catalogo'} replace />
               ) : (
                 <AuthPage initialScreen="signUp" />
               )
@@ -139,9 +157,9 @@ function HomePage() {
     <section className="home-panel" aria-label="Portada de ISDB">
       <div className="home-copy">
         <p className="home-kicker">Tu archivo personal de series</p>
-        <h1>Bienvenido a ISB</h1>
+        <h1>Bienvenido a ISDB</h1>
         <p className="home-lead">
-          ISDB reune catalogo, listas personales, comentarios y progreso de episodios para tener
+          ISDB reúne catálogo, listas personales, comentarios y progreso de episodios para tener
           tus series controladas en un solo sitio.
         </p>
 
@@ -186,6 +204,19 @@ function HomePage() {
           </div>
         </div>
       </div>
+    </section>
+  )
+}
+
+function SuspendedPage() {
+  return (
+    <section className="account-state-panel" aria-label="Cuenta suspendida">
+      <p className="home-kicker">Cuenta suspendida</p>
+      <h1>Tu cuenta no está activa</h1>
+      <p>
+        Un administrador ha suspendido esta cuenta. Mientras este estado siga activo, no podrás
+        usar las funciones privadas de ISDB.
+      </p>
     </section>
   )
 }

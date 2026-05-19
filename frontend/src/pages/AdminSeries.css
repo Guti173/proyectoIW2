@@ -4,7 +4,10 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #f8fafc;
+  background: rgba(255, 251, 246, 0.82);
+  border: 1px solid rgba(14, 34, 51, 0.1);
+  box-shadow: 0 26px 70px rgba(14, 34, 51, 0.08);
+  backdrop-filter: blur(12px);
   border-radius: 16px;
 }
 
@@ -14,7 +17,7 @@
   font-weight: 800;
 }
 
-/* Tabs de navegaciÃ³n */
+/* Tabs de navegación */
 .tabs {
   display: flex;
   gap: 10px;
@@ -162,7 +165,7 @@
   border-radius: 4px;
 }
 
-/* Botones de acciÃ³n */
+/* Botones de acción */
 .btn-edit {
   background: #3b82f6;
   color: white;

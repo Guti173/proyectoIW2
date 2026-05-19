@@ -2,15 +2,15 @@ import { useNavigate } from "react-router-dom";
 import "./SerieCard.css";
 
 const SerieCard = ({ id, titulo, fechaEstreno, valoracionMedia = 0, imagen, estado }) => {
-  const navigate = useNavigate(); // <-- Hook para navegar
+  const navigate = useNavigate();
   const year = fechaEstreno ? new Date(fechaEstreno).getFullYear() : "Desconocido";
   const valoracion = Number(valoracionMedia) ? Number(valoracionMedia).toFixed(1) : "0.0";
+  const estadoLabel = formatEstado(estado);
 
-  // Al hacer clic, enviamos al usuario a /series/1 (o el ID que sea)
   return (
     <div className="serie-card" onClick={() => navigate(`/series/${id}`)}>
       <div className="serie-img-container">
-        {estado && <span className="serie-badge">{estado}</span>}
+        {estadoLabel && <span className="serie-badge">{estadoLabel}</span>}
         <img src={imagen} alt={titulo} className="serie-img" />
       </div>
 
@@ -29,5 +29,13 @@ const SerieCard = ({ id, titulo, fechaEstreno, valoracionMedia = 0, imagen, esta
     </div>
   );
 };
+
+function formatEstado(value) {
+  if (value === 'En emision') {
+    return 'En emisión';
+  }
+
+  return value;
+}
 
 export default SerieCard;

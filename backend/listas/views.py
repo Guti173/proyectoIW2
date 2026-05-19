@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .models import ListaUsuario, ProgresoSerie
 from .serializers import ListaUsuarioSerializer, ProgresoSerieSerializer
 from user.auth import get_current_user
+from user.permissions import require_active_user
 from serie.models import Serie
 
 
@@ -38,6 +39,10 @@ class ListaUsuarioView(viewsets.ModelViewSet):
     queryset = ListaUsuario.objects.all()
     serializer_class = ListaUsuarioSerializer
 
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        require_active_user(request)
+
     def get_queryset(self):
         queryset = ListaUsuario.objects.prefetch_related('series').select_related('user').all()
         user = get_current_user(self.request, ensure_exists=False)
@@ -45,7 +50,7 @@ class ListaUsuarioView(viewsets.ModelViewSet):
         if user is not None:
             return queryset.filter(user=user)
 
-        return queryset
+        return queryset.none()
 
     def perform_create(self, serializer):
         user = get_current_user(self.request)
@@ -102,6 +107,10 @@ class ProgresoSerieView(viewsets.ModelViewSet):
     queryset = ProgresoSerie.objects.all()
     serializer_class = ProgresoSerieSerializer
 
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        require_active_user(request)
+
     def get_queryset(self):
         queryset = ProgresoSerie.objects.select_related('user', 'serie').all()
         try:
@@ -111,6 +120,8 @@ class ProgresoSerieView(viewsets.ModelViewSet):
 
         if user is not None:
             queryset = queryset.filter(user=user)
+        else:
+            queryset = queryset.none()
 
         serie_id = self.request.GET.get('serieId') or self.request.GET.get('serie')
         if serie_id:
@@ -184,7 +195,7 @@ class ProgresoSerieView(viewsets.ModelViewSet):
             episodios_vistos = int(request.data.get('episodiosVistos', 0))
         except (TypeError, ValueError):
             return Response(
-                {'detail': 'episodiosVistos debe ser un numero entero.'},
+                {'detail': 'episodiosVistos debe ser un número entero.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

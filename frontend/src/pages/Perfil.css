@@ -68,31 +68,6 @@
   padding: 38px;
 }
 
-.perfil-hero::before,
-.perfil-hero::after {
-  content: '';
-  position: absolute;
-  inset: auto;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.perfil-hero::before {
-  top: -90px;
-  right: -70px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 149, 112, 0.26), transparent 68%);
-}
-
-.perfil-hero::after {
-  bottom: -130px;
-  left: -90px;
-  width: 340px;
-  height: 340px;
-  background: radial-gradient(circle, rgba(67, 124, 168, 0.18), transparent 70%);
-}
-
 .perfil-hero-main,
 .perfil-highlight-card,
 .perfil-panel,

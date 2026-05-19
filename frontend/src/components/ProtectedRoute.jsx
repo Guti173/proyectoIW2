@@ -10,6 +10,10 @@ function ProtectedRoute({ adminOnly = false }) {
     return <Navigate to="/login" replace />
   }
 
+  if (profile?.estadoCuenta === 'Suspendida') {
+    return <Navigate to="/cuenta-suspendida" replace />
+  }
+
   if (adminOnly) {
     const isAdmin = profile?.role?.toLowerCase() === 'admin' || profile?.is_superuser || profile?.is_staff
     if (!isAdmin) {

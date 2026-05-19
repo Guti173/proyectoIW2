@@ -149,9 +149,9 @@ function Perfil() {
 
   if (!hasAuthProfile) {
     return (
-      <section className="perfil-state-card" aria-label="Sesion requerida">
+      <section className="perfil-state-card" aria-label="Sesión requerida">
         <p className="perfil-state-eyebrow">ISDB</p>
-        <h1>Inicia sesion para ver tu perfil</h1>
+        <h1>Inicia sesión para ver tu perfil</h1>
         <p>Guarda tus listas, retoma tus series y personaliza tu espacio en un solo lugar.</p>
       </section>
     )
@@ -190,7 +190,7 @@ function Perfil() {
     { label: 'Email', value: profile.email || authEmail || 'No disponible' },
     { label: 'Usuario', value: `@${profile.username || 'sin-usuario'}` },
     { label: 'Estado', value: profile.estadoCuenta || 'Activa' },
-    { label: 'Rol', value: profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user') },
+    { label: 'Rol', value: formatRole(profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user')) },
   ]
   const sections = [
     {
@@ -208,7 +208,7 @@ function Perfil() {
     {
       kicker: 'Descubrimiento',
       title: 'Recomendadas para ti',
-      description: 'Una seleccion para seguir ampliando tu biblioteca personal.',
+      description: 'Una selección para seguir ampliando tu biblioteca personal.',
       series: recommendedSeries,
     },
   ]
@@ -252,7 +252,7 @@ function Perfil() {
 
             <div className="perfil-actions">
               <button className="perfil-btn-primary" onClick={() => navigate('/catalogo')}>
-                Explorar catalogo
+                Explorar catálogo
               </button>
               <button className="perfil-btn-secondary" onClick={() => navigate('/listas')}>
                 Gestionar mis listas
@@ -284,7 +284,7 @@ function Perfil() {
       <section className="perfil-overview-grid">
         <article className="perfil-panel perfil-panel-featured">
           <div className="perfil-panel-header">
-            <p className="perfil-panel-kicker">Informacion personal</p>
+            <p className="perfil-panel-kicker">Información personal</p>
             <h2>Editar tu perfil</h2>
             <p className="perfil-panel-text">
               Personaliza tu perfil y haz que tu espacio se sienta realmente tuyo.
@@ -325,7 +325,7 @@ function Perfil() {
               />
             </label>
             <label className="perfil-form-field">
-              <span>Contrasena</span>
+              <span>Contraseña</span>
               <input
                 type="password"
                 value={formData.password}
@@ -348,7 +348,7 @@ function Perfil() {
               </div>
               <div className="perfil-system-card">
                 <span className="perfil-system-label">Rol</span>
-                <strong>{profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user')}</strong>
+                <strong>{formatRole(profile.role || (profile.is_superuser || profile.is_staff ? 'admin' : 'user'))}</strong>
               </div>
               <div className="perfil-system-card perfil-system-card-wide">
                 <span className="perfil-system-label">Acceso vinculado</span>
@@ -370,7 +370,7 @@ function Perfil() {
               <p className="perfil-panel-kicker">Listas y seguimiento</p>
               <h2>Tu actividad</h2>
               <p className="perfil-panel-text">
-                Un vistazo rapido a tus colecciones y al contenido que tienes a medias.
+                Un vistazo rápido a tus colecciones y al contenido que tienes a medias.
               </p>
             </div>
 
@@ -396,7 +396,7 @@ function Perfil() {
               </div>
             ) : (
               <div className="perfil-empty-block">
-                <p>Todavia no tienes listas creadas. Puedes empezar desde cualquier serie.</p>
+                <p>Todavía no tienes listas creadas. Puedes empezar desde cualquier serie.</p>
               </div>
             )}
 
@@ -415,21 +415,21 @@ function Perfil() {
           <article className="perfil-panel perfil-panel-compact">
             <div className="perfil-panel-header">
               <p className="perfil-panel-kicker">Acciones de cuenta</p>
-              <h2>Gestion rapida</h2>
+              <h2>Gestión rápida</h2>
               <p className="perfil-panel-text">
-                Atajos utiles para moverte entre tus listas, tu perfil y nuevas series.
+                Atajos útiles para moverte entre tus listas, tu perfil y nuevas series.
               </p>
             </div>
 
             <div className="perfil-action-stack">
               <button className="perfil-btn-secondary" onClick={() => navigate('/listas')}>
-                Abrir Mis listas
+                Abrir mis listas
               </button>
               <button className="perfil-btn-secondary" onClick={() => navigate('/catalogo')}>
                 Buscar nuevas series
               </button>
               <button className="perfil-btn-secondary" onClick={() => navigate(-1)}>
-                Volver a la pagina anterior
+                Volver a la página anterior
               </button>
             </div>
 
@@ -480,8 +480,8 @@ function Perfil() {
               <div className="perfil-empty-block">
                 <p>
                   {section.title === 'Tus listas'
-                    ? 'Todavia no has guardado series en listas.'
-                    : 'No hay datos para esta seccion todavia.'}
+                    ? 'Todavía no has guardado series en listas.'
+                    : 'No hay datos para esta sección todavía.'}
                 </p>
               </div>
             )}
@@ -517,6 +517,10 @@ function getInitials(name) {
     .toUpperCase()
 
   return initials || 'IS'
+}
+
+function formatRole(role) {
+  return role === 'admin' ? 'Administrador' : 'Usuario'
 }
 
 export default Perfil

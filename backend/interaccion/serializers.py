@@ -21,7 +21,10 @@ class ValoracionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReporteComentarioSerializer(serializers.ModelSerializer):
+    comentarioDetalle = ComentarioSerializer(source='comentario', read_only=True)
+    comentarioId = serializers.IntegerField(source='comentario_id', read_only=True)
+
     class Meta:
         model = ReporteComentario
         fields = '__all__'
-        read_only_fields = ('usuario', 'fechaReporte', 'estado')
+        read_only_fields = ('usuario', 'fechaReporte')

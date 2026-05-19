@@ -82,6 +82,7 @@
 }
 
 .home-panel,
+.account-state-panel,
 .page-card {
   position: relative;
   overflow: hidden;
@@ -99,6 +100,31 @@
   align-items: center;
   gap: 34px;
   padding: 54px;
+}
+
+.account-state-panel {
+  min-height: calc(100vh - 210px);
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 12px;
+  padding: 44px;
+}
+
+.account-state-panel h1 {
+  margin: 0;
+  max-width: 12ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: 0.92;
+}
+
+.account-state-panel p:last-child {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--muted);
+  line-height: 1.75;
 }
 
 .home-copy,
@@ -386,11 +412,17 @@
   }
 
   .home-panel,
+  .account-state-panel,
   .page-card {
     border-radius: 26px;
   }
 
   .home-panel {
+    min-height: calc(100vh - 290px);
+    padding: 28px 18px;
+  }
+
+  .account-state-panel {
     min-height: calc(100vh - 290px);
     padding: 28px 18px;
   }

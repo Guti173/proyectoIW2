@@ -104,6 +104,7 @@ function SerieDetalle() {
   ).length
   const totalEpisodios = Math.max(Number(serie?.numeroEpisodios ?? 0), 0)
   const episodiosVistos = Math.max(Number(progreso?.episodiosVistos ?? 0), 0)
+  const estadoSerieLabel = formatEstadoSerie(serie?.estado)
   const progresoCompletado = Boolean(
     progreso && totalEpisodios > 0 && episodiosVistos >= totalEpisodios,
   )
@@ -119,7 +120,7 @@ function SerieDetalle() {
     }
 
     if (!isAuthenticated) {
-      setMensajeComentario('Inicia sesion para publicar comentarios.')
+      setMensajeComentario('Inicia sesión para publicar comentarios.')
       return
     }
 
@@ -141,7 +142,7 @@ function SerieDetalle() {
     event.preventDefault()
 
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesion para crear listas.')
+      setMensajeLista('Inicia sesión para crear listas.')
       return
     }
 
@@ -162,7 +163,7 @@ function SerieDetalle() {
 
   const handleToggleSerieEnLista = async (listId) => {
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesion para usar tus listas.')
+      setMensajeLista('Inicia sesión para usar tus listas.')
       return
     }
 
@@ -183,8 +184,8 @@ function SerieDetalle() {
       setListas((prev) => prev.map((list) => (list.id === listId ? updatedList : list)))
       setMensajeLista(
         serieGuardada
-          ? `"${serie.titulo}" ya no esta en "${selectedList.tipoLista}".`
-          : `"${serie.titulo}" se ha anadido a "${selectedList.tipoLista}".`,
+          ? `"${serie.titulo}" ya no está en "${selectedList.tipoLista}".`
+          : `"${serie.titulo}" se ha añadido a "${selectedList.tipoLista}".`,
       )
     } catch (error) {
       setMensajeLista(error.message || 'No se pudo actualizar la lista.')
@@ -202,7 +203,7 @@ function SerieDetalle() {
 
   const handleComenzarSerie = async () => {
     if (!isAuthenticated) {
-      setMensajeProgreso('Inicia sesion para comenzar la serie.')
+      setMensajeProgreso('Inicia sesión para comenzar la serie.')
       return
     }
 
@@ -217,7 +218,7 @@ function SerieDetalle() {
       const nextProgress = await startSerieProgress(serieId)
       setProgreso(nextProgress)
       await refreshUserLists()
-      setMensajeProgreso('Serie comenzada. Se ha anadido a tu lista Viendo.')
+      setMensajeProgreso('Serie comenzada. Se ha añadido a tu lista Viendo.')
     } catch (error) {
       setMensajeProgreso(error.message || 'No se pudo comenzar la serie.')
     } finally {
@@ -227,7 +228,7 @@ function SerieDetalle() {
 
   const handleActualizarEpisodios = async (nextValue) => {
     if (!isAuthenticated) {
-      setMensajeProgreso('Inicia sesion para actualizar el progreso.')
+      setMensajeProgreso('Inicia sesión para actualizar el progreso.')
       return
     }
 
@@ -276,11 +277,11 @@ function SerieDetalle() {
         </button>
 
         <div className="hero-content">
-          <span className="status-pill">{serie.estado}</span>
+          <span className="status-pill">{estadoSerieLabel}</span>
           <h1 className="hero-title">{serie.titulo}</h1>
 
           <div className="hero-meta">
-            <span className="rating-big">⭐ {serie.valoracionMedia}</span>
+            <span className="rating-big">★ {serie.valoracionMedia}</span>
             <span>•</span>
             <span>{new Date(serie.fechaEstreno).getFullYear()}</span>
             <span>•</span>
@@ -304,7 +305,7 @@ function SerieDetalle() {
             >
               {listasConSerie
                 ? `Guardada en ${listasConSerie} lista${listasConSerie > 1 ? 's' : ''}`
-                : '+ Anadir a mi lista'}
+                : '+ Añadir a mi lista'}
             </button>
           </div>
 
@@ -369,7 +370,7 @@ function SerieDetalle() {
           ) : null}
 
           {panelListasAbierto ? (
-            <section className="lista-panel" aria-label="Gestion de listas para la serie actual">
+            <section className="lista-panel" aria-label="Gestión de listas para la serie actual">
               <div className="lista-panel-heading">
                 <div>
                   <h3>Guardar en tus listas</h3>
@@ -418,14 +419,14 @@ function SerieDetalle() {
                           className={serieGuardada ? 'lista-toggle-btn is-active' : 'lista-toggle-btn'}
                           onClick={() => handleToggleSerieEnLista(list.id)}
                         >
-                          {serieGuardada ? 'Quitar' : 'Guardar aqui'}
+                          {serieGuardada ? 'Quitar' : 'Guardar aquí'}
                         </button>
                       </article>
                     )
                   })
                 ) : (
                   <div className="lista-selector-empty">
-                    <p>Aun no tienes listas creadas.</p>
+                    <p>Aún no tienes listas creadas.</p>
                     <span>Usa el formulario superior para crear la primera y guardar esta serie.</span>
                   </div>
                 )}
@@ -444,7 +445,7 @@ function SerieDetalle() {
             </div>
 
             <div className="detalle-card generos-section">
-              <h3>Generos</h3>
+              <h3>Géneros</h3>
               <div className="generos-list">
                 {generoNames.length ? (
                   generoNames.map((nombre) => (
@@ -453,7 +454,7 @@ function SerieDetalle() {
                     </span>
                   ))
                 ) : (
-                  <span className="no-generos">Sin generos asignados</span>
+                  <span className="no-generos">Sin géneros asignados</span>
                 )}
               </div>
             </div>
@@ -463,7 +464,7 @@ function SerieDetalle() {
 
               <form className="comentario-form" onSubmit={handleEnviarComentario}>
                 <textarea
-                  placeholder="Que te ha parecido esta serie?"
+                  placeholder="¿Qué te ha parecido esta serie?"
                   value={nuevoComentario}
                   onChange={(event) => setNuevoComentario(event.target.value)}
                   rows="3"
@@ -491,7 +492,7 @@ function SerieDetalle() {
                           className="comentario-reportar"
                           onClick={() => navigate(`/reportar-comentario/${comentario.id}`)}
                         >
-                          🚩 Reportar
+                          Reportar
                         </button>
                       </div>
                     </div>
@@ -504,11 +505,11 @@ function SerieDetalle() {
 
           <aside className="detalle-sidebar">
             <div className="info-card-tecnica">
-              <h4>Informacion tecnica</h4>
+              <h4>Información técnica</h4>
 
               <div className="info-item">
                 <span className="info-label">Estado</span>
-                <span className="info-value">{serie.estado}</span>
+                <span className="info-value">{estadoSerieLabel}</span>
               </div>
 
               <div className="info-item">
@@ -529,7 +530,7 @@ function SerieDetalle() {
               ) : null}
 
               <div className="info-item">
-                <span className="info-label">Valoracion</span>
+                <span className="info-label">Valoración</span>
                 <span className="info-value">{serie.valoracionMedia}/10</span>
               </div>
 
@@ -555,7 +556,7 @@ function SerieDetalle() {
               </div>
 
               <button className="btn-secondary detalle-sidebar-btn" onClick={() => navigate('/listas')}>
-                Abrir Mis listas
+                Abrir mis listas
               </button>
             </div>
           </aside>
@@ -575,6 +576,14 @@ function formatDate(value) {
   } catch {
     return value
   }
+}
+
+function formatEstadoSerie(value) {
+  if (value === 'En emision') {
+    return 'En emisión'
+  }
+
+  return value
 }
 
 export default SerieDetalle

@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .models import User
 from .auth import get_current_user
+from .permissions import require_active_user, require_admin_user
 from .serializers import UserProfileSerializer, UserSerializer
 
 
@@ -36,7 +37,7 @@ def auth_me(request):
 
     if not hasattr(profile, "get"):
         return Response(
-            {"detail": "El perfil autenticado no tiene un formato valido."},
+            {"detail": "El perfil autenticado no tiene un formato válido."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -44,7 +45,7 @@ def auth_me(request):
 
     if not email:
         return Response(
-            {"detail": "No se recibio email del perfil autenticado."},
+            {"detail": "No se recibió email del perfil autenticado."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -74,14 +75,77 @@ class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def list(self, request):
-        result = User.objects.all()
+        require_admin_user(request)
+        result = User.objects.all().order_by('id')
         return Response(self.serializer_class(result, many=True).data)
+
+    def create(self, request, *args, **kwargs):
+        require_admin_user(request)
+        return super().create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        require_admin_user(request)
+        return super().retrieve(request, *args, **kwargs)
+
+    def _is_sensitive_self_update(self, request, instance):
+        try:
+            current_user = get_current_user(request, ensure_exists=False)
+        except Exception:
+            current_user = None
+
+        if current_user is None or current_user.id != instance.id:
+            return False
+
+        sensitive_fields = ('role', 'estadoCuenta')
+
+        return any(
+            field in request.data and request.data.get(field) != getattr(instance, field)
+            for field in sensitive_fields
+        )
+
+    def update(self, request, *args, **kwargs):
+        require_admin_user(request)
+        instance = self.get_object()
+
+        if self._is_sensitive_self_update(request, instance):
+            return Response(
+                {'detail': 'No puedes cambiar tu propio rol o estado de cuenta desde aquí.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        require_admin_user(request)
+        instance = self.get_object()
+
+        if self._is_sensitive_self_update(request, instance):
+            return Response(
+                {'detail': 'No puedes cambiar tu propio rol o estado de cuenta desde aquí.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        require_admin_user(request)
+        instance = self.get_object()
+        current_user = get_current_user(request, ensure_exists=False)
+
+        if current_user is not None and current_user.id == instance.id:
+            return Response(
+                {'detail': 'No puedes eliminar tu propia cuenta desde aquí.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().destroy(request, *args, **kwargs)
 
     @action(detail=False, methods=['get', 'patch'], url_path='me')
     def me(self, request):
         user = get_current_user(request)
 
         if request.method.lower() == 'patch':
+            require_active_user(request)
             serializer = UserProfileSerializer(user, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()

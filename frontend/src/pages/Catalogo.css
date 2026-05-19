@@ -3,7 +3,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 24px 40px 80px;
-  background: #f1f5f9;
+  background: transparent;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -37,21 +37,59 @@
 }
 
 .search-tool-bar {
-  display: flex;
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 12px;
+  border-radius: 18px;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
   border: 1px solid #e2e8f0;
   gap: 12px;
   align-items: center;
 }
 
 .search-group {
-  flex: 2;
   display: flex;
   align-items: center;
-  padding-left: 15px;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid transparent;
+}
+
+.search-group:focus-within {
+  border-color: rgba(50, 95, 127, 0.3);
+  box-shadow: 0 0 0 3px rgba(50, 95, 127, 0.12);
+}
+
+.search-icon {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+}
+
+.search-icon::before {
+  content: '';
+  position: absolute;
+  inset: 1px 5px 5px 1px;
+  border: 2px solid #64748b;
+  border-radius: 50%;
+}
+
+.search-icon::after {
+  content: '';
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: #64748b;
+  transform: rotate(45deg);
+  transform-origin: center;
 }
 
 .search-input {
@@ -59,15 +97,60 @@
   border: none;
   outline: none;
   font-size: 1rem;
-  padding: 12px 0;
+  padding: 0;
+  color: #0f172a;
+  background: transparent;
+}
+
+.search-input::placeholder,
+.year-input::placeholder {
+  color: #64748b;
 }
 
 .filter-group {
   display: flex;
-  flex: 1;
+  align-items: center;
   gap: 10px;
   border-left: 1px solid #f1f5f9;
-  padding-left: 12px;
+  padding-left: 14px;
+}
+
+.filter-select,
+.year-input {
+  min-height: 52px;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.filter-select {
+  min-width: 190px;
+  padding: 0 42px 0 14px;
+}
+
+.year-input {
+  width: 112px;
+  padding: 0 14px;
+}
+
+.filter-select:focus,
+.year-input:focus {
+  border-color: rgba(50, 95, 127, 0.36);
+  box-shadow: 0 0 0 3px rgba(50, 95, 127, 0.12);
+}
+
+.filter-select:hover,
+.year-input:hover {
+  background: #f8fafc;
 }
 
 /* Sliders Horizontales[cite: 12] */
@@ -221,5 +304,21 @@
 
 @media (max-width: 768px) {
   .catalog-grid-mini { grid-template-columns: repeat(3, 1fr); }
-  .search-tool-bar { flex-direction: column; }
+  .search-tool-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-group {
+    border-left: none;
+    border-top: 1px solid #f1f5f9;
+    padding-left: 0;
+    padding-top: 12px;
+    width: 100%;
+  }
+
+  .filter-select,
+  .year-input {
+    width: 100%;
+    min-width: 0;
+  }
 }

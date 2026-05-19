@@ -4,7 +4,7 @@ import { getSeries, getGeneros } from "../api/client";
 import "./Catalogo.css";
 
 function Catalogo() {
-  // 1. Definición de estados iniciales
+  // Estados iniciales
   const [series, setSeries] = useState([]);
   const [generos, setGeneros] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ function Catalogo() {
     "Thriller", "Anime", "Crime", "Mystery", "Fantasy", "Adventure"
   ];
 
-  // 2. Carga de datos inicial
+  // Carga de datos inicial
   useEffect(() => {
     async function loadData() {
       setLoading(true);
@@ -41,7 +41,7 @@ function Catalogo() {
     loadData();
   }, []);
 
-  // 3. Lógica de filtrado (Debe estar ANTES de los efectos que la usan)[cite: 13]
+  // Lógica de filtrado
   const seriesFiltradas = series.filter(s => {
     const coincideNombre = s.titulo.toLowerCase().includes(busquedaNombre.toLowerCase());
     const coincideGenero = filtroGenero ? s.generos?.includes(parseInt(filtroGenero)) : true;
@@ -50,12 +50,12 @@ function Catalogo() {
     return coincideNombre && coincideGenero && coincideAnio;
   });
 
-  // 4. Efectos dependientes del filtrado
+  // Efectos dependientes del filtrado
   useEffect(() => {
     setVisibleCount(20);
   }, [busquedaNombre, filtroGenero, filtroAnio]);
 
-  // Funciones de paginación[cite: 13]
+  // Funciones de paginación
   const cargarMas = () => setVisibleCount(prev => prev + 20);
   const verTodo = () => setVisibleCount(seriesFiltradas.length);
 
@@ -80,13 +80,13 @@ function Catalogo() {
       <header className="catalogo-hero">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Tu Biblioteca Personal</h1>
+            <h1>Tu biblioteca personal</h1>
             <p>Explora, busca y filtra tus historias favoritas sincronizadas en tiempo real.</p>
           </div>
 
           <div className="search-tool-bar">
             <div className="search-group main-search">
-              <span className="search-icon">??</span>
+              <span className="search-icon" aria-hidden="true"></span>
               <input
                 type="text"
                 placeholder="Buscar por título..."
@@ -127,7 +127,7 @@ function Catalogo() {
         {tendencias.length > 0 && (
           <section className="row-section">
             <div className="row-header">
-              <h3 className="row-title">Tendencias Globales</h3>
+              <h3 className="row-title">Tendencias globales</h3>
               <div className="row-actions">
                 <button
                   type="button"
@@ -156,7 +156,7 @@ function Catalogo() {
           </section>
         )}
 
-        {/* Categorías Dinámicas Destacadas */}
+        {/* Categorías dinámicas destacadas */}
         {generos
           .filter(g => CATEGORIAS_TOP.includes(g.nombre))
           .map(genero => {
@@ -199,11 +199,11 @@ function Catalogo() {
             );
           })}
 
-        {/* SECCIÓN FINAL: EXPLORAR TODO EL CATÁLOGO[cite: 13] */}
+        {/* Explorar todo el catálogo */}
         {seriesFiltradas.length > 0 && (
           <section className="row-section full-catalog-section">
             <div className="row-header">
-              <h3 className="row-title">Explorar Todo el Catálogo</h3>
+              <h3 className="row-title">Explorar todo el catálogo</h3>
               <span className="results-count">
                 Mostrando {seriesVisibles.length} de {seriesFiltradas.length}
               </span>

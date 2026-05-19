@@ -31,7 +31,7 @@ function AuthWidget({ initialScreen = 'login' }) {
 
         if (!Auth0Lock) {
           throw new Error(
-            'No se ha podido cargar Auth0 Lock. Recarga la pagina y comprueba el script del CDN.',
+            'No se ha podido cargar Auth0 Lock. Recarga la página y comprueba el script del CDN.',
           )
         }
 
@@ -69,7 +69,7 @@ function AuthWidget({ initialScreen = 'login' }) {
           setErrorMessage('')
 
           if (!authResult?.accessToken) {
-            setErrorMessage('Auth0 no devolvio un token valido.')
+            setErrorMessage('Auth0 no devolvió un token válido.')
             return
           }
 
@@ -77,7 +77,7 @@ function AuthWidget({ initialScreen = 'login' }) {
             if (error) {
               setErrorMessage(
                 error.description ??
-                  'Se inicio sesion, pero no se pudo recuperar el perfil.',
+                  'Se inició sesión, pero no se pudo recuperar el perfil.',
               )
               return
             }
@@ -104,13 +104,13 @@ function AuthWidget({ initialScreen = 'login' }) {
             }
             
             // 4. Redirigimos. En la siguiente carga, getStoredAuthSession() tendrá el perfil correcto.
-            window.location.assign(getRedirectPathForRole(user?.role))
+            window.location.assign(getRedirectPathForRole(user?.role, user?.estadoCuenta))
           })
         }
 
         const handleAuthorizationError = (error) => {
           setErrorMessage(
-            error?.description ?? 'No se pudo completar la autenticacion con Auth0.',
+            error?.description ?? 'No se pudo completar la autenticación con Auth0.',
           )
         }
 
@@ -120,7 +120,7 @@ function AuthWidget({ initialScreen = 'login' }) {
       } catch (error) {
         if (!isCancelled) {
           setErrorMessage(
-            error?.message ?? 'No se pudo cargar el widget de autenticacion.',
+            error?.message ?? 'No se pudo cargar el widget de autenticación.',
           )
         }
       } finally {

@@ -27,17 +27,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ReporteComentario',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('motivo', models.TextField()),
-                ('fechaReporte', models.DateTimeField(auto_now_add=True)),
-                ('estado', models.CharField(choices=[('PENDIENTE', 'Pendiente'), ('ACEPTADO', 'Aceptado'), ('RECHAZADO', 'Rechazado')], default='PENDIENTE', max_length=20)),
-                ('comentario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='interaccion.comentario')),
-                ('usuario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.user')),
-            ],
-        ),
-        migrations.CreateModel(
             name='Valoracion',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

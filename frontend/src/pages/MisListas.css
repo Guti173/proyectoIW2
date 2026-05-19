@@ -72,30 +72,6 @@
   padding: 38px;
 }
 
-.mis-listas-hero::before,
-.mis-listas-hero::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.mis-listas-hero::before {
-  top: -90px;
-  right: -70px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 149, 112, 0.24), transparent 68%);
-}
-
-.mis-listas-hero::after {
-  bottom: -120px;
-  left: -80px;
-  width: 330px;
-  height: 330px;
-  background: radial-gradient(circle, rgba(67, 124, 168, 0.18), transparent 70%);
-}
-
 .mis-listas-hero-copy,
 .mis-listas-highlight-card,
 .mis-listas-panel,

@@ -93,7 +93,7 @@ function AdminSeries() {
     return titulo.toLowerCase().includes(serieBusqueda.toLowerCase())
   })
 
-  // ============ GENEROS ============
+  // ============ GÉNEROS ============
   const handleSubmitGenero = async (e) => {
     e.preventDefault();
     try {
@@ -105,7 +105,7 @@ function AdminSeries() {
       resetFormGenero();
       setGeneros(await loadGeneros());
     } catch (error) {
-      console.error("Error guardando genero:", error);
+      console.error("Error guardando género:", error);
     }
   };
 
@@ -115,7 +115,7 @@ function AdminSeries() {
   };
 
   const handleDeleteGenero = async (id) => {
-    if (confirm("¿Eliminar este genero?")) {
+    if (confirm("¿Eliminar este género?")) {
       await deleteGenero(id);
       setGeneros(await loadGeneros());
     }
@@ -126,10 +126,9 @@ function AdminSeries() {
     setEditandoGenero(null);
   };
 
-  // ... (El bloque return se mantiene igual que en el original)[cite: 16]
   return (
     <div className="admin-panel">
-      <h1>Gestión de Biblioteca</h1>
+      <h1>Gestión de biblioteca</h1>
 
       <div className="tabs">
         <button
@@ -148,7 +147,7 @@ function AdminSeries() {
 
       {tab === "series" && (
         <div className="tab-content">
-          <h2>{editandoSerie ? "Editar Serie" : "Nueva Serie"}</h2>
+          <h2>{editandoSerie ? "Editar serie" : "Nueva serie"}</h2>
           <form onSubmit={handleSubmitSerie} className="form-admin">
             {/* ... inputs del formulario de series ... */}
             <div className="form-row">
@@ -168,12 +167,12 @@ function AdminSeries() {
                   onChange={e => setFormSerie({...formSerie, estado: e.target.value})}
                 >
                   <option value="">Seleccionar...</option>
-                  <option value="En emision">En emision</option>
+                  <option value="En emision">En emisión</option>
                   <option value="Finalizada">Finalizada</option>
                 </select>
               </div>
             </div>
-            {/* (Omitido por brevedad: resto de campos de entrada igual al original)[cite: 16] */}
+            {/* Resto de campos principales */}
             <div className="form-actions">
               <button type="submit" className="btn-primary">
                 {editandoSerie ? "Actualizar" : "Crear"}
@@ -196,7 +195,6 @@ function AdminSeries() {
           </div>
 
           <table className="admin-table">
-            {/* ... estructura de tabla igual al original ...[cite: 16] */}
             <tbody>
               {seriesFiltradas.map(s => (
                 <tr key={s.id}>
@@ -213,7 +211,7 @@ function AdminSeries() {
       )}
       {tab === "generos" && (
         <div className="tab-content">
-          <h2>{editandoGenero ? "Editar Género" : "Nuevo Género"}</h2>
+          <h2>{editandoGenero ? "Editar género" : "Nuevo género"}</h2>
           <form onSubmit={handleSubmitGenero} className="form-admin">
             <div className="form-row">
               <div className="form-group">
@@ -226,7 +224,7 @@ function AdminSeries() {
                 />
               </div>
               <div className="form-group">
-                <label>Descripcion</label>
+                <label>Descripción</label>
                 <input
                   type="text"
                   value={formGenero.descripcion}
@@ -240,14 +238,14 @@ function AdminSeries() {
               </button>
             </div>
           </form>
-          {/* Tabla de Generos */}
-          <h3>Generos Existentes</h3>
+          {/* Tabla de géneros */}
+          <h3>Géneros existentes</h3>
           <table className="admin-table">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Nombre</th>
-                <th>Descripcion</th>
+                <th>Descripción</th>
                 <th>Acciones</th>
               </tr>
             </thead>
