@@ -12,6 +12,7 @@ import {
   removeSerieFromUserList,
   setSerieProgress,
   startSerieProgress,
+  toggleCommentLike,
 } from '../api/client'
 import { getStoredAuthSession } from '../lib/auth0'
 import './SerieDetalle.css'
@@ -35,6 +36,7 @@ function SerieDetalle() {
   const [mensajeComentario, setMensajeComentario] = useState('')
   const [mensajeProgreso, setMensajeProgreso] = useState('')
   const [actualizandoProgreso, setActualizandoProgreso] = useState(false)
+  const [comentarioLikeId, setComentarioLikeId] = useState(null)
 
   useEffect(() => {
     let isCancelled = false
@@ -120,7 +122,7 @@ function SerieDetalle() {
     }
 
     if (!isAuthenticated) {
-      setMensajeComentario('Inicia sesión para publicar comentarios.')
+      setMensajeComentario('Inicia sesion para publicar comentarios.')
       return
     }
 
@@ -138,11 +140,34 @@ function SerieDetalle() {
     }
   }
 
+  const handleToggleComentarioLike = async (comentarioId) => {
+    if (!isAuthenticated) {
+      setMensajeComentario('Inicia sesion para dar like a comentarios.')
+      return
+    }
+
+    setComentarioLikeId(comentarioId)
+    setMensajeComentario('')
+
+    try {
+      const updatedComentario = await toggleCommentLike(comentarioId)
+      setComentarios((prev) =>
+        prev.map((comentario) =>
+          comentario.id === comentarioId ? updatedComentario : comentario,
+        ),
+      )
+    } catch (error) {
+      setMensajeComentario(error.message || 'No se pudo actualizar el like.')
+    } finally {
+      setComentarioLikeId(null)
+    }
+  }
+
   const handleCrearLista = async (event) => {
     event.preventDefault()
 
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesión para crear listas.')
+      setMensajeLista('Inicia sesion para crear listas.')
       return
     }
 
@@ -163,7 +188,7 @@ function SerieDetalle() {
 
   const handleToggleSerieEnLista = async (listId) => {
     if (!isAuthenticated) {
-      setMensajeLista('Inicia sesión para usar tus listas.')
+      setMensajeLista('Inicia sesion para usar tus listas.')
       return
     }
 
@@ -184,8 +209,8 @@ function SerieDetalle() {
       setListas((prev) => prev.map((list) => (list.id === listId ? updatedList : list)))
       setMensajeLista(
         serieGuardada
-          ? `"${serie.titulo}" ya no está en "${selectedList.tipoLista}".`
-          : `"${serie.titulo}" se ha añadido a "${selectedList.tipoLista}".`,
+          ? `"${serie.titulo}" ya no esta en "${selectedList.tipoLista}".`
+          : `"${serie.titulo}" se ha anadido a "${selectedList.tipoLista}".`,
       )
     } catch (error) {
       setMensajeLista(error.message || 'No se pudo actualizar la lista.')
@@ -201,9 +226,26 @@ function SerieDetalle() {
     }
   }
 
+  const showLoginRequired = (message) => {
+    setPanelListasAbierto(false)
+    setMensajeLista('')
+    setMensajeProgreso(message)
+  }
+
+  const handleAbrirPanelListas = () => {
+    if (!isAuthenticated) {
+      showLoginRequired('Inicia sesion para anadir esta serie a tus listas.')
+      return
+    }
+
+    setPanelListasAbierto((prev) => !prev)
+    setMensajeLista('')
+    setMensajeProgreso('')
+  }
+
   const handleComenzarSerie = async () => {
     if (!isAuthenticated) {
-      setMensajeProgreso('Inicia sesión para comenzar la serie.')
+      showLoginRequired('Inicia sesion para comenzar la serie.')
       return
     }
 
@@ -218,7 +260,7 @@ function SerieDetalle() {
       const nextProgress = await startSerieProgress(serieId)
       setProgreso(nextProgress)
       await refreshUserLists()
-      setMensajeProgreso('Serie comenzada. Se ha añadido a tu lista Viendo.')
+      setMensajeProgreso('Serie comenzada. Se ha anadido a tu lista Viendo.')
     } catch (error) {
       setMensajeProgreso(error.message || 'No se pudo comenzar la serie.')
     } finally {
@@ -228,7 +270,7 @@ function SerieDetalle() {
 
   const handleActualizarEpisodios = async (nextValue) => {
     if (!isAuthenticated) {
-      setMensajeProgreso('Inicia sesión para actualizar el progreso.')
+      setMensajeProgreso('Inicia sesion para actualizar el progreso.')
       return
     }
 
@@ -269,7 +311,7 @@ function SerieDetalle() {
       <header
         className="detalle-hero"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, #fcfaf8 100%), url(${serie.imagenPortada})`,
+          backgroundImage: `linear-gradient(180deg, rgba(12,24,38,0.05) 0%, rgba(252,250,248,0.86) 100%), url(${serie.imagenPortada})`,
         }}
       >
         <button className="back-btn" onClick={() => navigate(-1)}>
@@ -281,10 +323,10 @@ function SerieDetalle() {
           <h1 className="hero-title">{serie.titulo}</h1>
 
           <div className="hero-meta">
-            <span className="rating-big">★ {serie.valoracionMedia}</span>
-            <span>•</span>
+            <span className="rating-big">{serie.valoracionMedia}</span>
+            <span className="hero-meta-sep">/</span>
             <span>{new Date(serie.fechaEstreno).getFullYear()}</span>
-            <span>•</span>
+            <span className="hero-meta-sep">/</span>
             <span>{serie.numeroEpisodios} episodios</span>
           </div>
 
@@ -298,14 +340,11 @@ function SerieDetalle() {
             </button>
             <button
               className="btn-secondary"
-              onClick={() => {
-                setPanelListasAbierto((prev) => !prev)
-                setMensajeLista('')
-              }}
+              onClick={handleAbrirPanelListas}
             >
               {listasConSerie
                 ? `Guardada en ${listasConSerie} lista${listasConSerie > 1 ? 's' : ''}`
-                : '+ Añadir a mi lista'}
+                : '+ Anadir a mi lista'}
             </button>
           </div>
 
@@ -370,7 +409,7 @@ function SerieDetalle() {
           ) : null}
 
           {panelListasAbierto ? (
-            <section className="lista-panel" aria-label="Gestión de listas para la serie actual">
+            <section className="lista-panel" aria-label="Gestion de listas para la serie actual">
               <div className="lista-panel-heading">
                 <div>
                   <h3>Guardar en tus listas</h3>
@@ -411,7 +450,7 @@ function SerieDetalle() {
                           <strong>{list.tipoLista}</strong>
                           <p>
                             {list.series?.length ?? 0} series
-                            {list.descripcion ? ` · ${list.descripcion}` : ''}
+                            {list.descripcion ? ` - ${list.descripcion}` : ''}
                           </p>
                         </div>
 
@@ -419,14 +458,14 @@ function SerieDetalle() {
                           className={serieGuardada ? 'lista-toggle-btn is-active' : 'lista-toggle-btn'}
                           onClick={() => handleToggleSerieEnLista(list.id)}
                         >
-                          {serieGuardada ? 'Quitar' : 'Guardar aquí'}
+                          {serieGuardada ? 'Quitar' : 'Guardar aqui'}
                         </button>
                       </article>
                     )
                   })
                 ) : (
                   <div className="lista-selector-empty">
-                    <p>Aún no tienes listas creadas.</p>
+                    <p>Aun no tienes listas creadas.</p>
                     <span>Usa el formulario superior para crear la primera y guardar esta serie.</span>
                   </div>
                 )}
@@ -445,7 +484,7 @@ function SerieDetalle() {
             </div>
 
             <div className="detalle-card generos-section">
-              <h3>Géneros</h3>
+              <h3>Generos</h3>
               <div className="generos-list">
                 {generoNames.length ? (
                   generoNames.map((nombre) => (
@@ -454,7 +493,7 @@ function SerieDetalle() {
                     </span>
                   ))
                 ) : (
-                  <span className="no-generos">Sin géneros asignados</span>
+                  <span className="no-generos">Sin generos asignados</span>
                 )}
               </div>
             </div>
@@ -464,7 +503,7 @@ function SerieDetalle() {
 
               <form className="comentario-form" onSubmit={handleEnviarComentario}>
                 <textarea
-                  placeholder="¿Qué te ha parecido esta serie?"
+                  placeholder="Que te ha parecido esta serie?"
                   value={nuevoComentario}
                   onChange={(event) => setNuevoComentario(event.target.value)}
                   rows="3"
@@ -484,7 +523,7 @@ function SerieDetalle() {
                       <div className="comentario-meta">
                         <div className="comentario-user-row">
                           <strong>{comentario.autor || 'Usuario'}</strong>
-                          <span className="comentario-sep">•</span>
+                          <span className="comentario-sep">/</span>
                           <span>{formatDate(comentario.fechaPublicacion)}</span>
                         </div>
                         <button
@@ -497,6 +536,26 @@ function SerieDetalle() {
                       </div>
                     </div>
                     <p>{comentario.contenido}</p>
+                    <div className="comentario-actions">
+                      <button
+                        type="button"
+                        className={
+                          comentario.likedByMe
+                            ? 'comentario-like-btn is-active'
+                            : 'comentario-like-btn'
+                        }
+                        disabled={comentarioLikeId === comentario.id}
+                        onClick={() => handleToggleComentarioLike(comentario.id)}
+                      >
+                        {comentario.likedByMe ? 'Te gusta' : 'Me gusta'}
+                      </button>
+                      <span>
+                        {Number(comentario.totalLikes ?? comentario.contadorLikes ?? 0)} like
+                        {Number(comentario.totalLikes ?? comentario.contadorLikes ?? 0) === 1
+                          ? ''
+                          : 's'}
+                      </span>
+                    </div>
                   </article>
                 ))}
               </div>
@@ -505,7 +564,7 @@ function SerieDetalle() {
 
           <aside className="detalle-sidebar">
             <div className="info-card-tecnica">
-              <h4>Información técnica</h4>
+              <h4>Informacion tecnica</h4>
 
               <div className="info-item">
                 <span className="info-label">Estado</span>
@@ -530,7 +589,7 @@ function SerieDetalle() {
               ) : null}
 
               <div className="info-item">
-                <span className="info-label">Valoración</span>
+                <span className="info-label">Valoracion</span>
                 <span className="info-value">{serie.valoracionMedia}/10</span>
               </div>
 
@@ -580,7 +639,7 @@ function formatDate(value) {
 
 function formatEstadoSerie(value) {
   if (value === 'En emision') {
-    return 'En emisión'
+    return 'En emision'
   }
 
   return value

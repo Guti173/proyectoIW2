@@ -4,20 +4,22 @@ import AuthWidget from './components/AuthWidget'
 import isdbLogo from './assets/isdb-logo.svg'
 import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
-import Catalogo from "./pages/Catalogo";
-import SerieDetalle from "./pages/SerieDetalle";
-import ReportarComentario from "./pages/ReportarComentario";
-import AdministrarComentarios from "./pages/AdministrarComentarios";
+import Catalogo from './pages/Catalogo'
+import SerieDetalle from './pages/SerieDetalle'
+import ReportarComentario from './pages/ReportarComentario'
+import AdministrarComentarios from './pages/AdministrarComentarios'
 import AdminUsuarios from './pages/AdminUsuarios'
 import Perfil from './pages/Perfil'
+import Amigos from './pages/Amigos'
 import MisListas from './pages/MisListas'
-import AdminSeries from "./pages/AdminSeries";
+import AdminSeries from './pages/AdminSeries'
 import { clearAuthSession, getStoredAuthSession } from './lib/auth0'
 
 const appNavigation = [
-  { to: '/catalogo', label: 'Catálogo' },
+  { to: '/catalogo', label: 'Catalogo' },
   { to: '/perfil', label: 'Perfil' },
   { to: '/listas', label: 'Mis listas' },
+  { to: '/amigos', label: 'Amigos' },
 ]
 
 const adminNavigation = [
@@ -30,8 +32,6 @@ const adminNavigation = [
 const guestNavigation = [
   { to: '/', label: 'Inicio' },
   ...appNavigation,
-  { to: '/login', label: 'Iniciar sesión' },
-  { to: '/registro', label: 'Registro' },
 ]
 
 function App() {
@@ -39,7 +39,8 @@ function App() {
   const [authSession, setAuthSession] = useState(() => getStoredAuthSession())
   const isAuthenticated = Boolean(authSession?.profile)
   const profile = authSession?.profile
-  const isAdmin = profile?.role?.toLowerCase() === 'admin' || profile?.is_superuser || profile?.is_staff
+  const isAdmin =
+    profile?.role?.toLowerCase() === 'admin' || profile?.is_superuser || profile?.is_staff
   const isSuspended = profile?.estadoCuenta === 'Suspendida'
   const visibleNavigation = isAuthenticated
     ? isSuspended
@@ -64,15 +65,13 @@ function App() {
             <img src={isdbLogo} alt="ISDB" className="site-brand-image" />
           </NavLink>
 
-          <nav className="main-nav" aria-label="Navegación principal">
+          <nav className="main-nav" aria-label="Navegacion principal">
             {visibleNavigation.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
-                className={({ isActive }) =>
-                  isActive ? 'nav-link nav-link-active' : 'nav-link'
-                }
+                className={({ isActive }) => (isActive ? 'nav-link nav-link-active' : 'nav-link')}
               >
                 {item.label}
               </NavLink>
@@ -80,7 +79,7 @@ function App() {
 
             {isAuthenticated ? (
               <button className="nav-link nav-logout-button" onClick={handleLogout}>
-                Cerrar sesión
+                Cerrar sesion
               </button>
             ) : null}
           </nav>
@@ -89,7 +88,6 @@ function App() {
 
       <main className="site-main">
         <Routes>
-
           <Route
             path="/"
             element={
@@ -102,18 +100,13 @@ function App() {
           />
 
           <Route path="/cuenta-suspendida" element={<SuspendedPage />} />
-
-
           <Route path="/catalogo" element={<Catalogo />} />
-
           <Route path="/series/:id" element={<SerieDetalle />} />
 
-          {/* Rutas solo para usuarios autenticados */}
           <Route element={<ProtectedRoute />}>
             <Route path="/reportar-comentario/:comentarioId" element={<ReportarComentario />} />
           </Route>
 
-          {/* Rutas solo para administradores */}
           <Route element={<ProtectedRoute adminOnly />}>
             <Route path="/admin-comentarios" element={<AdministrarComentarios />} />
             <Route path="/panel-admin" element={<AdminSeries />} />
@@ -121,8 +114,9 @@ function App() {
           </Route>
 
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil/:userId" element={<Perfil />} />
           <Route path="/listas" element={<MisListas />} />
-
+          <Route path="/amigos" element={<Amigos />} />
           <Route path="/usuario" element={<Navigate to="/perfil" replace />} />
 
           <Route
@@ -159,7 +153,7 @@ function HomePage() {
         <p className="home-kicker">Tu archivo personal de series</p>
         <h1>Bienvenido a ISDB</h1>
         <p className="home-lead">
-          ISDB reúne catálogo, listas personales, comentarios y progreso de episodios para tener
+          ISDB reune catalogo, listas personales, comentarios y progreso de episodios para tener
           tus series controladas en un solo sitio.
         </p>
 
@@ -172,38 +166,6 @@ function HomePage() {
           </NavLink>
         </div>
       </div>
-
-      <div className="home-showcase" aria-label="Resumen de funciones">
-        <div className="home-showcase-header">
-          <img src={isdbLogo} alt="" />
-          <span>ISDB</span>
-        </div>
-
-        <div className="home-showcase-progress">
-          <div>
-            <span>Viendo ahora</span>
-            <strong>4 / 8 episodios</strong>
-          </div>
-          <div className="home-progress-bar">
-            <span />
-          </div>
-        </div>
-
-        <div className="home-showcase-grid">
-          <div>
-            <strong>Viendo</strong>
-            <span>Series empezadas</span>
-          </div>
-          <div>
-            <strong>Completadas</strong>
-            <span>Historial terminado</span>
-          </div>
-          <div>
-            <strong>Listas</strong>
-            <span>Colecciones propias</span>
-          </div>
-        </div>
-      </div>
     </section>
   )
 }
@@ -212,9 +174,9 @@ function SuspendedPage() {
   return (
     <section className="account-state-panel" aria-label="Cuenta suspendida">
       <p className="home-kicker">Cuenta suspendida</p>
-      <h1>Tu cuenta no está activa</h1>
+      <h1>Tu cuenta no esta activa</h1>
       <p>
-        Un administrador ha suspendido esta cuenta. Mientras este estado siga activo, no podrás
+        Un administrador ha suspendido esta cuenta. Mientras este estado siga activo, no podras
         usar las funciones privadas de ISDB.
       </p>
     </section>

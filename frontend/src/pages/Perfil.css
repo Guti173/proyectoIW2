@@ -115,8 +115,11 @@
 }
 
 .perfil-hero-copy h1 {
-  font-size: clamp(2.9rem, 5vw, 5.2rem);
-  line-height: 0.9;
+  max-width: 18ch;
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
 }
 
 .perfil-hero-meta {
@@ -258,6 +261,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.92fr);
   gap: 22px;
+  align-items: start;
 }
 
 .perfil-panel {
@@ -271,9 +275,14 @@
   gap: 18px;
 }
 
+.perfil-panel-featured {
+  align-content: start;
+  gap: 14px;
+}
+
 .perfil-panel-header {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .perfil-panel-header h2,
@@ -290,12 +299,12 @@
 .perfil-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .perfil-form-field {
   display: grid;
-  gap: 8px;
+  gap: 7px;
 }
 
 .perfil-form-field:last-of-type {
@@ -310,9 +319,9 @@
 
 .perfil-form-field input {
   width: 100%;
-  min-height: 50px;
-  padding: 0.88rem 1rem;
-  border-radius: 16px;
+  min-height: 46px;
+  padding: 0.74rem 0.92rem;
+  border-radius: 14px;
   border: 1px solid rgba(14, 34, 51, 0.12);
   background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
@@ -328,14 +337,14 @@
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .perfil-system-card {
   display: grid;
-  gap: 6px;
-  padding: 14px 16px;
-  border-radius: 18px;
+  gap: 5px;
+  padding: 12px 14px;
+  border-radius: 16px;
   border: 1px solid rgba(14, 34, 51, 0.08);
   background: rgba(255, 255, 255, 0.68);
 }
@@ -352,6 +361,75 @@
 
 .perfil-form button {
   grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.perfil-form > .perfil-btn-primary,
+.perfil-password-form .perfil-btn-primary {
+  min-height: 44px;
+  padding: 0.72rem 1rem;
+  font-size: 0.94rem;
+  box-shadow: 0 10px 22px rgba(17, 49, 74, 0.14);
+}
+
+.perfil-password-panel {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  align-self: stretch;
+  padding-top: 0;
+}
+
+.perfil-password-toggle {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid rgba(14, 34, 51, 0.08);
+  border-radius: 14px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.68);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.perfil-password-toggle:hover,
+.perfil-password-toggle:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(14, 34, 51, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+}
+
+.perfil-password-toggle span {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.perfil-password-toggle strong {
+  color: #325f7f;
+  font-size: 0.84rem;
+}
+
+.perfil-password-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(14, 34, 51, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.perfil-password-form button {
   justify-self: start;
 }
 
@@ -486,11 +564,131 @@
   border: 1px dashed rgba(14, 34, 51, 0.14);
 }
 
+.perfil-collections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.perfil-collection-summary-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(14, 34, 51, 0.08);
+}
+
+.perfil-collection-title-button,
+.perfil-representative-card {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.perfil-collection-title-button {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+}
+
+.perfil-collection-title-button span {
+  display: grid;
+  gap: 4px;
+}
+
+.perfil-collection-title-button strong,
+.perfil-representative-card strong {
+  color: var(--ink);
+}
+
+.perfil-collection-title-button small,
+.perfil-representative-card small,
+.perfil-collection-empty {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.perfil-collection-title-button em {
+  flex: 0 0 auto;
+  padding: 0.48rem 0.72rem;
+  border-radius: 999px;
+  color: #325f7f;
+  background: rgba(17, 49, 74, 0.07);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.perfil-representative-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(14, 34, 51, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.perfil-representative-card:hover,
+.perfil-representative-card:focus-visible,
+.perfil-collection-title-button:hover em,
+.perfil-collection-title-button:focus-visible em {
+  transform: translateY(-1px);
+  outline: none;
+  border-color: rgba(50, 95, 127, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.perfil-representative-card img {
+  width: 72px;
+  height: 92px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #d7e1e9;
+}
+
+.perfil-representative-card span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.perfil-representative-card strong {
+  overflow-wrap: anywhere;
+}
+
+.perfil-collection-expanded {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.perfil-collection-empty {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px dashed rgba(14, 34, 51, 0.14);
+  background: rgba(255, 255, 255, 0.55);
+}
+
 @media (max-width: 1180px) {
   .perfil-detail-grid,
   .perfil-highlights-grid,
   .perfil-overview-grid,
-  .perfil-content-intro {
+  .perfil-content-intro,
+  .perfil-collections-grid {
     grid-template-columns: 1fr;
   }
 
@@ -507,7 +705,8 @@
 @media (max-width: 900px) {
   .perfil-form,
   .perfil-system-grid,
-  .perfil-activity-grid {
+  .perfil-activity-grid,
+  .perfil-password-form {
     grid-template-columns: 1fr;
   }
 

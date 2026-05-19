@@ -361,11 +361,10 @@ function MisListas() {
               </div>
 
               {lista.series?.length ? (
-                <>
-                  <div className="mis-listas-slider">
-                    {lista.series.map((serie) => (
+                <div className="mis-listas-slider">
+                  {lista.series.map((serie) => (
+                    <div key={`${lista.id}-${serie.id ?? serie.pk}`} className="mis-listas-serie-shell">
                       <SerieCard
-                        key={`${lista.id}-${serie.id ?? serie.pk}`}
                         id={serie.id ?? serie.pk}
                         titulo={serie.titulo}
                         fechaEstreno={serie.fechaEstreno}
@@ -373,26 +372,19 @@ function MisListas() {
                         imagen={serie.imagenPortada}
                         estado={serie.estado}
                       />
-                    ))}
-                  </div>
-
-                  <div className="mis-listas-chip-grid">
-                    {lista.series.map((serie) => (
-                      <div key={`${lista.id}-chip-${serie.id ?? serie.pk}`} className="mis-lista-chip">
-                        <span>{serie.titulo}</span>
-                        <button
-                          type="button"
-                          className="mis-lista-chip-btn"
-                          onClick={() =>
-                            handleQuitarSerie(lista.id, serie.id ?? serie.pk, serie.titulo)
-                          }
-                        >
-                          Quitar
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </>
+                      <button
+                        type="button"
+                        className="mis-lista-remove-btn"
+                        aria-label={`Quitar ${serie.titulo} de ${lista.tipoLista}`}
+                        onClick={() =>
+                          handleQuitarSerie(lista.id, serie.id ?? serie.pk, serie.titulo)
+                        }
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="mis-listas-empty-block">
                   <p>Esta lista todavía está vacía.</p>
@@ -419,6 +411,15 @@ function MisListas() {
         )}
       </main>
     </div>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+      <path d="M9 3h6l1 2h4v2H4V5h4l1-2Z" />
+      <path d="M6 9h12l-1 11H7L6 9Zm4 2v7h2v-7h-2Zm4 0v7h2v-7h-2Z" />
+    </svg>
   )
 }
 

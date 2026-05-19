@@ -13,6 +13,29 @@ class ListaUsuario(models.Model):
     def __str__(self):
         return f'{self.tipoLista} ({self.user})'
 
+class ListaSerie(models.Model):
+    lista = models.ForeignKey(
+        ListaUsuario,
+        on_delete=models.CASCADE,
+        related_name='seriesRegistros',
+    )
+    serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
+    fechaAgregado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['lista', 'serie'],
+                name='unique_lista_serie_registro',
+            )
+        ]
+        indexes = [
+            models.Index(fields=['lista', '-fechaAgregado']),
+        ]
+
+    def __str__(self):
+        return f'{self.lista} -> {self.serie}'
+
 class ProgresoSerie(models.Model):
     episodiosVistos = models.IntegerField()
     fechaInicio = models.DateField()

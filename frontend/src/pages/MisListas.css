@@ -87,8 +87,11 @@
 }
 
 .mis-listas-hero-copy h1 {
-  font-size: clamp(2.9rem, 5vw, 5.1rem);
-  line-height: 0.9;
+  max-width: 18ch;
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
 }
 
 .mis-listas-hero-meta {
@@ -124,7 +127,7 @@
 
 .mis-listas-btn-primary,
 .mis-listas-btn-secondary,
-.mis-lista-chip-btn {
+.mis-lista-remove-btn {
   appearance: none;
   font: inherit;
   cursor: pointer;
@@ -159,8 +162,8 @@
 .mis-listas-btn-primary:focus-visible,
 .mis-listas-btn-secondary:hover,
 .mis-listas-btn-secondary:focus-visible,
-.mis-lista-chip-btn:hover,
-.mis-lista-chip-btn:focus-visible {
+.mis-lista-remove-btn:hover,
+.mis-lista-remove-btn:focus-visible {
   transform: translateY(-1px);
   outline: none;
 }
@@ -361,36 +364,45 @@
   scrollbar-width: thin;
 }
 
-.mis-listas-slider .serie-card {
+.mis-listas-serie-shell {
+  position: relative;
   flex: 0 0 calc((100% - (20px * 3)) / 4);
   min-width: 225px;
 }
 
-.mis-listas-chip-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
+.mis-listas-serie-shell .serie-card {
+  min-height: 100%;
 }
 
-.mis-lista-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+.mis-lista-remove-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
-  background: rgba(17, 49, 74, 0.06);
-  border: 1px solid rgba(17, 49, 74, 0.08);
-  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #fffdf8;
+  background: rgba(12, 24, 38, 0.54);
+  box-shadow: 0 12px 26px rgba(12, 24, 38, 0.18);
+  backdrop-filter: blur(8px);
 }
 
-.mis-lista-chip-btn {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #325f7f;
-  font-size: 0.88rem;
-  font-weight: 700;
+.mis-lista-remove-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.mis-lista-remove-btn:hover,
+.mis-lista-remove-btn:focus-visible {
+  color: #fff;
+  background: rgba(142, 45, 45, 0.82);
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 16px 30px rgba(142, 45, 45, 0.22);
 }
 
 .mis-listas-empty-block {
@@ -431,7 +443,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .mis-listas-slider .serie-card {
+  .mis-listas-serie-shell {
     flex: 0 0 calc((100% - 20px) / 2);
   }
 }
@@ -472,7 +484,7 @@
     grid-template-columns: 1fr;
   }
 
-  .mis-listas-slider .serie-card {
+  .mis-listas-serie-shell {
     flex: 0 0 85%;
   }
 }

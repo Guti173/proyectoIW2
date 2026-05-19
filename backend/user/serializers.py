@@ -31,9 +31,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id',
-            'auth0Sub',
             'username',
-            'password',
             'email',
             'nombre',
             'apellidos',
@@ -41,4 +39,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'estadoCuenta',
             'role',
         )
-        read_only_fields = ('id', 'auth0Sub', 'role', 'estadoCuenta')
+        read_only_fields = ('id', 'role', 'estadoCuenta')
+
+
+class UserPublicProfileSerializer(serializers.ModelSerializer):
+    displayName = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'nombre',
+            'apellidos',
+            'fotoPerfil',
+            'displayName',
+        )
+        read_only_fields = fields
+
+    def get_displayName(self, obj):
+        full_name = f'{obj.nombre or ""} {obj.apellidos or ""}'.strip()
+        return full_name or obj.username or f'Usuario {obj.pk}'

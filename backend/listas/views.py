@@ -1,9 +1,10 @@
 from datetime import date
 
+from django.db.models import F
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import ListaUsuario, ProgresoSerie
+from .models import ListaSerie, ListaUsuario, ProgresoSerie
 from .serializers import ListaUsuarioSerializer, ProgresoSerieSerializer
 from user.auth import get_current_user
 from user.permissions import require_active_user
@@ -28,11 +29,21 @@ def sync_progress_lists(user, serie, completed):
     completadas = get_or_create_user_list(user, 'Completadas', 'Series completadas')
 
     if completed:
-        viendo.series.remove(serie)
-        completadas.series.add(serie)
+        remove_serie_from_list(viendo, serie)
+        add_serie_to_list(completadas, serie)
     else:
-        completadas.series.remove(serie)
-        viendo.series.add(serie)
+        remove_serie_from_list(completadas, serie)
+        add_serie_to_list(viendo, serie)
+
+
+def add_serie_to_list(lista, serie):
+    lista.series.add(serie)
+    ListaSerie.objects.get_or_create(lista=lista, serie=serie)
+
+
+def remove_serie_from_list(lista, serie):
+    lista.series.remove(serie)
+    ListaSerie.objects.filter(lista=lista, serie=serie).delete()
 
 
 class ListaUsuarioView(viewsets.ModelViewSet):
@@ -87,7 +98,7 @@ class ListaUsuarioView(viewsets.ModelViewSet):
         if serie is None:
             return Response({'detail': 'La serie no existe.'}, status=status.HTTP_404_NOT_FOUND)
 
-        lista.series.add(serie)
+        add_serie_to_list(lista, serie)
         serializer = self.get_serializer(lista)
         return Response(serializer.data)
 
@@ -99,7 +110,11 @@ class ListaUsuarioView(viewsets.ModelViewSet):
         if not serie_id:
             return Response({'detail': 'Falta serieId.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        lista.series.remove(serie_id)
+        serie = Serie.objects.filter(pk=serie_id).first()
+
+        if serie is not None:
+            remove_serie_from_list(lista, serie)
+
         serializer = self.get_serializer(lista)
         return Response(serializer.data)
 
@@ -147,6 +162,18 @@ class ProgresoSerieView(viewsets.ModelViewSet):
             return Response(None)
 
         serializer = self.get_serializer(progreso)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='continue-watching')
+    def continue_watching(self, request):
+        queryset = (
+            self.get_queryset()
+            .filter(serie__numeroEpisodios__gt=0)
+            .exclude(estado__iexact='Completada')
+            .filter(episodiosVistos__lt=F('serie__numeroEpisodios'))
+            .order_by('-ultimaActualizacion', '-id')
+        )
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'], url_path='start')

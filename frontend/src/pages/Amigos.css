@@ -1,0 +1,331 @@
+.amigos-page {
+  display: grid;
+  gap: 24px;
+}
+
+.amigos-state-card,
+.amigos-hero,
+.amigos-panel,
+.amigos-feedback {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(14, 34, 51, 0.1);
+  border-radius: 32px;
+  background: rgba(255, 251, 246, 0.82);
+  box-shadow: 0 26px 70px rgba(14, 34, 51, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.amigos-state-card {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  padding: 44px;
+}
+
+.amigos-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+  padding: 38px;
+}
+
+.amigos-hero h1,
+.amigos-state-card h1,
+.amigos-panel-header h2 {
+  margin: 0;
+  color: var(--ink-strong);
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.amigos-hero h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.amigos-state-card h1 {
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  line-height: 0.92;
+}
+
+.amigos-hero p,
+.amigos-state-card p,
+.amigos-panel-header p,
+.amigos-card-meta,
+.amigos-user small,
+.amigos-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.amigos-kicker {
+  margin: 0 0 8px;
+  color: #325f7f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.amigos-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.amigos-hero-stats div,
+.amigos-card,
+.amigos-empty {
+  border: 1px solid rgba(14, 34, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.amigos-hero-stats div {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+}
+
+.amigos-hero-stats strong {
+  color: var(--ink-strong);
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  line-height: 0.95;
+}
+
+.amigos-hero-stats span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.amigos-feedback {
+  padding: 14px 16px;
+  color: #244765;
+  background: rgba(17, 49, 74, 0.06);
+}
+
+.amigos-feedback.is-error {
+  color: #8e2d2d;
+  background: rgba(255, 98, 98, 0.12);
+  border-color: rgba(255, 98, 98, 0.24);
+}
+
+.amigos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.amigos-panel {
+  display: grid;
+  gap: 18px;
+  padding: 30px;
+}
+
+.amigos-panel-header {
+  display: grid;
+  gap: 8px;
+}
+
+.amigos-panel-header h2 {
+  font-size: clamp(1.7rem, 2vw, 2.35rem);
+  line-height: 1.05;
+}
+
+.amigos-list,
+.amigos-friends-grid,
+.amigos-candidates-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.amigos-friends-grid,
+.amigos-candidates-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.amigos-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.amigos-card.is-compact {
+  align-content: start;
+}
+
+.amigos-user {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.amigos-user img,
+.amigos-user > span {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+}
+
+.amigos-user img {
+  object-fit: cover;
+}
+
+.amigos-user > span {
+  display: grid;
+  place-items: center;
+  color: #11314a;
+  background: rgba(17, 49, 74, 0.08);
+  font-weight: 800;
+}
+
+.amigos-user strong {
+  display: block;
+  color: var(--ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.amigos-user small {
+  display: block;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
+.amigos-card-meta {
+  display: grid;
+  gap: 5px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.amigos-card-meta strong {
+  color: var(--accent);
+}
+
+.amigos-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.amigos-btn-primary,
+.amigos-btn-secondary {
+  appearance: none;
+  border-radius: 999px;
+  padding: 0.78rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.amigos-btn-primary {
+  color: #fffdf8;
+  background: linear-gradient(135deg, var(--accent), #325f7f);
+  border: 1px solid transparent;
+  box-shadow: 0 14px 30px rgba(17, 49, 74, 0.16);
+}
+
+.amigos-btn-secondary {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(14, 34, 51, 0.1);
+}
+
+.amigos-btn-primary:hover,
+.amigos-btn-secondary:hover,
+.amigos-btn-primary:focus-visible,
+.amigos-btn-secondary:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.amigos-btn-primary:disabled,
+.amigos-btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
+.amigos-search-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  gap: 18px;
+  align-items: end;
+}
+
+.amigos-search {
+  width: 100%;
+  min-height: 50px;
+  padding: 0.88rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 34, 51, 0.12);
+  color: var(--ink-strong);
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+}
+
+.amigos-search:focus {
+  outline: 2px solid rgba(50, 95, 127, 0.24);
+  border-color: rgba(50, 95, 127, 0.3);
+}
+
+.amigos-empty {
+  padding: 18px;
+  border-style: dashed;
+}
+
+@media (max-width: 1100px) {
+  .amigos-hero,
+  .amigos-grid,
+  .amigos-search-header,
+  .amigos-friends-grid,
+  .amigos-candidates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .amigos-hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .amigos-page {
+    gap: 18px;
+  }
+
+  .amigos-state-card,
+  .amigos-hero,
+  .amigos-panel {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .amigos-hero-stats,
+  .amigos-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .amigos-hero-stats {
+    display: grid;
+  }
+
+  .amigos-btn-primary,
+  .amigos-btn-secondary {
+    width: 100%;
+  }
+}

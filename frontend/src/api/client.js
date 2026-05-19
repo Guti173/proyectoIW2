@@ -34,10 +34,83 @@ function buildAuthHeaders() {
   return {
     'X-Auth0-Sub': profile.sub ?? '',
     'X-Auth0-Email': profile.email ?? '',
-    'X-Auth0-Name': profile.name ?? '',
-    'X-Auth0-Nickname': profile.nickname ?? '',
+    'X-Auth0-Name': getProfileName(profile),
+    'X-Auth0-Nickname': getProfileUsername(profile),
     'X-Auth0-Picture': profile.picture ?? '',
   }
+}
+
+function getProfileName(profile) {
+  const email = `${profile?.email ?? ''}`.trim().toLowerCase()
+  const fullGivenName = `${profile?.given_name ?? ''} ${profile?.family_name ?? ''}`.trim()
+  const candidates = [
+    profile?.user_metadata?.fullName,
+    profile?.user_metadata?.full_name,
+    profile?.user_metadata?.name,
+    profile?.user_metadata?.nombre,
+    profile?.app_metadata?.fullName,
+    profile?.app_metadata?.full_name,
+    fullGivenName,
+    profile?.given_name,
+    profile?.name,
+  ]
+
+  for (const candidate of candidates) {
+    const value = `${candidate ?? ''}`.trim()
+
+    if (value && value.toLowerCase() !== email) {
+      return value
+    }
+  }
+
+  return ''
+}
+
+function getProfileUsername(profile) {
+  const emailPrefix = profile?.email?.includes('@') ? profile.email.split('@')[0] : ''
+  const candidates = [
+    profile?.user_metadata?.username,
+    profile?.user_metadata?.usuario,
+    profile?.app_metadata?.username,
+    profile?.username,
+    profile?.nickname,
+    emailPrefix,
+  ]
+
+  for (const candidate of candidates) {
+    const value = `${candidate ?? ''}`.trim()
+
+    if (value) {
+      return value
+    }
+  }
+
+  return ''
+}
+
+function getErrorDetail(payload) {
+  if (typeof payload === 'string') {
+    return payload
+  }
+
+  if (Array.isArray(payload)) {
+    return payload[0] || 'Request failed'
+  }
+
+  if (Array.isArray(payload?.detail)) {
+    return payload.detail[0] || 'Request failed'
+  }
+
+  if (payload?.detail) {
+    return payload.detail
+  }
+
+  if (payload?.non_field_errors?.[0]) {
+    return payload.non_field_errors[0]
+  }
+
+  const firstFieldError = Object.values(payload ?? {}).find((value) => Array.isArray(value) && value[0])
+  return firstFieldError?.[0] || 'Request failed'
 }
 
 async function request(path, options = {}) {
@@ -77,10 +150,7 @@ async function request(path, options = {}) {
     : await response.text()
 
   if (!response.ok) {
-    const detail =
-      typeof payload === 'string'
-        ? payload
-        : payload?.detail || payload?.non_field_errors?.[0] || 'Request failed'
+    const detail = getErrorDetail(payload)
 
     const error = new Error(detail)
     error.status = response.status
@@ -116,6 +186,25 @@ export const updateUser = (userId, data) =>
 export const getCurrentUserProfile = () => request('/user/me/')
 export const updateCurrentUserProfile = (data) =>
   request('/user/me/', { method: 'PATCH', data })
+export const changeCurrentUserPassword = (data) =>
+  request('/user/change-password/', { method: 'POST', data })
+export const getPublicFriendProfile = (userId) => request(`/user/${userId}/public-profile/`)
+export const getFriendCandidates = (query, options = {}) =>
+  request('/user/discover/', {
+    params: { q: query, limit: 10 },
+    signal: options.signal,
+  })
+
+export const getFriendships = () => request('/amistad/')
+export const sendFriendRequest = (userId) =>
+  request('/amistad/', {
+    method: 'POST',
+    data: { user2: userId },
+  })
+export const acceptFriendRequest = (friendshipId) =>
+  request(`/amistad/${friendshipId}/accept/`, { method: 'POST' })
+export const denyFriendRequest = (friendshipId) =>
+  request(`/amistad/${friendshipId}/deny/`, { method: 'POST' })
 
 export const getMyLists = () => request('/listausuario/mine/')
 export const createUserList = (data) => request('/listausuario/', { method: 'POST', data })
@@ -132,6 +221,7 @@ export const removeSerieFromUserList = (listId, serieId) =>
   })
 
 export const getMyProgress = () => request('/progresoserie/')
+export const getContinueWatchingProgress = () => request('/progresoserie/continue-watching/')
 export const getProgressBySerie = (serieId) =>
   request('/progresoserie/by-serie/', { params: { serieId } })
 export const startSerieProgress = (serieId) =>
@@ -149,6 +239,8 @@ export const getComentariosBySerie = (serieId) =>
   request('/comentario/', { params: { serie: serieId } })
 export const createComentario = (data) =>
   request('/comentario/', { method: 'POST', data })
+export const toggleCommentLike = (comentarioId) =>
+  request(`/comentario/${comentarioId}/toggle-like/`, { method: 'POST' })
 
 export const createReporte = (comentarioId, motivo) =>
   request('/reportecomentario/', {

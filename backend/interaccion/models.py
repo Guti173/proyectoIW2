@@ -10,6 +10,25 @@ class Comentario(models.Model):
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
     contadorLikes = models.IntegerField(default=0)
 
+class LikeComentario(models.Model):
+    comentario = models.ForeignKey(Comentario, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comentario_likes')
+    fechaLike = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['comentario', 'user'],
+                name='unique_like_comentario_user',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['comentario', 'user']),
+        ]
+
+    def __str__(self):
+        return f'Like de {self.user} en comentario {self.comentario_id}'
+
 class Valoracion(models.Model):
     puntuacion = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)

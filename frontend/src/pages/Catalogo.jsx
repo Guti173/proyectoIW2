@@ -1,87 +1,95 @@
-import { useEffect, useRef, useState } from "react";
-import SerieCard from "../components/SerieCard";
-import { getSeries, getGeneros } from "../api/client";
-import "./Catalogo.css";
+import { useEffect, useRef, useState } from 'react'
+import SerieCard from '../components/SerieCard'
+import { getSeries, getGeneros } from '../api/client'
+import './Catalogo.css'
 
 function Catalogo() {
-  // Estados iniciales
-  const [series, setSeries] = useState([]);
-  const [generos, setGeneros] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(20);
+  const [series, setSeries] = useState([])
+  const [generos, setGeneros] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(20)
+  const [filtroGenero, setFiltroGenero] = useState('')
+  const [busquedaNombre, setBusquedaNombre] = useState('')
+  const [filtroAnio, setFiltroAnio] = useState('')
 
-  // Estados para el buscador
-  const [filtroGenero, setFiltroGenero] = useState("");
-  const [busquedaNombre, setBusquedaNombre] = useState("");
-  const [filtroAnio, setFiltroAnio] = useState("");
+  const categoriasTop = [
+    'Action',
+    'Comedy',
+    'Drama',
+    'Sci-Fi',
+    'Horror',
+    'Thriller',
+    'Anime',
+    'Crime',
+    'Mystery',
+    'Fantasy',
+    'Adventure',
+  ]
 
-
-  const CATEGORIAS_TOP = [
-    "Action", "Comedy", "Drama", "Sci-Fi", "Horror",
-    "Thriller", "Anime", "Crime", "Mystery", "Fantasy", "Adventure"
-  ];
-
-  // Carga de datos inicial
   useEffect(() => {
     async function loadData() {
-      setLoading(true);
+      setLoading(true)
       try {
-        const [seriesData, generosData] = await Promise.all([
-          getSeries(),
-          getGeneros()
-        ]);
-        setSeries(seriesData);
-        setGeneros(generosData);
+        const [seriesData, generosData] = await Promise.all([getSeries(), getGeneros()])
+        setSeries(seriesData)
+        setGeneros(generosData)
       } catch (error) {
-        console.error("Error cargando series:", error);
+        console.error('Error cargando series:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    loadData();
-  }, []);
 
-  // Lógica de filtrado
-  const seriesFiltradas = series.filter(s => {
-    const coincideNombre = s.titulo.toLowerCase().includes(busquedaNombre.toLowerCase());
-    const coincideGenero = filtroGenero ? s.generos?.includes(parseInt(filtroGenero)) : true;
-    const coincideAnio = filtroAnio ? s.fechaEstreno?.startsWith(filtroAnio) : true;
+    loadData()
+  }, [])
 
-    return coincideNombre && coincideGenero && coincideAnio;
-  });
+  const seriesFiltradas = series.filter((serie) => {
+    const coincideNombre = serie.titulo
+      .toLowerCase()
+      .includes(busquedaNombre.toLowerCase())
+    const coincideGenero = filtroGenero ? serie.generos?.includes(parseInt(filtroGenero)) : true
+    const coincideAnio = filtroAnio ? serie.fechaEstreno?.startsWith(filtroAnio) : true
 
-  // Efectos dependientes del filtrado
+    return coincideNombre && coincideGenero && coincideAnio
+  })
+
   useEffect(() => {
-    setVisibleCount(20);
-  }, [busquedaNombre, filtroGenero, filtroAnio]);
+    setVisibleCount(20)
+  }, [busquedaNombre, filtroGenero, filtroAnio])
 
-  // Funciones de paginación
-  const cargarMas = () => setVisibleCount(prev => prev + 20);
-  const verTodo = () => setVisibleCount(seriesFiltradas.length);
+  const cargarMas = () => setVisibleCount((prev) => prev + 20)
+  const verTodo = () => setVisibleCount(seriesFiltradas.length)
 
-  const seriesVisibles = seriesFiltradas.slice(0, visibleCount);
+  const seriesVisibles = seriesFiltradas.slice(0, visibleCount)
   const tendencias = [...seriesFiltradas]
-    .sort((a, b) => b.valoracionMedia - a.valoracionMedia)
-    .slice(0, 10);
+    .sort((left, right) => right.valoracionMedia - left.valoracionMedia)
+    .slice(0, 10)
 
-  const sliderRefs = useRef({});
+  const sliderRefs = useRef({})
 
   const scrollSlider = (key, direction) => {
-    const slider = sliderRefs.current[key];
-    if (!slider) return;
-    const step = slider.clientWidth * 0.8;
-    slider.scrollBy({ left: direction * step, behavior: 'smooth' });
-  };
+    const slider = sliderRefs.current[key]
+    if (!slider) {
+      return
+    }
 
-  if (loading) return <div className="loader">Sincronizando biblioteca...</div>;
+    const step = slider.clientWidth * 0.8
+    slider.scrollBy({ left: direction * step, behavior: 'smooth' })
+  }
+
+  if (loading) {
+    return <div className="loader">Sincronizando biblioteca...</div>
+  }
 
   return (
     <div className="catalogo-container">
       <header className="catalogo-hero">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Tu biblioteca personal</h1>
-            <p>Explora, busca y filtra tus historias favoritas sincronizadas en tiempo real.</p>
+            <p className="catalogo-kicker">Biblioteca de series</p>
+            <p>
+              Busca por titulo, filtra por genero y deja a mano lo que quieres ver hoy.
+            </p>
           </div>
 
           <div className="search-tool-bar">
@@ -89,9 +97,9 @@ function Catalogo() {
               <span className="search-icon" aria-hidden="true"></span>
               <input
                 type="text"
-                placeholder="Buscar por título..."
+                placeholder="Buscar por titulo..."
                 value={busquedaNombre}
-                onChange={(e) => setBusquedaNombre(e.target.value)}
+                onChange={(event) => setBusquedaNombre(event.target.value)}
                 className="search-input"
               />
             </div>
@@ -99,20 +107,22 @@ function Catalogo() {
             <div className="filter-group">
               <select
                 value={filtroGenero}
-                onChange={(e) => setFiltroGenero(e.target.value)}
+                onChange={(event) => setFiltroGenero(event.target.value)}
                 className="filter-select"
               >
-                <option value="">Todos los géneros</option>
-                {generos.map(g => (
-                  <option key={g.id} value={g.id}>{g.nombre}</option>
+                <option value="">Todos los generos</option>
+                {generos.map((genero) => (
+                  <option key={genero.id} value={genero.id}>
+                    {genero.nombre}
+                  </option>
                 ))}
               </select>
 
               <input
                 type="number"
-                placeholder="Año"
+                placeholder="Ano"
                 value={filtroAnio}
-                onChange={(e) => setFiltroAnio(e.target.value)}
+                onChange={(event) => setFiltroAnio(event.target.value)}
                 className="year-input"
                 min="1900"
                 max="2026"
@@ -123,121 +133,138 @@ function Catalogo() {
       </header>
 
       <main className="catalogo-content">
-        {/* Tendencias */}
-        {tendencias.length > 0 && (
+        {tendencias.length > 0 ? (
           <section className="row-section">
             <div className="row-header">
-              <h3 className="row-title">Tendencias globales</h3>
+              <div>
+                <p className="row-kicker">Destacadas</p>
+                <h3 className="row-title">Series mejor valoradas</h3>
+              </div>
               <div className="row-actions">
                 <button
                   type="button"
                   className="slider-arrow"
+                  aria-label="Desplazar tendencias a la izquierda"
                   onClick={() => scrollSlider('tendencias', -1)}
                 >
-                  ‹
+                  {'<'}
                 </button>
                 <button
                   type="button"
                   className="slider-arrow"
+                  aria-label="Desplazar tendencias a la derecha"
                   onClick={() => scrollSlider('tendencias', 1)}
                 >
-                  ›
+                  {'>'}
                 </button>
               </div>
             </div>
+
             <div
               className="horizontal-slider"
-              ref={(el) => { sliderRefs.current['tendencias'] = el }}
+              ref={(element) => {
+                sliderRefs.current.tendencias = element
+              }}
             >
-              {tendencias.map(s => (
-                <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
+              {tendencias.map((serie) => (
+                <SerieCard key={serie.id} id={serie.id} {...serie} imagen={serie.imagenPortada} />
               ))}
             </div>
           </section>
-        )}
+        ) : null}
 
-        {/* Categorías dinámicas destacadas */}
         {generos
-          .filter(g => CATEGORIAS_TOP.includes(g.nombre))
-          .map(genero => {
-            const seriesDeEsteGenero = seriesFiltradas.filter(s =>
-              s.generos?.includes(genero.id)
-            );
+          .filter((genero) => categoriasTop.includes(genero.nombre))
+          .map((genero) => {
+            const seriesDeEsteGenero = seriesFiltradas.filter((serie) =>
+              serie.generos?.includes(genero.id),
+            )
 
-            if (seriesDeEsteGenero.length === 0) return null;
+            if (seriesDeEsteGenero.length === 0) {
+              return null
+            }
 
             return (
               <section key={genero.id} className="row-section">
                 <div className="row-header">
-                  <h3 className="row-title">{genero.nombre}</h3>
+                  <div>
+                    <p className="row-kicker">Genero</p>
+                    <h3 className="row-title">{genero.nombre}</h3>
+                  </div>
+
                   <div className="row-actions">
                     <button
                       type="button"
                       className="slider-arrow"
+                      aria-label={`Desplazar ${genero.nombre} a la izquierda`}
                       onClick={() => scrollSlider(`genero-${genero.id}`, -1)}
                     >
-                      ‹
+                      {'<'}
                     </button>
                     <button
                       type="button"
                       className="slider-arrow"
+                      aria-label={`Desplazar ${genero.nombre} a la derecha`}
                       onClick={() => scrollSlider(`genero-${genero.id}`, 1)}
                     >
-                      ›
+                      {'>'}
                     </button>
                   </div>
                 </div>
+
                 <div
                   className="horizontal-slider"
-                  ref={(el) => { sliderRefs.current[`genero-${genero.id}`] = el }}
+                  ref={(element) => {
+                    sliderRefs.current[`genero-${genero.id}`] = element
+                  }}
                 >
-                  {seriesDeEsteGenero.map(s => (
-                    <SerieCard key={s.id} id={s.id} {...s} imagen={s.imagenPortada} />
+                  {seriesDeEsteGenero.map((serie) => (
+                    <SerieCard key={serie.id} id={serie.id} {...serie} imagen={serie.imagenPortada} />
                   ))}
                 </div>
               </section>
-            );
+            )
           })}
 
-        {/* Explorar todo el catálogo */}
-        {seriesFiltradas.length > 0 && (
+        {seriesFiltradas.length > 0 ? (
           <section className="row-section full-catalog-section">
             <div className="row-header">
-              <h3 className="row-title">Explorar todo el catálogo</h3>
+              <div>
+                <p className="row-kicker">Explorar</p>
+                <h3 className="row-title">Catalogo completo</h3>
+              </div>
               <span className="results-count">
                 Mostrando {seriesVisibles.length} de {seriesFiltradas.length}
               </span>
             </div>
 
             <div className="catalog-grid-mini">
-              {seriesVisibles.map(s => (
-                <div key={s.id} className="serie-card-minimal">
-                  <SerieCard id={s.id} {...s} imagen={s.imagenPortada} />
+              {seriesVisibles.map((serie) => (
+                <div key={serie.id} className="serie-card-minimal">
+                  <SerieCard id={serie.id} {...serie} imagen={serie.imagenPortada} />
                 </div>
               ))}
             </div>
 
-            {visibleCount < seriesFiltradas.length && (
+            {visibleCount < seriesFiltradas.length ? (
               <div className="catalog-actions">
                 <button onClick={cargarMas} className="btn-load-more">
-                  Cargar 20 más
+                  Cargar 20 mas
                 </button>
                 <button onClick={verTodo} className="btn-show-all">
-                  Ver todo el catálogo
+                  Ver todo
                 </button>
               </div>
-            )}
+            ) : null}
           </section>
-        )}
-
-        {seriesFiltradas.length === 0 && (
+        ) : (
           <div className="empty-results">
-            <p>No se encontraron series que coincidan con tu búsqueda.</p>
+            <p>No se encontraron series que coincidan con tu busqueda.</p>
           </div>
         )}
       </main>
     </div>
-  );
+  )
 }
 
-export default Catalogo;
+export default Catalogo

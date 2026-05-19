@@ -1,4 +1,4 @@
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, ValidationError
 
 from .models import User
 
@@ -26,11 +26,15 @@ def get_current_user(request, ensure_exists=True):
         user = User.objects.filter(email=email).first()
 
     is_new_user = user is None
+    clean_name, name_error = validate_registration_name(name, email)
+
+    if is_new_user and name_error:
+        raise ValidationError(name_error)
 
     if user is None:
         user = User(auth0Sub=auth0_sub or None)
 
-    nombre, apellidos = split_name(name)
+    nombre, apellidos = split_name(clean_name)
 
     user.auth0Sub = auth0_sub or user.auth0Sub
     if email and (is_new_user or not user.email):
@@ -56,6 +60,24 @@ def get_current_user(request, ensure_exists=True):
 
     user.save()
     return user
+
+
+def validate_registration_name(name, email=''):
+    clean_name = ' '.join(f'{name or ""}'.strip().split())
+
+    if not clean_name:
+        return '', 'Introduce tu nombre para completar el registro.'
+
+    if len(clean_name) < 2:
+        return '', 'El nombre debe tener al menos 2 caracteres.'
+
+    if len(clean_name) > 80:
+        return '', 'El nombre no puede superar los 80 caracteres.'
+
+    if email and clean_name.lower() == email.lower():
+        return '', 'El nombre no puede ser el correo electronico.'
+
+    return clean_name, ''
 
 
 def split_name(full_name):

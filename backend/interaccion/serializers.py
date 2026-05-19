@@ -1,8 +1,11 @@
 from rest_framework import serializers
-from .models import Comentario, Valoracion, ReporteComentario
+from user.auth import get_current_user
+from .models import Comentario, LikeComentario, Valoracion, ReporteComentario
 
 class ComentarioSerializer(serializers.ModelSerializer):
     autor = serializers.SerializerMethodField(read_only=True)
+    totalLikes = serializers.SerializerMethodField(read_only=True)
+    likedByMe = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comentario
@@ -14,6 +17,22 @@ class ComentarioSerializer(serializers.ModelSerializer):
             return f'{obj.user.nombre} {obj.user.apellidos}'.strip()
 
         return obj.user.username or obj.user.email
+
+    def get_totalLikes(self, obj):
+        return obj.likes.count()
+
+    def get_likedByMe(self, obj):
+        request = self.context.get('request')
+
+        if request is None:
+            return False
+
+        user = get_current_user(request, ensure_exists=False)
+
+        if user is None:
+            return False
+
+        return LikeComentario.objects.filter(comentario=obj, user=user).exists()
 
 class ValoracionSerializer(serializers.ModelSerializer):
     class Meta:
