@@ -73,7 +73,7 @@ function AdminSeries() {
   };
 
   const handleDeleteSerie = async (id) => {
-    if (confirm("¿Eliminar esta serie?")) {
+    if (window.confirm("¿Eliminar esta serie?")) {
       await deleteSerie(id);
       setSeries(await loadSeries());
     }
@@ -115,7 +115,7 @@ function AdminSeries() {
   };
 
   const handleDeleteGenero = async (id) => {
-    if (confirm("¿Eliminar este género?")) {
+    if (window.confirm("¿Eliminar este género?")) {
       await deleteGenero(id);
       setGeneros(await loadGeneros());
     }
@@ -155,7 +155,7 @@ function AdminSeries() {
                 <label>Título *</label>
                 <input
                   type="text"
-                  value={formSerie.titulo}
+                  value={formSerie.titulo || ""}
                   onChange={e => setFormSerie({...formSerie, titulo: e.target.value})}
                   required
                 />
@@ -163,7 +163,7 @@ function AdminSeries() {
               <div className="form-group">
                 <label>Estado</label>
                 <select
-                  value={formSerie.estado}
+                  value={formSerie.estado || ""}
                   onChange={e => setFormSerie({...formSerie, estado: e.target.value})}
                 >
                   <option value="">Seleccionar...</option>
@@ -172,7 +172,75 @@ function AdminSeries() {
                 </select>
               </div>
             </div>
-            {/* Resto de campos principales */}
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Descripción</label>
+                <textarea
+                  value={formSerie.descripcion || ""}
+                  onChange={e => setFormSerie({...formSerie, descripcion: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Fecha Estreno</label>
+                <input
+                  type="date"
+                  value={formSerie.fechaEstreno ? formSerie.fechaEstreno.substring(0, 10) : ""}
+                  onChange={e => setFormSerie({...formSerie, fechaEstreno: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Fecha Fin</label>
+                <input
+                  type="date"
+                  value={formSerie.fechaFin ? formSerie.fechaFin.substring(0, 10) : ""}
+                  onChange={e => setFormSerie({...formSerie, fechaFin: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Imagen Portada (URL)</label>
+                <input
+                  type="text"
+                  value={formSerie.imagenPortada || ""}
+                  onChange={e => setFormSerie({...formSerie, imagenPortada: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Número de Episodios</label>
+                <input
+                  type="number"
+                  value={formSerie.numeroEpisodios || 0}
+                  onChange={e => setFormSerie({...formSerie, numeroEpisodios: parseInt(e.target.value, 10)})}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Valoración Media</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={formSerie.valoracionMedia || 0}
+                  onChange={e => setFormSerie({...formSerie, valoracionMedia: parseFloat(e.target.value)})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Total Valoraciones</label>
+                <input
+                  type="number"
+                  value={formSerie.totalValoraciones || 0}
+                  onChange={e => setFormSerie({...formSerie, totalValoraciones: parseInt(e.target.value, 10)})}
+                />
+              </div>
+            </div>
+
             <div className="form-actions">
               <button type="submit" className="btn-primary">
                 {editandoSerie ? "Actualizar" : "Crear"}
