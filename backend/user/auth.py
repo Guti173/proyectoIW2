@@ -75,7 +75,7 @@ def validate_registration_name(name, email=''):
         return '', 'El nombre no puede superar los 80 caracteres.'
 
     if email and clean_name.lower() == email.lower():
-        return '', 'El nombre no puede ser el correo electronico.'
+        return '', 'El nombre no puede ser el correo electrónico.'
 
     return clean_name, ''
 

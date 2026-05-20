@@ -7,7 +7,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .models import User
-from .auth import get_current_user
+from .auth import get_current_user, split_name
 from .permissions import require_active_user, require_admin_user
 from .serializers import UserProfileSerializer, UserPublicProfileSerializer, UserSerializer
 
@@ -46,7 +46,7 @@ def _validate_registration_name(value, email=''):
         return '', 'El nombre no puede superar los 80 caracteres.'
 
     if email and clean_name.lower() == email.lower():
-        return '', 'El nombre no puede ser el correo electronico.'
+        return '', 'El nombre no puede ser el correo electrónico.'
 
     return clean_name, ''
 
@@ -273,7 +273,7 @@ class UserView(viewsets.ModelViewSet):
 
         if target_user is None:
             return Response(
-                {'detail': 'El usuario indicado no existe o no esta activo.'},
+                {'detail': 'El usuario indicado no existe o no está activo.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 

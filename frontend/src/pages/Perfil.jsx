@@ -405,7 +405,7 @@ function Perfil() {
         <section className="perfil-overview-grid">
           <article className="perfil-panel perfil-panel-featured">
             <div className="perfil-panel-header">
-              <p className="perfil-panel-kicker">Informacion personal</p>
+              <p className="perfil-panel-kicker">Información personal</p>
               <h2>Editar tu perfil</h2>
               <p className="perfil-panel-text">
                 Personaliza tu perfil y haz que tu espacio se sienta realmente tuyo.
@@ -483,14 +483,14 @@ function Perfil() {
                 }}
                 aria-expanded={passwordPanelOpen}
               >
-                <span>Cambiar contrasena</span>
+                <span>Cambiar contraseña</span>
                 <strong>{passwordPanelOpen ? 'Cerrar' : 'Abrir'}</strong>
               </button>
   
               {passwordPanelOpen ? (
                 <form className="perfil-password-form" onSubmit={handlePasswordChange}>
                   <label className="perfil-form-field">
-                    <span>Contrasena actual</span>
+                    <span>Contraseña actual</span>
                     <input
                       type="password"
                       value={passwordData.currentPassword}
@@ -504,7 +504,7 @@ function Perfil() {
                     />
                   </label>
                   <label className="perfil-form-field">
-                    <span>Nueva contrasena</span>
+                    <span>Nueva contraseña</span>
                     <input
                       type="password"
                       value={passwordData.newPassword}
@@ -518,7 +518,7 @@ function Perfil() {
                     />
                   </label>
                   <label className="perfil-form-field">
-                    <span>Repetir nueva contrasena</span>
+                    <span>Repetir nueva contraseña</span>
                     <input
                       type="password"
                       value={passwordData.repeatPassword}
@@ -533,7 +533,7 @@ function Perfil() {
                   </label>
   
                   <button type="submit" className="perfil-btn-primary" disabled={passwordLoading}>
-                    {passwordLoading ? 'Actualizando...' : 'Actualizar contrasena'}
+                    {passwordLoading ? 'Actualizando...' : 'Actualizar contraseña'}
                   </button>
                 </form>
               ) : null}
@@ -549,7 +549,7 @@ function Perfil() {
                 <p className="perfil-panel-kicker">Listas y seguimiento</p>
                 <h2>Tu actividad</h2>
                 <p className="perfil-panel-text">
-                  Un vistazo rapido a tus colecciones y al contenido que tienes a medias.
+                  Un vistazo rápido a tus colecciones y al contenido que tienes a medias.
                 </p>
               </div>
   
@@ -575,7 +575,7 @@ function Perfil() {
                 </div>
               ) : (
                 <div className="perfil-empty-block">
-                  <p>Todavia no tienes listas creadas. Puedes empezar desde cualquier serie.</p>
+                  <p>Todavía no tienes listas creadas. Puedes empezar desde cualquier serie.</p>
                 </div>
               )}
   
@@ -594,9 +594,9 @@ function Perfil() {
             <article className="perfil-panel perfil-panel-compact">
               <div className="perfil-panel-header">
                 <p className="perfil-panel-kicker">Acciones de cuenta</p>
-                <h2>Gestion rapida</h2>
+                <h2>Gestión rápida</h2>
                 <p className="perfil-panel-text">
-                  Atajos utiles para moverte entre tus listas, tu perfil y nuevas series.
+                  Atajos útiles para moverte entre tus listas, tu perfil y nuevas series.
                 </p>
               </div>
   
@@ -608,7 +608,7 @@ function Perfil() {
                   Buscar nuevas series
                 </button>
                 <button className="perfil-btn-secondary" onClick={() => navigate(-1)}>
-                  Volver a la pagina anterior
+                  Volver a la página anterior
                 </button>
               </div>
   
@@ -666,8 +666,8 @@ function Perfil() {
             <div className="perfil-empty-block">
               <p>
                 {isPublicProfile
-                  ? 'Este perfil todavia no tiene colecciones visibles.'
-                  : 'Todavia no has creado colecciones.'}
+                  ? 'Este perfil todavía no tiene colecciones visibles.'
+                  : 'Todavía no has creado colecciones.'}
               </p>
             </div>
           )}
@@ -700,7 +700,7 @@ function Perfil() {
                   </div>
                 ) : (
                   <div className="perfil-empty-block">
-                    <p>No hay datos para esta seccion todavia.</p>
+                    <p>No hay datos para esta sección todavía.</p>
                   </div>
                 )}
               </section>

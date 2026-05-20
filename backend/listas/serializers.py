@@ -33,6 +33,29 @@ class ListaUsuarioSerializer(serializers.ModelSerializer):
 
         return SerieSerializer(relation.serie).data
 
+    def create(self, validated_data):
+        series = validated_data.pop('series', [])
+        lista = super().create(validated_data)
+        self._sync_series_registros(lista, series)
+        return lista
+
+    def update(self, instance, validated_data):
+        has_series = 'series' in validated_data
+        series = validated_data.pop('series', [])
+        lista = super().update(instance, validated_data)
+
+        if has_series:
+            self._sync_series_registros(lista, series)
+
+        return lista
+
+    def _sync_series_registros(self, lista, series):
+        lista.series.set(series)
+        ListaSerie.objects.filter(lista=lista).exclude(serie__in=series).delete()
+
+        for serie in series:
+            ListaSerie.objects.get_or_create(lista=lista, serie=serie)
+
 class ProgresoSerieSerializer(serializers.ModelSerializer):
     serieDetalle = SerieSerializer(source='serie', read_only=True)
 

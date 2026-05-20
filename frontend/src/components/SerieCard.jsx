@@ -32,7 +32,7 @@ const SerieCard = ({ id, titulo, fechaEstreno, valoracionMedia = 0, imagen, esta
 
 function formatEstado(value) {
   if (value === 'En emision') {
-    return 'En emision'
+    return 'En emisión'
   }
 
   return value

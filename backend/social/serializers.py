@@ -55,6 +55,7 @@ class AmistadSerializer(serializers.ModelSerializer):
             'fechaRespuesta',
             'fechaAmistad',
             'user',
+            'user2',
             'solicitante',
             'receptor',
             'otroUsuario',
@@ -113,14 +114,14 @@ def format_duration_since(value):
 
     if total_days >= 365:
         years = total_days // 365
-        return f'{years} anio{"s" if years != 1 else ""}'
+        return f'{years} año{"s" if years != 1 else ""}'
 
     if total_days >= 30:
         months = total_days // 30
         return f'{months} mes{"es" if months != 1 else ""}'
 
     if total_days >= 1:
-        return f'{total_days} dia{"s" if total_days != 1 else ""}'
+        return f'{total_days} día{"s" if total_days != 1 else ""}'
 
     hours = max(delta.seconds // 3600, 0)
 

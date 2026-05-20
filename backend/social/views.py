@@ -13,6 +13,7 @@ from user.permissions import require_active_user
 class AmistadView(viewsets.ModelViewSet):
     queryset = Amistad.objects.select_related('user', 'user2').all()
     serializer_class = AmistadSerializer
+    http_method_names = ['get', 'post', 'head', 'options']
 
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs)
@@ -45,7 +46,7 @@ class AmistadView(viewsets.ModelViewSet):
 
         if target_user is None:
             return Response(
-                {'detail': 'El usuario indicado no existe o no esta activo.'},
+                {'detail': 'El usuario indicado no existe o no está activo.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -101,7 +102,7 @@ class AmistadView(viewsets.ModelViewSet):
 
         if amistad.estado != Amistad.ESTADO_PENDIENTE:
             return Response(
-                {'detail': 'Esta solicitud ya no esta pendiente.'},
+                {'detail': 'Esta solicitud ya no está pendiente.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -127,7 +128,7 @@ class AmistadView(viewsets.ModelViewSet):
 
         if amistad.estado != Amistad.ESTADO_PENDIENTE:
             return Response(
-                {'detail': 'Esta solicitud ya no esta pendiente.'},
+                {'detail': 'Esta solicitud ya no está pendiente.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

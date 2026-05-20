@@ -98,7 +98,7 @@ function AuthWidget({ initialScreen = 'login' }) {
               return
             }
             
-            // 1. Guardamos la sesión con el perfil de Auth0 para que la siguiente llamada funcione
+            //Guardamos la sesión con el perfil de Auth0 para que la siguiente llamada funcione
             const normalizedProfile = {
               ...profile,
               ...(authResult.idTokenPayload ?? {}),
@@ -117,10 +117,10 @@ function AuthWidget({ initialScreen = 'login' }) {
             
             let user = null
             try {
-              // 2. Sincronizamos y obtenemos el perfil COMPLETO de nuestro backend (con el rol)
+              //Sincronizamos y obtenemos el perfil COMPLETO de nuestro backend (con el rol)
               user = await syncCurrentUser()
               if (user) {
-                // 3. VOLVEMOS a persistir la sesión, pero esta vez con el perfil de nuestro backend
+                //VOLVEMOS a persistir la sesión, pero esta vez con el perfil de nuestro backend
                 persistAuthSession({ ...authResult, profile: user })
               }
             } catch (syncError) {
@@ -129,11 +129,8 @@ function AuthWidget({ initialScreen = 'login' }) {
                 return
               }
 
-              // If the backend is not available yet, keep the Auth0 session usable in frontend.
-              // El usuario podrá navegar, pero no verá contenido específico de su rol.
             }
             
-            // 4. Redirigimos. En la siguiente carga, getStoredAuthSession() tendrá el perfil correcto.
             window.location.assign(getRedirectPathForRole(user?.role, user?.estadoCuenta))
           })
         }

@@ -159,7 +159,7 @@ function Amigos() {
     try {
       await callback()
     } catch (actionError) {
-      setError(actionError.message || 'No se pudo completar la accion.')
+      setError(actionError.message || 'No se pudo completar la acción.')
     } finally {
       setActionId('')
     }
@@ -167,9 +167,9 @@ function Amigos() {
 
   if (!isAuthenticated) {
     return (
-      <section className="amigos-state-card" aria-label="Sesion requerida">
+      <section className="amigos-state-card" aria-label="Sesión requerida">
         <p className="amigos-kicker">Amigos</p>
-        <h1>Inicia sesion para gestionar tus amistades</h1>
+        <h1>Inicia sesión para gestionar tus amistades</h1>
         <p>Conecta con otros usuarios, acepta solicitudes y guarda tu red dentro de ISDB.</p>
       </section>
     )
@@ -192,7 +192,7 @@ function Amigos() {
           <p className="amigos-kicker">AMIGOS</p>
           <h1>Amigos en ISDB</h1>
           <p>
-            Gestiona solicitudes, descubre usuarios y consulta desde cuando compartis actividad.
+            Gestiona solicitudes, descubre usuarios y consulta desde cuándo compartís actividad.
           </p>
         </div>
 
@@ -244,7 +244,7 @@ function Amigos() {
           <PanelHeader
             kicker="Enviadas"
             title="Esperando respuesta"
-            text="Solicitudes que aun no han sido aceptadas o denegadas."
+            text="Solicitudes que aún no han sido aceptadas o denegadas."
           />
 
           <div className="amigos-list">
@@ -263,7 +263,7 @@ function Amigos() {
         <PanelHeader
           kicker="Amigos actuales"
           title="Conexiones activas"
-          text="Consulta desde cuando sois amigos y cuanto tiempo llevais conectados."
+          text="Consulta desde cuándo sois amigos y cuánto tiempo lleváis conectados."
         />
 
         <div className="amigos-friends-grid">
@@ -277,7 +277,7 @@ function Amigos() {
               />
             ))
           ) : (
-            <EmptyBlock text="Aun no tienes amigos aceptados." />
+            <EmptyBlock text="Aún no tienes amigos aceptados." />
           )}
         </div>
       </section>
@@ -287,7 +287,7 @@ function Amigos() {
           <PanelHeader
             kicker="Descubrir"
             title="Enviar solicitud"
-            text="Busca usuarios y envia una solicitud si todavia no existe una relacion activa."
+            text="Busca usuarios y envía una solicitud si todavía no existe una relación activa."
           />
 
           <input
@@ -318,7 +318,7 @@ function Amigos() {
               />
             ))
           ) : (
-            <EmptyBlock text="No hay usuarios disponibles con esa busqueda." />
+            <EmptyBlock text="No hay usuarios disponibles con esa búsqueda." />
           )}
         </div>
       </section>

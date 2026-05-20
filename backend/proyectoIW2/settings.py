@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'user',
-    'module',
     'serie',
     'interaccion',
     'social',

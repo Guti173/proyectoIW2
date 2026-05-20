@@ -16,7 +16,7 @@ import AdminSeries from './pages/AdminSeries'
 import { clearAuthSession, getStoredAuthSession } from './lib/auth0'
 
 const appNavigation = [
-  { to: '/catalogo', label: 'Catalogo' },
+  { to: '/catalogo', label: 'Catálogo' },
   { to: '/perfil', label: 'Perfil' },
   { to: '/listas', label: 'Mis listas' },
   { to: '/amigos', label: 'Amigos' },
@@ -32,6 +32,8 @@ const adminNavigation = [
 const guestNavigation = [
   { to: '/', label: 'Inicio' },
   ...appNavigation,
+  { to: '/login', label: 'Iniciar sesión' },
+  { to: '/registro', label: 'Registro' },
 ]
 
 function App() {
@@ -65,7 +67,7 @@ function App() {
             <img src={isdbLogo} alt="ISDB" className="site-brand-image" />
           </NavLink>
 
-          <nav className="main-nav" aria-label="Navegacion principal">
+          <nav className="main-nav" aria-label="Navegación principal">
             {visibleNavigation.map((item) => (
               <NavLink
                 key={item.to}
@@ -79,7 +81,7 @@ function App() {
 
             {isAuthenticated ? (
               <button className="nav-link nav-logout-button" onClick={handleLogout}>
-                Cerrar sesion
+                Cerrar sesión
               </button>
             ) : null}
           </nav>
@@ -153,7 +155,7 @@ function HomePage() {
         <p className="home-kicker">Tu archivo personal de series</p>
         <h1>Bienvenido a ISDB</h1>
         <p className="home-lead">
-          ISDB reune catalogo, listas personales, comentarios y progreso de episodios para tener
+          ISDB reúne catálogo, listas personales, comentarios y progreso de episodios para tener
           tus series controladas en un solo sitio.
         </p>
 
@@ -174,9 +176,9 @@ function SuspendedPage() {
   return (
     <section className="account-state-panel" aria-label="Cuenta suspendida">
       <p className="home-kicker">Cuenta suspendida</p>
-      <h1>Tu cuenta no esta activa</h1>
+      <h1>Tu cuenta no está activa</h1>
       <p>
-        Un administrador ha suspendido esta cuenta. Mientras este estado siga activo, no podras
+        Un administrador ha suspendido esta cuenta. Mientras este estado siga activo, no podrás
         usar las funciones privadas de ISDB.
       </p>
     </section>

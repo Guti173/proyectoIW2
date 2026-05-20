@@ -88,7 +88,7 @@ function Catalogo() {
           <div className="hero-text">
             <p className="catalogo-kicker">Biblioteca de series</p>
             <p>
-              Busca por titulo, filtra por genero y deja a mano lo que quieres ver hoy.
+              Busca por título, filtra por género y deja a mano lo que quieres ver hoy.
             </p>
           </div>
 
@@ -97,7 +97,7 @@ function Catalogo() {
               <span className="search-icon" aria-hidden="true"></span>
               <input
                 type="text"
-                placeholder="Buscar por titulo..."
+                placeholder="Buscar por título..."
                 value={busquedaNombre}
                 onChange={(event) => setBusquedaNombre(event.target.value)}
                 className="search-input"
@@ -110,7 +110,7 @@ function Catalogo() {
                 onChange={(event) => setFiltroGenero(event.target.value)}
                 className="filter-select"
               >
-                <option value="">Todos los generos</option>
+                <option value="">Todos los géneros</option>
                 {generos.map((genero) => (
                   <option key={genero.id} value={genero.id}>
                     {genero.nombre}
@@ -120,7 +120,7 @@ function Catalogo() {
 
               <input
                 type="number"
-                placeholder="Ano"
+                placeholder="Año"
                 value={filtroAnio}
                 onChange={(event) => setFiltroAnio(event.target.value)}
                 className="year-input"
@@ -188,7 +188,7 @@ function Catalogo() {
               <section key={genero.id} className="row-section">
                 <div className="row-header">
                   <div>
-                    <p className="row-kicker">Genero</p>
+                    <p className="row-kicker">Género</p>
                     <h3 className="row-title">{genero.nombre}</h3>
                   </div>
 
@@ -231,7 +231,7 @@ function Catalogo() {
             <div className="row-header">
               <div>
                 <p className="row-kicker">Explorar</p>
-                <h3 className="row-title">Catalogo completo</h3>
+                <h3 className="row-title">Catálogo completo</h3>
               </div>
               <span className="results-count">
                 Mostrando {seriesVisibles.length} de {seriesFiltradas.length}
@@ -249,7 +249,7 @@ function Catalogo() {
             {visibleCount < seriesFiltradas.length ? (
               <div className="catalog-actions">
                 <button onClick={cargarMas} className="btn-load-more">
-                  Cargar 20 mas
+                  Cargar 20 más
                 </button>
                 <button onClick={verTodo} className="btn-show-all">
                   Ver todo
@@ -259,7 +259,7 @@ function Catalogo() {
           </section>
         ) : (
           <div className="empty-results">
-            <p>No se encontraron series que coincidan con tu busqueda.</p>
+            <p>No se encontraron series que coincidan con tu búsqueda.</p>
           </div>
         )}
       </main>
