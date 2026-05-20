@@ -48,6 +48,9 @@ function AuthWidget({ initialScreen = 'login' }) {
           allowShowPassword: true,
           rememberLastLogin: false,
           language: 'es',
+          languageDictionary: {
+            title: initialScreen === 'signUp' ? 'Registrarse' : 'Iniciar sesión',
+          },
           initialScreen,
           allowedConnections: [auth0Config.databaseConnection],
           defaultDatabaseConnection: auth0Config.databaseConnection,
